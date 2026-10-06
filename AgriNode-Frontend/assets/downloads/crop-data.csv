@@ -1,0 +1,16 @@
+﻿Crop ID,Farmer ID,Farmer Name,Village,District,Crop,Season,Sowing Date,Harvest Date,Area Acres,Expected Yield Qtl,Actual Yield Qtl,Irrigation,Soil Type,Quality Grade,Market Value Rs
+CR001,F001,Rajesh Patil,Shigli,Dharwad,Paddy,Kharif,2025-06-01,2025-10-30,4.5,38.0,36.8,Drip+Rain,Black Cotton,A,84640
+CR002,F002,Suresh Kumar,Kundgol,Dharwad,Wheat,Rabi,2025-11-15,2026-03-25,3.0,32.0,31.2,Canal,Red Loamy,A,64896
+CR003,F003,Lakshmi Devi,Navalagund,Dharwad,Cotton,Kharif,2025-06-01,2025-12-20,5.0,12.0,11.4,Borewell,Black Cotton,A,73188
+CR004,F004,Ramesh Naik,Annigeri,Dharwad,Maize,Kharif,2025-06-15,2025-10-15,2.5,28.0,26.5,Rain-fed,Red Sandy,B,37324
+CR005,F005,Geetha Bai,Hubli,Dharwad,Sugarcane,Annual,2025-01-01,2025-12-31,3.0,310.0,295.0,Drip,Black Cotton,A,170025
+CR006,F006,Prakash Reddy,Ron,Gadag,Tur Dal,Kharif,2025-06-20,2025-12-15,4.0,8.0,7.6,Rain-fed,Red Loamy,A,53200
+CR007,F007,Anitha S,Lakshmeshwar,Gadag,Groundnut,Kharif,2025-06-01,2025-09-30,3.5,20.0,19.2,Rain-fed,Sandy Loam,A,96000
+CR008,F008,Mallikarjun B,Mundargi,Gadag,Sunflower,Rabi,2025-11-01,2026-02-28,4.5,12.0,11.8,Canal,Black Cotton,A,85960
+CR009,F009,Kavitha P,Shirahatti,Gadag,Jowar,Kharif,2025-06-15,2025-11-30,2.0,14.0,13.4,Rain-fed,Red Loamy,B,20100
+CR010,F010,Veeresh T,Naregal,Gadag,Bengal Gram,Rabi,2025-11-01,2026-02-28,3.0,10.0,9.6,Rain-fed,Black Cotton,A,43200
+CR011,F011,Basavaraj M,Haveri,Haveri,Rice,Kharif,2025-06-05,2025-11-05,5.0,40.0,38.6,Canal,Black Cotton,A,88780
+CR012,F012,Shobha V,Byadgi,Haveri,Byadgi Chilli,Kharif,2025-05-01,2025-11-30,2.0,14.0,13.4,Drip,Red Loamy,A,134000
+CR013,F013,Manjunath K,Hirekerur,Haveri,Cotton,Kharif,2025-06-01,2025-12-20,4.0,11.0,10.8,Borewell,Black Cotton,A,69336
+CR014,F014,Nagaraj R,Savanur,Haveri,Sunflower,Rabi,2025-11-01,2026-03-15,3.5,12.0,0.0,Canal,Black Cotton,Pending,0
+CR015,F015,Pushpa D,Ranibennur,Haveri,Maize,Kharif,2025-06-20,2025-10-20,3.0,30.0,28.8,Rain-fed,Sandy Loam,A,40608

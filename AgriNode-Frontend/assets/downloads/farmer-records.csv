@@ -1,0 +1,13 @@
+﻿Farmer ID,Name,Phone,Age,Gender,Village,Taluk,District,State,Land Acres,Primary Crop,Secondary Crop,PM KISAN,KCC Holder,KYC Status,Agent Assigned,Registered On,Total Income Rs,Total Expense Rs,Net Profit Rs,Status
+F001,Rajesh Patil,9810012345,42,Male,Shigli,Dharwad,Dharwad,Karnataka,6.5,Paddy,Wheat,Yes,Yes,Verified,Ramesh Kumar,2022-03-12,180000,62000,118000,Active
+F002,Suresh Kumar,9810023456,38,Male,Kundgol,Kundgol,Dharwad,Karnataka,5.0,Wheat,Chilli,Yes,Yes,Verified,Ramesh Kumar,2022-04-18,145000,48000,97000,Active
+F003,Lakshmi Devi,9810034567,35,Female,Navalagund,Navalagund,Dharwad,Karnataka,5.5,Cotton,Jowar,Yes,No,Verified,Priya Sharma,2022-06-05,88000,32000,56000,Active
+F004,Ramesh Naik,9810045678,55,Male,Annigeri,Navalgund,Dharwad,Karnataka,3.5,Maize,Pulses,Yes,Yes,Verified,Priya Sharma,2022-07-20,52000,28000,24000,Active
+F005,Geetha Bai,9810056789,48,Female,Hubli,Hubli,Dharwad,Karnataka,4.0,Sugarcane,Paddy,Yes,No,Verified,Arun Joshi,2022-08-14,220000,75000,145000,Active
+F006,Prakash Reddy,9810067890,44,Male,Ron,Ron,Gadag,Karnataka,4.5,Tur Dal,Groundnut,Yes,Yes,Verified,Meera Patil,2022-09-02,68000,24000,44000,Active
+F007,Anitha S,9810078901,32,Female,Lakshmeshwar,Shirhatti,Gadag,Karnataka,3.5,Groundnut,Sunflower,Yes,No,Verified,Meera Patil,2022-10-10,112000,38000,74000,Active
+F008,Mallikarjun B,9810089012,60,Male,Mundargi,Mundargi,Gadag,Karnataka,5.5,Sunflower,Jowar,Yes,Yes,Verified,Rajan Kulkarni,2022-11-25,96000,35000,61000,Active
+F009,Kavitha P,9810090123,28,Female,Shirahatti,Shirahatti,Gadag,Karnataka,2.0,Jowar,Bajra,Yes,No,Pending,Rajan Kulkarni,2023-01-08,28000,14000,14000,Active
+F010,Veeresh T,9810101234,50,Male,Naregal,Ron,Gadag,Karnataka,3.0,Bengal Gram,Linseed,Yes,Yes,Verified,Sita Ram,2023-02-14,58000,22000,36000,Active
+F011,Basavaraj M,9810112345,46,Male,Haveri,Haveri,Haveri,Karnataka,6.0,Rice,Cotton,Yes,Yes,Verified,Sita Ram,2023-03-01,130000,44000,86000,Active
+F012,Shobha V,9810123456,37,Female,Byadgi,Byadgi,Haveri,Karnataka,2.5,Chilli,Maize,Yes,No,Verified,Deepak T,2023-03-18,182000,60000,122000,Active

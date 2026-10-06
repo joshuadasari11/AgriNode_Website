@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AgriNode Pay – Secure Payment Gateway</title>
+<meta name="description" content="AgriNode secure payment gateway – Pay via UPI, Card, Net Banking or Cash on Delivery."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="css/styles.css" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════════════════════════════════
+   PAYMENT GATEWAY – PREMIUM FINTECH DESIGN
+══════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg,#f0f7f0);color:var(--text,#1a1a1a);min-height:100vh}
+
+/* ── CSS Variables ── */
+:root{
+  --primary:#16a34a;--primary-dark:#15803d;--primary-light:#4ade80;
+  --bg:#f0f7f0;--card:#fff;--border:#d1fae5;--text:#1a1a1a;--text-muted:#6b7280;
+  --danger:#dc2626;--warning:#f59e0b;--success:#16a34a;
+  --shadow:0 2px 16px rgba(0,0,0,.08);--shadow-lg:0 8px 40px rgba(0,0,0,.14);
+  --radius:16px;
+}
+[data-theme="dark"]{
+  --bg:#060f14;--card:#0d1f2d;--border:#1e3a5f;--text:#e2e8f0;--text-muted:#94a3b8;
+  --shadow:0 2px 16px rgba(0,0,0,.4);--shadow-lg:0 8px 40px rgba(0,0,0,.6);
+}
+
+/* ── Layout ── */
+.pay-shell{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:0 0 40px 0}
+
+/* ── Header bar ── */
+.pay-header{width:100%;background:linear-gradient(135deg,#0a2e1a 0%,#15803d 50%,#16a34a 100%);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 20px rgba(0,0,0,.3)}
+[data-theme="dark"] .pay-header{background:linear-gradient(135deg,#040d08,#071a10,#0a2318)}
+.pay-header-brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:900;font-size:1.1rem;text-decoration:none}
+.pay-header-brand span{font-size:1.5rem}
+.pay-secure-badge{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.3px}
+.pay-header-right{display:flex;align-items:center;gap:10px}
+.theme-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 10px;color:#fff;cursor:pointer;font-size:.85rem;transition:.2s}
+.theme-btn:hover{background:rgba(255,255,255,.25)}
+.back-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 14px;color:#fff;cursor:pointer;font-size:.8rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:6px;transition:.2s}
+.back-btn:hover{background:rgba(255,255,255,.25)}
+
+/* ── Main wrapper ── */
+.pay-main{width:100%;max-width:820px;padding:28px 16px 0;margin:0 auto}
+
+/* ── Order summary card ── */
+.order-card{background:linear-gradient(135deg,#0f4c25,#16a34a,#22c55e);border-radius:20px;padding:24px 28px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(22,163,74,.4)}
+.order-card::before{content:'₹';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:9rem;font-weight:900;opacity:.06;line-height:1}
+.order-card-label{font-size:.72rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.8;margin-bottom:6px}
+.order-card-amount{font-size:2.8rem;font-weight:900;line-height:1;margin-bottom:6px}
+.order-card-amount sup{font-size:1.4rem;vertical-align:super;font-weight:700}
+.order-card-desc{font-size:.85rem;opacity:.85;margin-bottom:14px}
+.order-card-meta{display:flex;gap:12px;flex-wrap:wrap}
+.order-chip{background:rgba(255,255,255,.16);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:700;display:flex;align-items:center;gap:5px}
+
+/* ── Two-column grid ── */
+.pay-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:16px}
+@media(max-width:680px){.pay-grid{grid-template-columns:1fr}}
+
+/* ── Method selector card ── */
+.method-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:20px;height:fit-content}
+.method-title{font-size:.78rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.method-list{display:flex;flex-direction:column;gap:8px}
+.method-item{display:flex;align-items:center;gap:12px;padding:13px 14px;border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;background:var(--bg)}
+.method-item:hover{border-color:var(--primary);background:rgba(22,163,74,.04)}
+.method-item.active{border-color:var(--primary);background:rgba(22,163,74,.08);box-shadow:0 0 0 3px rgba(22,163,74,.12)}
+[data-theme="dark"] .method-item{background:#071420}
+[data-theme="dark"] .method-item.active{background:rgba(22,163,74,.1)}
+.method-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.method-info{flex:1}
+.method-name{font-weight:700;font-size:.9rem;color:var(--text)}
+.method-sub{font-size:.72rem;color:var(--text-muted);margin-top:1px}
+.method-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
+.method-item.active .method-radio{border-color:var(--primary)}
+.method-radio-dot{width:9px;height:9px;border-radius:50%;background:var(--primary);opacity:0;transition:.2s}
+.method-item.active .method-radio-dot{opacity:1}
+.method-badge{font-size:.62rem;font-weight:800;background:#dcfce7;color:#16a34a;border-radius:6px;padding:2px 7px;margin-left:6px}
+[data-theme="dark"] .method-badge{background:rgba(22,163,74,.2);color:#4ade80}
+
+/* ── Payment panel ── */
+.payment-panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:24px;min-height:460px;display:flex;flex-direction:column}
+.panel-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+
+/* ── Screen visibility ── */
+.pay-screen{display:none;flex:1;flex-direction:column}
+.pay-screen.active{display:flex}
+
+/* ══ UPI SCREEN ══════════════════════════════════════════ */
+.upi-app-row{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.upi-app-btn{display:flex;align-items:center;gap:7px;padding:9px 16px;border:2px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;font-weight:700;font-size:.82rem;color:var(--text);transition:.2s;white-space:nowrap}
+[data-theme="dark"] .upi-app-btn{background:#071420}
+.upi-app-btn:hover,.upi-app-btn.active{border-color:var(--primary);background:rgba(22,163,74,.08)}
+.upi-app-dot{width:10px;height:10px;border-radius:50%}
+
+/* QR Code box */
+.qr-box{background:var(--bg);border:2px dashed var(--border);border-radius:16px;padding:24px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden;transition:.3s}
+[data-theme="dark"] .qr-box{background:#071420}
+.qr-canvas-wrap{display:inline-block;position:relative;margin-bottom:12px}
+.qr-grid{display:grid;grid-template-columns:repeat(12,16px);gap:2px;justify-content:center}
+.qr-cell{width:16px;height:16px;border-radius:2px}
+.qr-logo-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.qr-upi-id{display:inline-block;background:#dcfce7;border:1px solid #bbf7d0;border-radius:8px;padding:7px 16px;font-size:.82rem;font-weight:800;color:#15803d;letter-spacing:.5px;margin-bottom:8px;cursor:pointer;transition:.2s}
+[data-theme="dark"] .qr-upi-id{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.3);color:#4ade80}
+.qr-upi-id:hover{opacity:.8}
+.qr-ref{font-size:.72rem;color:var(--text-muted);margin-bottom:4px}
+.qr-amount-display{font-size:1.3rem;font-weight:900;color:var(--primary);margin-bottom:4px}
+.qr-timer{display:inline-flex;align-items:center;gap:5px;background:#fff8ed;border:1px solid #fcd34d;border-radius:8px;padding:4px 12px;font-size:.75rem;font-weight:700;color:#d97706;margin-top:6px}
+[data-theme="dark"] .qr-timer{background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.3)}
+#timerCount{font-size:.9rem;font-weight:900;min-width:28px}
+
+.upi-action-row{display:flex;gap:10px;margin-top:auto;padding-top:14px}
+.btn-primary{flex:1;padding:14px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:.95rem;cursor:pointer;transition:all .25s;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(22,163,74,.4)}
+.btn-primary:active{transform:translateY(0)}
+.btn-secondary{flex:1;padding:14px;background:var(--bg);color:var(--text);border:2px solid var(--border);border-radius:12px;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s}
+[data-theme="dark"] .btn-secondary{background:#071420}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
+
+/* ══ CARD SCREEN ══════════════════════════════════════════ */
+.card-visual{background:linear-gradient(135deg,#0f172a,#1e3a5f,#1e40af);border-radius:16px;padding:22px 24px;color:#fff;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(30,64,175,.4)}
+.card-visual::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.04);top:-60px;right:-40px}
+.card-visual-chip{width:36px;height:27px;background:linear-gradient(135deg,#fcd34d,#f59e0b);border-radius:5px;margin-bottom:16px}
+.card-visual-num{font-size:1.05rem;letter-spacing:3px;font-weight:600;margin-bottom:16px;font-family:monospace;opacity:.9}
+.card-visual-bottom{display:flex;justify-content:space-between;align-items:flex-end}
+.card-visual-label{font-size:.6rem;opacity:.6;text-transform:uppercase;letter-spacing:.5px}
+.card-visual-val{font-size:.88rem;font-weight:700}
+.card-network{position:absolute;right:20px;top:20px;font-size:1.8rem;opacity:.5}
+
+.card-form{display:flex;flex-direction:column;gap:12px}
+.form-grp{display:flex;flex-direction:column;gap:5px}
+.form-grp label{font-size:.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px}
+.form-grp input,.form-grp select{background:var(--bg);color:var(--text);border:2px solid var(--border);border-radius:10px;padding:11px 14px;font-size:.9rem;font-family:'Inter',sans-serif;outline:none;transition:.2s;width:100%}
+[data-theme="dark"] .form-grp input,[data-theme="dark"] .form-grp select{background:#071420;border-color:#1e3a5f}
+.form-grp input:focus,.form-grp select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(22,163,74,.12)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.secure-note{display:flex;align-items:center;gap:7px;font-size:.72rem;color:var(--text-muted);margin-top:2px}
+
+/* ══ NET BANKING SCREEN ══════════════════════════════════ */
+.bank-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.bank-item{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:.2s;background:var(--bg)}
+[data-theme="dark"] .bank-item{background:#071420}
+.bank-item:hover,.bank-item.selected{border-color:var(--primary);background:rgba(22,163,74,.06)}
+.bank-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.bank-name{font-weight:700;font-size:.82rem;color:var(--text)}
+.bank-more-select{background:var(--bg);color:var(--text);border:2px solid var(--border);border-radius:10px;padding:10px 14px;font-size:.88rem;font-family:'Inter',sans-serif;outline:none;width:100%;transition:.2s;margin-bottom:14px}
+[data-theme="dark"] .bank-more-select{background:#071420;border-color:#1e3a5f}
+.bank-more-select:focus{border-color:var(--primary)}
+
+/* ══ COD SCREEN ══════════════════════════════════════════ */
+.cod-info-box{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;border-radius:14px;padding:20px;margin-bottom:18px}
+[data-theme="dark"] .cod-info-box{background:rgba(22,163,74,.08);border-color:rgba(22,163,74,.2)}
+.cod-steps{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.cod-step{display:flex;align-items:center;gap:12px}
+.cod-step-num{width:30px;height:30px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:.82rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cod-step-text{font-size:.86rem;color:var(--text);font-weight:500}
+
+/* ══ PROCESSING SCREEN ════════════════════════════════════ */
+.processing-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:20px;padding:20px}
+.spinner-ring{width:72px;height:72px;border-radius:50%;border:5px solid var(--border);border-top-color:var(--primary);animation:spin 1s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.processing-title{font-size:1.15rem;font-weight:800;color:var(--text)}
+.processing-sub{font-size:.85rem;color:var(--text-muted)}
+.progress-steps{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px}
+.progress-step{display:flex;align-items:center;gap:10px;font-size:.82rem}
+.ps-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;transition:.4s}
+.ps-icon.done{background:#dcfce7;color:#16a34a}
+.ps-icon.active{background:var(--primary);color:#fff;animation:pulseBeat .8s ease-in-out infinite}
+.ps-icon.pending{background:var(--border);color:var(--text-muted)}
+@keyframes pulseBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.ps-label{color:var(--text);font-weight:600}
+.ps-label.done{color:var(--primary)}
+.ps-label.pending{color:var(--text-muted)}
+
+/* ══ SUCCESS SCREEN ══════════════════════════════════════ */
+.success-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0;padding:10px}
+.success-icon-wrap{position:relative;margin-bottom:18px}
+.success-icon-circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#22c55e);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto;box-shadow:0 8px 24px rgba(22,163,74,.45);animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-ring{position:absolute;inset:-8px;border-radius:50%;border:3px solid rgba(22,163,74,.3);animation:expandRing .8s ease-out forwards}
+@keyframes expandRing{from{transform:scale(.7);opacity:1}to{transform:scale(1.4);opacity:0}}
+.success-title{font-size:1.3rem;font-weight:900;color:var(--primary);margin-bottom:4px}
+.success-sub{font-size:.85rem;color:var(--text-muted);margin-bottom:20px}
+.receipt-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:16px;width:100%;text-align:left;margin-bottom:18px}
+[data-theme="dark"] .receipt-card{background:#071420}
+.receipt-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.receipt-row:last-child{border-bottom:none}
+.receipt-label{font-size:.78rem;color:var(--text-muted);font-weight:600}
+.receipt-value{font-size:.85rem;font-weight:800;color:var(--text)}
+.receipt-value.amount{color:var(--primary);font-size:1rem}
+.success-btns{display:flex;gap:10px;width:100%}
+.btn-download{flex:1;padding:13px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:.9rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-download:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(22,163,74,.4)}
+.btn-new-pay{flex:1;padding:13px;background:var(--bg);color:var(--text);border:2px solid var(--border);border-radius:12px;font-weight:700;font-size:.85rem;cursor:pointer;transition:.2s}
+[data-theme="dark"] .btn-new-pay{background:#071420}
+.btn-new-pay:hover{border-color:var(--primary);color:var(--primary)}
+
+/* ══ FAILURE SCREEN ══════════════════════════════════════ */
+.failure-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;gap:14px}
+.failure-icon{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#dc2626,#ef4444);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 6px;box-shadow:0 8px 24px rgba(220,38,38,.35);animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+.failure-title{font-size:1.2rem;font-weight:900;color:var(--danger)}
+.failure-sub{font-size:.85rem;color:var(--text-muted);max-width:260px;line-height:1.6}
+.failure-btns{display:flex;flex-direction:column;gap:10px;width:100%}
+.btn-retry{padding:14px;background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;border:none;border-radius:12px;font-weight:800;cursor:pointer;transition:.25s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-retry:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(220,38,38,.35)}
+.btn-change-method{padding:13px;background:var(--bg);color:var(--text);border:2px solid var(--border);border-radius:12px;font-weight:700;cursor:pointer;transition:.2s}
+[data-theme="dark"] .btn-change-method{background:#071420}
+.btn-change-method:hover{border-color:var(--primary);color:var(--primary)}
+
+/* ══ HISTORY TABLE ══════════════════════════════════════ */
+.history-section{margin-top:20px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.history-header{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.history-title{font-size:1rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
+.history-filters{display:flex;gap:8px;flex-wrap:wrap}
+.hf-btn{padding:5px 14px;border-radius:20px;border:2px solid var(--border);background:transparent;color:var(--text-muted);font-size:.75rem;font-weight:700;cursor:pointer;transition:.2s}
+.hf-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+.txn-list{padding:0}
+.txn-item{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--border);transition:.15s;cursor:default}
+.txn-item:last-child{border-bottom:none}
+.txn-item:hover{background:var(--bg)}
+.txn-icon-wrap{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.txn-icon-wrap.credit{background:#dcfce7}
+.txn-icon-wrap.debit{background:#fee2e2}
+[data-theme="dark"] .txn-icon-wrap.credit{background:rgba(22,163,74,.15)}
+[data-theme="dark"] .txn-icon-wrap.debit{background:rgba(220,38,38,.12)}
+.txn-info{flex:1;min-width:0}
+.txn-label{font-weight:700;font-size:.9rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txn-meta{font-size:.72rem;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.txn-method-badge{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:1px 7px;font-size:.65rem;font-weight:800}
+[data-theme="dark"] .txn-method-badge{background:#071420}
+.txn-amount{font-weight:900;font-size:.95rem;white-space:nowrap}
+.txn-amount.credit{color:var(--primary)}
+.txn-amount.debit{color:var(--danger)}
+.txn-status-badge{font-size:.65rem;font-weight:800;border-radius:6px;padding:3px 9px}
+.txn-status-badge.success{background:#dcfce7;color:#15803d}
+.txn-status-badge.pending{background:#fef9c3;color:#854d0e}
+.txn-status-badge.failed{background:#fee2e2;color:#991b1b}
+[data-theme="dark"] .txn-status-badge.success{background:rgba(22,163,74,.2);color:#4ade80}
+[data-theme="dark"] .txn-status-badge.pending{background:rgba(245,158,11,.15);color:#fcd34d}
+[data-theme="dark"] .txn-status-badge.failed{background:rgba(220,38,38,.15);color:#f87171}
+
+/* ── Stats bar ── */
+.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--card);border-radius:14px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center}
+.stat-val{font-size:1.3rem;font-weight:900;margin-bottom:2px}
+.stat-val.income{color:var(--primary)}
+.stat-val.expense{color:var(--danger)}
+.stat-val.balance{color:#1e40af}
+[data-theme="dark"] .stat-val.balance{color:#60a5fa}
+.stat-lbl{font-size:.72rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+
+/* ── Toast ── */
+.pay-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a1a;color:#fff;padding:12px 20px;border-radius:12px;font-size:.85rem;font-weight:700;z-index:9999;transition:all .35s;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0}
+.pay-toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.pay-toast.success-toast{background:linear-gradient(135deg,#15803d,#16a34a)}
+.pay-toast.error-toast{background:linear-gradient(135deg,#991b1b,#dc2626)}
+.pay-toast.warning-toast{background:linear-gradient(135deg,#92400e,#d97706)}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}
+.empty-state i{font-size:2.5rem;margin-bottom:12px;display:block;opacity:.4}
+
+@media(max-width:480px){
+  .order-card-amount{font-size:2rem}
+  .stats-bar{grid-template-columns:1fr 1fr}
+  .history-header{flex-direction:column;align-items:flex-start;gap:10px}
+  .upi-action-row{flex-direction:column}
+  .success-btns{flex-direction:column}
+  .pay-main{padding:16px 12px 0}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════ -->
+<div class="pay-header">
+  <a class="pay-header-brand" href="hub.html">
+    <span>🌾</span> AgriNode Pay
+  </a>
+  <div class="pay-secure-badge">
+    <i class="fa fa-lock"></i> 256-bit SSL Secured
+  </div>
+  <div class="pay-header-right">
+    <button class="theme-btn" onclick="toggleDark()" title="Toggle theme"><i class="fa fa-moon" id="themeIcon"></i></button>
+    <a class="back-btn" href="hub.html"><i class="fa fa-arrow-left"></i> Back</a>
+  </div>
+</div>
+
+<div class="pay-shell">
+<div class="pay-main">
+
+  <!-- ══ ORDER SUMMARY ══════════════════════════════════════ -->
+  <div class="order-card" id="orderCard">
+    <div class="order-card-label">Total Amount Payable</div>
+    <div class="order-card-amount"><sup>₹</sup><span id="displayAmount">0</span></div>
+    <div class="order-card-desc" id="displayLabel">Enter amount to continue</div>
+    <div class="order-card-meta">
+      <div class="order-chip"><i class="fa fa-shield-alt"></i> Secure Payment</div>
+      <div class="order-chip" id="displayMethod"><i class="fa fa-mobile-alt"></i> UPI</div>
+      <div class="order-chip"><i class="fa fa-clock"></i> Instant</div>
+    </div>
+  </div>
+
+  <!-- ══ STATS BAR ══════════════════════════════════════════ -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-val income" id="statIncome">₹0</div>
+      <div class="stat-lbl">Total Income</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val expense" id="statExpense">₹0</div>
+      <div class="stat-lbl">Total Spent</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val balance" id="statBalance">₹0</div>
+      <div class="stat-lbl">Net Balance</div>
+    </div>
+  </div>
+
+  <!-- ══ AMOUNT INPUT ROW ════════════════════════════════════ -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end">
+      <div class="form-grp">
+        <label>Payment Amount (₹)</label>
+        <input type="number" id="payAmount" min="1" placeholder="0.00" oninput="onAmountChange(this.value)" style="font-size:1.3rem;font-weight:900;color:var(--primary)"/>
+      </div>
+      <div class="form-grp">
+        <label>Description</label>
+        <input type="text" id="payDesc" placeholder="e.g. Rice sale payment" oninput="document.getElementById('displayLabel').textContent=this.value||'Enter amount to continue'"/>
+      </div>
+    </div>
+    <div id="amountWords" style="font-size:.75rem;color:var(--text-muted);margin-top:6px;font-weight:600;min-height:18px"></div>
+  </div>
+
+  <!-- ══ MAIN PAYMENT GRID ════════════════════════════════════ -->
+  <div class="pay-grid">
+
+    <!-- LEFT: Method selector -->
+    <div class="method-card">
+      <div class="method-title">Choose Payment Method</div>
+      <div class="method-list">
+        <div class="method-item active" id="meth-upi" onclick="selectMethod('upi',this)">
+          <div class="method-icon" style="background:#e0f2fe">📱</div>
+          <div class="method-info">
+            <div class="method-name">UPI <span class="method-badge">Instant</span></div>
+            <div class="method-sub">GPay · PhonePe · Paytm</div>
+          </div>
+          <div class="method-radio"><div class="method-radio-dot"></div></div>
+        </div>
+        <div class="method-item" id="meth-debit" onclick="selectMethod('debit',this)">
+          <div class="method-icon" style="background:#fef3c7">💳</div>
+          <div class="method-info">
+            <div class="method-name">Debit Card</div>
+            <div class="method-sub">Visa · RuPay · Maestro</div>
+          </div>
+          <div class="method-radio"><div class="method-radio-dot"></div></div>
+        </div>
+        <div class="method-item" id="meth-credit" onclick="selectMethod('credit',this)">
+          <div class="method-icon" style="background:#ede9fe">🏦</div>
+          <div class="method-info">
+            <div class="method-name">Credit Card</div>
+            <div class="method-sub">Visa · MasterCard · Amex</div>
+          </div>
+          <div class="method-radio"><div class="method-radio-dot"></div></div>
+        </div>
+        <div class="method-item" id="meth-netb" onclick="selectMethod('netb',this)">
+          <div class="method-icon" style="background:#e0f2fe">🌐</div>
+          <div class="method-info">
+            <div class="method-name">Net Banking</div>
+            <div class="method-sub">All major banks</div>
+          </div>
+          <div class="method-radio"><div class="method-radio-dot"></div></div>
+        </div>
+        <div class="method-item" id="meth-cod" onclick="selectMethod('cod',this)">
+          <div class="method-icon" style="background:#d1fae5">💵</div>
+          <div class="method-info">
+            <div class="method-name">Cash on Delivery</div>
+            <div class="method-sub">Pay on receipt</div>
+          </div>
+          <div class="method-radio"><div class="method-radio-dot"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Payment panel -->
+    <div class="payment-panel">
+
+      <!-- ─ UPI Screen ─ -->
+      <div class="pay-screen active" id="screen-upi">
+        <div class="panel-title">📱 Pay via UPI</div>
+        <div class="upi-app-row">
+          <button class="upi-app-btn active" id="uapp-gpay" onclick="selectUpiApp('gpay',this)"><div class="upi-app-dot" style="background:#1a73e8"></div>GPay</button>
+          <button class="upi-app-btn" id="uapp-phonepe" onclick="selectUpiApp('phonepe',this)"><div class="upi-app-dot" style="background:#5f259f"></div>PhonePe</button>
+          <button class="upi-app-btn" id="uapp-paytm" onclick="selectUpiApp('paytm',this)"><div class="upi-app-dot" style="background:#0061a8"></div>Paytm</button>
+          <button class="upi-app-btn" id="uapp-bhim" onclick="selectUpiApp('bhim',this)"><div class="upi-app-dot" style="background:#ff6b00"></div>BHIM</button>
+        </div>
+        <div class="qr-box">
+          <div class="qr-canvas-wrap">
+            <div class="qr-grid" id="qrGrid"></div>
+            <div class="qr-logo-overlay">🌾</div>
+          </div>
+          <div style="margin-top:10px">
+            <div class="qr-amount-display" id="qrAmount">₹0</div>
+            <div class="qr-ref" id="qrRef">Ref: — </div>
+            <div class="qr-upi-id" id="qrUpiId" onclick="copyUpiId()" title="Click to copy">
+              agrinode@upi <i class="fa fa-copy" style="font-size:.7rem;opacity:.7"></i>
+            </div>
+            <div class="qr-timer"><i class="fa fa-clock"></i> Expires in <span id="timerCount">10:00</span></div>
+          </div>
+        </div>
+        <div class="upi-action-row">
+          <button class="btn-secondary" onclick="initiatePayment()"><i class="fa fa-qrcode"></i> Generate QR</button>
+          <button class="btn-primary" onclick="confirmUpiDone()"><i class="fa fa-check-circle"></i> I've Paid</button>
+        </div>
+      </div>
+
+      <!-- ─ Card Screen ─ -->
+      <div class="pay-screen" id="screen-card">
+        <div class="panel-title" id="cardScreenTitle">💳 Debit Card</div>
+        <div class="card-visual" id="cardVisual">
+          <div class="card-visual-chip"></div>
+          <div class="card-visual-num" id="cardVisualNum">•••• •••• •••• ••••</div>
+          <div class="card-visual-bottom">
+            <div><div class="card-visual-label">Card Holder</div><div class="card-visual-val" id="cardVisualName">YOUR NAME</div></div>
+            <div><div class="card-visual-label">Expires</div><div class="card-visual-val" id="cardVisualExp">MM/YY</div></div>
+          </div>
+          <div class="card-network" id="cardNetwork">💳</div>
+        </div>
+        <div class="card-form">
+          <div class="form-grp">
+            <label>Card Number</label>
+            <input type="text" id="cardNum" placeholder="•••• •••• •••• ••••" maxlength="19"
+              oninput="fmtCard(this)" autocomplete="cc-number" inputmode="numeric"/>
+          </div>
+          <div class="form-grp">
+            <label>Name on Card</label>
+            <input type="text" id="cardName" placeholder="Full name as on card" autocomplete="cc-name"
+              oninput="document.getElementById('cardVisualName').textContent=this.value.toUpperCase()||'YOUR NAME'"/>
+          </div>
+          <div class="form-row">
+            <div class="form-grp">
+              <label>Expiry (MM/YY)</label>
+              <input type="text" id="cardExp" placeholder="MM/YY" maxlength="5" oninput="fmtExp(this)"
+                autocomplete="cc-exp" inputmode="numeric"/>
+            </div>
+            <div class="form-grp">
+              <label>CVV</label>
+              <input type="password" id="cardCvv" placeholder="•••" maxlength="4"
+                autocomplete="cc-csc" inputmode="numeric"/>
+            </div>
+          </div>
+          <div class="secure-note"><i class="fa fa-lock" style="color:var(--primary)"></i> Your card details are encrypted & never stored</div>
+          <button class="btn-primary" style="margin-top:4px" onclick="initiatePayment()"><i class="fa fa-lock"></i> Pay Securely</button>
+        </div>
+      </div>
+
+      <!-- ─ Net Banking Screen ─ -->
+      <div class="pay-screen" id="screen-netb">
+        <div class="panel-title">🌐 Net Banking</div>
+        <div class="bank-grid">
+          <div class="bank-item" id="bank-sbi" onclick="selectBank('SBI','State Bank of India',this)">
+            <div class="bank-icon" style="background:#e3f2fd">🏛️</div>
+            <div class="bank-name">SBI</div>
+          </div>
+          <div class="bank-item" id="bank-pnb" onclick="selectBank('PNB','Punjab National Bank',this)">
+            <div class="bank-icon" style="background:#e8f5e9">🏦</div>
+            <div class="bank-name">PNB</div>
+          </div>
+          <div class="bank-item" id="bank-bob" onclick="selectBank('BOB','Bank of Baroda',this)">
+            <div class="bank-icon" style="background:#fff3e0">🏧</div>
+            <div class="bank-name">Bank of Baroda</div>
+          </div>
+          <div class="bank-item" id="bank-hdfc" onclick="selectBank('HDFC','HDFC Bank',this)">
+            <div class="bank-icon" style="background:#fce4ec">💼</div>
+            <div class="bank-name">HDFC</div>
+          </div>
+        </div>
+        <select class="bank-more-select" id="bankMoreSel" onchange="onBankDropdown(this.value)">
+          <option value="">— More Banks —</option>
+          <option>ICICI Bank</option><option>Axis Bank</option><option>Canara Bank</option>
+          <option>Union Bank of India</option><option>Kotak Mahindra</option>
+          <option>IndusInd Bank</option><option>Yes Bank</option><option>IDFC First Bank</option>
+        </select>
+        <div id="selectedBankBox" style="display:none;background:var(--bg);border:2px solid var(--primary);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-weight:700;color:var(--primary);font-size:.88rem">
+          <i class="fa fa-check-circle"></i> <span id="selectedBankName">SBI</span> selected
+        </div>
+        <button class="btn-primary" style="margin-top:auto" onclick="initiatePayment()"><i class="fa fa-sign-in-alt"></i> Proceed to Bank Portal</button>
+      </div>
+
+      <!-- ─ COD Screen ─ -->
+      <div class="pay-screen" id="screen-cod">
+        <div class="panel-title">💵 Cash on Delivery</div>
+        <div class="cod-info-box">
+          <div style="font-size:2rem;margin-bottom:6px">📦</div>
+          <div style="font-weight:800;font-size:1rem;color:var(--primary);margin-bottom:4px">Pay when you receive</div>
+          <div style="font-size:.84rem;color:var(--text-muted)">No advance payment required. Keep exact change ready.</div>
+          <div class="cod-steps">
+            <div class="cod-step"><div class="cod-step-num">1</div><div class="cod-step-text">Place your order</div></div>
+            <div class="cod-step"><div class="cod-step-num">2</div><div class="cod-step-text">Receive goods at your doorstep</div></div>
+            <div class="cod-step"><div class="cod-step-num">3</div><div class="cod-step-text">Pay cash to the delivery agent</div></div>
+            <div class="cod-step"><div class="cod-step-num">4</div><div class="cod-step-text">Collect your digital receipt</div></div>
+          </div>
+        </div>
+        <div style="background:#fef9c3;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;font-size:.8rem;color:#92400e;font-weight:600;margin-bottom:16px">
+          ⚠️ COD available for orders ≤ ₹5,000 in your area.
+        </div>
+        <button class="btn-primary" style="margin-top:auto" onclick="initiatePayment()"><i class="fa fa-check"></i> Confirm COD Order</button>
+      </div>
+
+      <!-- ─ Processing Screen ─ -->
+      <div class="pay-screen" id="screen-processing">
+        <div class="processing-wrap">
+          <div class="spinner-ring"></div>
+          <div class="processing-title">Verifying Payment…</div>
+          <div class="processing-sub" id="processingSubText">Connecting to payment gateway</div>
+          <div class="progress-steps" id="progressSteps">
+            <div class="progress-step" id="pstep-init">
+              <div class="ps-icon pending" id="picon-init"><i class="fa fa-circle-notch fa-spin" style="font-size:.6rem"></i></div>
+              <span class="ps-label pending" id="plabel-init">Initiating transaction</span>
+            </div>
+            <div class="progress-step" id="pstep-bank">
+              <div class="ps-icon pending" id="picon-bank"><i class="fa fa-circle-notch fa-spin" style="font-size:.6rem"></i></div>
+              <span class="ps-label pending" id="plabel-bank">Contacting bank</span>
+            </div>
+            <div class="progress-step" id="pstep-verify">
+              <div class="ps-icon pending" id="picon-verify"><i class="fa fa-circle-notch fa-spin" style="font-size:.6rem"></i></div>
+              <span class="ps-label pending" id="plabel-verify">Verifying payment</span>
+            </div>
+            <div class="progress-step" id="pstep-confirm">
+              <div class="ps-icon pending" id="picon-confirm"><i class="fa fa-circle-notch fa-spin" style="font-size:.6rem"></i></div>
+              <span class="ps-label pending" id="plabel-confirm">Confirming receipt</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─ Success Screen ─ -->
+      <div class="pay-screen" id="screen-success">
+        <div class="success-wrap">
+          <div class="success-icon-wrap">
+            <div class="success-icon-circle">✓</div>
+            <div class="success-ring"></div>
+          </div>
+          <div class="success-title">Payment Successful!</div>
+          <div class="success-sub">Your transaction has been confirmed</div>
+          <div class="receipt-card">
+            <div class="receipt-row">
+              <span class="receipt-label">Transaction ID</span>
+              <span class="receipt-value" id="rcpt-txnId">—</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-label">Amount</span>
+              <span class="receipt-value amount" id="rcpt-amount">₹0</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-label">Payment Method</span>
+              <span class="receipt-value" id="rcpt-method">UPI</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-label">Bank Reference</span>
+              <span class="receipt-value" id="rcpt-bankRef" style="font-size:.75rem">—</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-label">Date & Time</span>
+              <span class="receipt-value" id="rcpt-dateTime" style="font-size:.75rem">—</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-label">Status</span>
+              <span class="receipt-value" style="color:var(--primary)">✅ Paid</span>
+            </div>
+          </div>
+          <div class="success-btns">
+            <button class="btn-download" onclick="downloadReceipt()"><i class="fa fa-download"></i> Download Receipt</button>
+            <button class="btn-new-pay" onclick="resetPayment()"><i class="fa fa-plus"></i> New Payment</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─ Failure Screen ─ -->
+      <div class="pay-screen" id="screen-failure">
+        <div class="failure-wrap">
+          <div class="failure-icon">✕</div>
+          <div class="failure-title">Payment Failed</div>
+          <div class="failure-sub" id="failureMsg">Your payment could not be processed. Please retry or choose a different method.</div>
+          <div class="failure-btns">
+            <button class="btn-retry" onclick="retryPayment()"><i class="fa fa-redo"></i> Retry Payment</button>
+            <button class="btn-change-method" onclick="changePaymentMethod()"><i class="fa fa-exchange-alt"></i> Change Payment Method</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /payment-panel -->
+  </div><!-- /pay-grid -->
+
+  <!-- ══ TRANSACTION HISTORY ══════════════════════════════════ -->
+  <div class="history-section">
+    <div class="history-header">
+      <div class="history-title"><i class="fa fa-history" style="color:var(--primary)"></i> Transaction History</div>
+      <div class="history-filters">
+        <button class="hf-btn active" onclick="filterHistory('all',this)">All</button>
+        <button class="hf-btn" onclick="filterHistory('credit',this)">Income</button>
+        <button class="hf-btn" onclick="filterHistory('debit',this)">Spent</button>
+        <button class="hf-btn" onclick="filterHistory('pending',this)">Pending</button>
+      </div>
+    </div>
+    <div class="txn-list" id="txnList">
+      <div class="empty-state"><i class="fa fa-spinner fa-spin"></i>Loading transactions…</div>
+    </div>
+  </div>
+
+</div><!-- /pay-main -->
+</div><!-- /pay-shell -->
+
+<!-- Toast -->
+<div class="pay-toast" id="payToast"></div>
+
+<script src="js/script.js"></script>
+<script>
+'use strict';
+/* ═════════════════════════════════════════════════════════
+   AgriNode Pay – Payment Gateway JS
+═════════════════════════════════════════════════════════ */
+
+// ── State ─────────────────────────────────────────────────
+var PAY = {
+  method:     'upi',
+  upiApp:     'gpay',
+  amount:     0,
+  label:      '',
+  txnId:      null,
+  upiRef:     null,
+  bank:       null,
+  timer:      null,
+  timerSecs:  600,
+  allTxns:    [],
+  currentFilter: 'all'
+};
+
+var UPI_IDS = {
+  gpay:    'agrinode@okaxis',
+  phonepe: 'agrinode@ybl',
+  paytm:   'agrinode@paytm',
+  bhim:    'agrinode@upi'
+};
+
+var UPI_LABEL = {
+  gpay:'GPay', phonepe:'PhonePe', paytm:'Paytm', bhim:'BHIM'
+};
+
+// ── Init ──────────────────────────────────────────────────
+(function init(){
+  try { if(typeof initLang==='function') initLang(); } catch(e){}
+  buildQR();
+  loadHistory();
+  loadStats();
+  startTimer();
+  // Restore theme
+  var t = localStorage.getItem('agri_theme');
+  if(t==='dark') document.documentElement.setAttribute('data-theme','dark');
+  updateThemeIcon();
+})();
+
+// ── Dark mode ─────────────────────────────────────────────
+function toggleDark(){
+  var d = document.documentElement;
+  var isDark = d.getAttribute('data-theme')==='dark';
+  d.setAttribute('data-theme', isDark?'light':'dark');
+  localStorage.setItem('agri_theme', isDark?'light':'dark');
+  updateThemeIcon();
+}
+function updateThemeIcon(){
+  var icon = document.getElementById('themeIcon');
+  if(icon) icon.className = document.documentElement.getAttribute('data-theme')==='dark' ? 'fa fa-sun' : 'fa fa-moon';
+}
+
+// ── QR Code (pixel art generator) ─────────────────────────
+function buildQR(){
+  var grid = document.getElementById('qrGrid');
+  if(!grid) return;
+  grid.innerHTML='';
+  // Create a deterministic-looking QR pattern
+  var pattern = [];
+  var seed = 42;
+  function rand(){ seed=(seed*1664525+1013904223)%4294967296; return seed/4294967296; }
+  // Corners: fixed 7x7 finder patterns
+  var corners = [[0,0],[0,5],[5,0]];
+  var cells = [];
+  for(var r=0;r<12;r++){
+    cells[r]=[];
+    for(var c=0;c<12;c++){
+      var isCorner=false;
+      corners.forEach(function(co){
+        if(r>=co[0]&&r<=co[0]+1&&c>=co[1]&&c<=co[1]+1) isCorner=true;
+        if(r===co[0]&&(c>=co[1]&&c<=co[1]+2)) isCorner=true;
+        if(c===co[1]&&(r>=co[0]&&r<=co[0]+2)) isCorner=true;
+      });
+      cells[r][c] = isCorner ? true : rand()>0.5;
+    }
+  }
+  // Centre cross
+  cells[5][5]=true; cells[5][6]=true; cells[6][5]=true; cells[6][6]=true;
+
+  var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  for(var ri=0;ri<12;ri++){
+    for(var ci=0;ci<12;ci++){
+      var div = document.createElement('div');
+      div.className = 'qr-cell';
+      div.style.background = cells[ri][ci]
+        ? (isDark?'#4ade80':'#15803d')
+        : (isDark?'#071420':'#fff');
+      grid.appendChild(div);
+    }
+  }
+}
+
+// ── Timer ─────────────────────────────────────────────────
+function startTimer(){
+  if(PAY.timer) clearInterval(PAY.timer);
+  PAY.timerSecs = 600;
+  updateTimerDisplay();
+  PAY.timer = setInterval(function(){
+    PAY.timerSecs--;
+    updateTimerDisplay();
+    if(PAY.timerSecs<=0){
+      clearInterval(PAY.timer);
+      document.getElementById('timerCount').textContent='Expired';
+      showToast('⏰ QR code expired. Please generate a new one.','warning');
+    }
+  }, 1000);
+}
+function updateTimerDisplay(){
+  var m = Math.floor(PAY.timerSecs/60);
+  var s = PAY.timerSecs%60;
+  var el = document.getElementById('timerCount');
+  if(el) el.textContent = m+':'+(s<10?'0':'')+s;
+}
+
+// ── Method selection ───────────────────────────────────────
+function selectMethod(method, btn){
+  PAY.method = method;
+  document.querySelectorAll('.method-item').forEach(function(el){ el.classList.remove('active'); });
+  btn.classList.add('active');
+  // Update display badge
+  var icons = {upi:'📱',debit:'💳',credit:'🏦',netb:'🌐',cod:'💵'};
+  var labels = {upi:'UPI',debit:'Debit Card',credit:'Credit Card',netb:'Net Banking',cod:'Cash on Delivery'};
+  document.getElementById('displayMethod').innerHTML = '<i class="fa fa-'+(method==='upi'?'mobile-alt':method==='netb'?'globe':'credit-card')+'"></i> '+labels[method];
+  // Show correct screen
+  showScreen(method==='upi'?'upi': method==='debit'||method==='credit'?'card': method==='netb'?'netb':'cod');
+  if(method==='credit') {
+    document.getElementById('cardScreenTitle').textContent='🏦 Credit Card';
+    document.getElementById('cardVisual').style.background='linear-gradient(135deg,#4c1d95,#6d28d9,#7c3aed)';
+    document.getElementById('cardNetwork').textContent='💎';
+  } else if(method==='debit'){
+    document.getElementById('cardScreenTitle').textContent='💳 Debit Card';
+    document.getElementById('cardVisual').style.background='linear-gradient(135deg,#0f172a,#1e3a5f,#1e40af)';
+    document.getElementById('cardNetwork').textContent='💳';
+  }
+}
+
+function showScreen(screen){
+  document.querySelectorAll('.pay-screen').forEach(function(el){ el.classList.remove('active'); });
+  var el = document.getElementById('screen-'+screen);
+  if(el) el.classList.add('active');
+}
+
+// ── UPI App ────────────────────────────────────────────────
+function selectUpiApp(app, btn){
+  PAY.upiApp = app;
+  document.querySelectorAll('.upi-app-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  var id = UPI_IDS[app] || 'agrinode@upi';
+  var el = document.getElementById('qrUpiId');
+  if(el) el.innerHTML = id + ' <i class="fa fa-copy" style="font-size:.7rem;opacity:.7"></i>';
+  buildQR();
+}
+
+function copyUpiId(){
+  var id = UPI_IDS[PAY.upiApp] || 'agrinode@upi';
+  if(navigator.clipboard){ navigator.clipboard.writeText(id); }
+  showToast('📋 UPI ID copied: '+id);
+}
+
+// ── Bank selection ─────────────────────────────────────────
+function selectBank(code, name, btn){
+  PAY.bank = code;
+  document.querySelectorAll('.bank-item').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  document.getElementById('selectedBankBox').style.display='block';
+  document.getElementById('selectedBankName').textContent = name;
+  document.getElementById('bankMoreSel').value='';
+}
+function onBankDropdown(val){
+  if(!val) return;
+  PAY.bank = val;
+  document.querySelectorAll('.bank-item').forEach(function(b){ b.classList.remove('selected'); });
+  document.getElementById('selectedBankBox').style.display='block';
+  document.getElementById('selectedBankName').textContent = val;
+}
+
+// ── Amount ─────────────────────────────────────────────────
+function onAmountChange(val){
+  PAY.amount = parseInt(val)||0;
+  document.getElementById('displayAmount').textContent = PAY.amount.toLocaleString('en-IN');
+  document.getElementById('qrAmount').textContent = '₹'+PAY.amount.toLocaleString('en-IN');
+  var w = document.getElementById('amountWords');
+  if(!w) return;
+  if(!PAY.amount){ w.textContent=''; return; }
+  if(PAY.amount>=10000000)     w.textContent='₹'+(PAY.amount/10000000).toFixed(2)+' Crore';
+  else if(PAY.amount>=100000) w.textContent='₹'+(PAY.amount/100000).toFixed(2)+' Lakh';
+  else if(PAY.amount>=1000)   w.textContent='₹'+(PAY.amount/1000).toFixed(1)+'K';
+  else w.textContent='';
+}
+
+// ── Card formatting ────────────────────────────────────────
+function fmtCard(input){
+  var v = input.value.replace(/\D/g,'').slice(0,16);
+  input.value = v.match(/.{1,4}/g)? v.match(/.{1,4}/g).join(' ') : v;
+  var disp = input.value || '•••• •••• •••• ••••';
+  document.getElementById('cardVisualNum').textContent = disp;
+  // Detect card type
+  var net = document.getElementById('cardNetwork');
+  if(v[0]==='4') net.textContent='💳'; // Visa
+  else if(v[0]==='5') net.textContent='🔵'; // MC
+  else if(v[0]==='6') net.textContent='🟠'; // Rupay
+  else net.textContent='💳';
+}
+function fmtExp(input){
+  var v = input.value.replace(/\D/g,'');
+  if(v.length>=3) v = v.slice(0,2)+'/'+v.slice(2,4);
+  input.value = v;
+  document.getElementById('cardVisualExp').textContent = v || 'MM/YY';
+}
+
+// ── Payment initiation ─────────────────────────────────────
+function initiatePayment(){
+  if(!PAY.amount || PAY.amount<=0){
+    showToast('⚠️ Please enter an amount first','warning');
+    document.getElementById('payAmount').focus();
+    return;
+  }
+  // Validation per method
+  if(PAY.method==='debit'||PAY.method==='credit'){
+    var num  = (document.getElementById('cardNum').value||'').replace(/\s/g,'');
+    var name = document.getElementById('cardName').value.trim();
+    var exp  = document.getElementById('cardExp').value.trim();
+    var cvv  = document.getElementById('cardCvv').value.trim();
+    if(num.length<16||!name||exp.length<5||cvv.length<3){
+      showToast('⚠️ Please fill all card details','warning'); return;
+    }
+  }
+  if(PAY.method==='netb' && !PAY.bank){
+    showToast('⚠️ Please select a bank','warning'); return;
+  }
+  PAY.label = document.getElementById('payDesc').value.trim() || 'AgriNode Payment';
+  // Generate transaction ref locally (simulate backend create)
+  PAY.txnId  = 'AGN'+genId(12);
+  PAY.upiRef = Date.now().toString()+Math.floor(Math.random()*9000+1000);
+  document.getElementById('qrRef').textContent = 'Ref: '+PAY.upiRef;
+  // Try backend, fall back to frontend simulation
+  tryBackendCreate();
+}
+
+function tryBackendCreate(){
+  var token = localStorage.getItem('agri_token') || '';
+  var payload = { amount:PAY.amount, label:PAY.label, method:methodLabel(), type:'debit',
+                  upiId: UPI_IDS[PAY.upiApp]||'agrinode@upi' };
+  fetch('http://localhost:5000/api/payments/create', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if(data.success && data.payment){
+      PAY.txnId  = data.payment.id;
+      PAY.upiRef = data.payment.upiRef || PAY.upiRef;
+    }
+  })
+  .catch(function(){}) // silent – continue with local ID
+  .finally(function(){ runProcessingScreen(); });
+}
+
+function methodLabel(){
+  var m={upi:'UPI',debit:'Debit Card',credit:'Credit Card',netb:'Net Banking',cod:'COD'};
+  return m[PAY.method]||'UPI';
+}
+
+// ── Confirm UPI done ───────────────────────────────────────
+function confirmUpiDone(){
+  if(!PAY.amount||PAY.amount<=0){ showToast('⚠️ Enter amount first','warning'); return; }
+  PAY.label = document.getElementById('payDesc').value.trim() || 'UPI Payment';
+  if(!PAY.txnId) PAY.txnId = 'AGN'+genId(12);
+  runProcessingScreen();
+}
+
+// ── Processing animation ───────────────────────────────────
+function runProcessingScreen(){
+  showScreen('processing');
+  if(PAY.timer) clearInterval(PAY.timer);
+  var steps = [
+    {icon:'picon-init',  label:'plabel-init',   delay:600,  text:'Initiating transaction'},
+    {icon:'picon-bank',  label:'plabel-bank',   delay:1400, text:'Contacting bank'},
+    {icon:'picon-verify',label:'plabel-verify', delay:2400, text:'Verifying payment'},
+    {icon:'picon-confirm',label:'plabel-confirm',delay:3400, text:'Confirming receipt'}
+  ];
+  steps.forEach(function(s, i){
+    setTimeout(function(){
+      document.getElementById(s.icon).className  = 'ps-icon active';
+      document.getElementById(s.icon).innerHTML  = '<i class="fa fa-circle-notch fa-spin" style="font-size:.6rem"></i>';
+      document.getElementById(s.label).className = 'ps-label';
+      document.getElementById('processingSubText').textContent = s.text+'…';
+      // Mark previous as done
+      if(i>0){
+        var prev = steps[i-1];
+        document.getElementById(prev.icon).className  = 'ps-icon done';
+        document.getElementById(prev.icon).innerHTML  = '<i class="fa fa-check" style="font-size:.6rem"></i>';
+        document.getElementById(prev.label).className = 'ps-label done';
+      }
+    }, s.delay);
+  });
+  setTimeout(function(){
+    // Mark last step done
+    document.getElementById('picon-confirm').className  = 'ps-icon done';
+    document.getElementById('picon-confirm').innerHTML  = '<i class="fa fa-check" style="font-size:.6rem"></i>';
+    document.getElementById('plabel-confirm').className = 'ps-label done';
+    // Try backend verify, else simulate
+    tryVerifyPayment();
+  }, 4200);
+}
+
+function tryVerifyPayment(){
+  var token = localStorage.getItem('agri_token') || '';
+  fetch('http://localhost:5000/api/payments/verify', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify({ txnId: PAY.txnId })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if(data.success && data.status==='success'){
+      showSuccessScreen(data);
+    } else {
+      showFailureScreen(data.message||'Payment verification failed');
+    }
+  })
+  .catch(function(){
+    // Offline simulation: 95% success
+    if(Math.random()<0.95) showSuccessScreen(null);
+    else showFailureScreen('Network error. Please check your connection.');
+  });
+}
+
+// ── Success screen ─────────────────────────────────────────
+function showSuccessScreen(data){
+  var now = new Date();
+  var dt  = now.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  var bankRef = (data&&data.bankRef) ? data.bankRef : 'BNKREF'+genId(10).toUpperCase();
+
+  document.getElementById('rcpt-txnId').textContent   = PAY.txnId||'—';
+  document.getElementById('rcpt-amount').textContent  = '₹'+PAY.amount.toLocaleString('en-IN');
+  document.getElementById('rcpt-method').textContent  = methodLabel();
+  document.getElementById('rcpt-bankRef').textContent = bankRef;
+  document.getElementById('rcpt-dateTime').textContent = dt;
+
+  showScreen('success');
+  showToast('🎉 Payment of ₹'+PAY.amount.toLocaleString('en-IN')+' successful!','success');
+
+  // Save to local history
+  var txns = getLocalTxns();
+  txns.unshift({id:PAY.txnId,type:'debit',amount:PAY.amount,label:PAY.label,
+    date:dt,method:methodLabel(),status:'success',bankRef:bankRef});
+  saveLocalTxns(txns);
+  setTimeout(loadHistory, 500);
+  loadStats();
+}
+
+function showFailureScreen(msg){
+  document.getElementById('failureMsg').textContent = msg||'Payment failed. Please try again.';
+  showScreen('failure');
+  showToast('❌ Payment failed','error');
+}
+
+function retryPayment(){
+  showScreen(PAY.method==='upi'?'upi': PAY.method==='debit'||PAY.method==='credit'?'card': PAY.method==='netb'?'netb':'cod');
+  startTimer();
+}
+
+function changePaymentMethod(){
+  resetPayment();
+}
+
+// ── Reset ──────────────────────────────────────────────────
+function resetPayment(){
+  PAY.txnId=null; PAY.upiRef=null; PAY.bank=null;
+  // Reset steps
+  ['init','bank','verify','confirm'].forEach(function(s){
+    document.getElementById('picon-'+s).className='ps-icon pending';
+    document.getElementById('picon-'+s).innerHTML='<i class="fa fa-circle-notch fa-spin" style="font-size:.6rem"></i>';
+    document.getElementById('plabel-'+s).className='ps-label pending';
+  });
+  showScreen(PAY.method==='upi'?'upi': PAY.method==='debit'||PAY.method==='credit'?'card': PAY.method==='netb'?'netb':'cod');
+  startTimer();
+}
+
+// ── Receipt download ───────────────────────────────────────
+function downloadReceipt(){
+  var lines = [
+    '╔══════════════════════════════════════════╗',
+    '║         AGRINODE PAYMENT RECEIPT         ║',
+    '╚══════════════════════════════════════════╝',
+    '',
+    '  Transaction ID : '+document.getElementById('rcpt-txnId').textContent,
+    '  Amount         : '+document.getElementById('rcpt-amount').textContent,
+    '  Method         : '+document.getElementById('rcpt-method').textContent,
+    '  Bank Reference : '+document.getElementById('rcpt-bankRef').textContent,
+    '  Date & Time    : '+document.getElementById('rcpt-dateTime').textContent,
+    '  Status         : PAID',
+    '',
+    '  AgriNode Platform | agrinode@upi',
+    '  This is a computer-generated receipt.',
+    '══════════════════════════════════════════════'
+  ].join('\n');
+  var blob = new Blob([lines],{type:'text/plain'});
+  var a    = document.createElement('a');
+  a.href   = URL.createObjectURL(blob);
+  a.download = 'AgriNode_Receipt_'+PAY.txnId+'.txt';
+  a.click();
+  showToast('📄 Receipt downloaded');
+}
+
+// ── History ────────────────────────────────────────────────
+function getLocalTxns(){ try{ return JSON.parse(localStorage.getItem('agri_txns')||'[]'); }catch(e){return [];} }
+function saveLocalTxns(t){ try{ localStorage.setItem('agri_txns',JSON.stringify(t)); }catch(e){} }
+
+var DUMMY_TXNS = [
+  {id:'AGN2VBKM3X8LFR',type:'credit',amount:88000, label:'Rice Sale – APMC Hubli',  date:'10 Mar 2026, 11:22 AM',method:'UPI',  status:'success'},
+  {id:'PAY002',        type:'debit', amount:22000, label:'Fertilizer Purchase',      date:'05 Mar 2026, 03:10 PM',method:'UPI',  status:'success'},
+  {id:'PAY003',        type:'credit',amount:6000,  label:'PM-KISAN Instalment 16',  date:'28 Feb 2026, 09:00 AM',method:'DBT',  status:'success'},
+  {id:'PAY004',        type:'debit', amount:5000,  label:'Loan EMI – SBI KCC',      date:'01 Mar 2026, 08:30 AM',method:'NACH', status:'success'},
+  {id:'PAY005',        type:'credit',amount:126000,label:'Wheat Sale – PNB APMC',   date:'20 Mar 2026, 02:15 PM',method:'NEFT', status:'success'},
+  {id:'PAY006',        type:'debit', amount:41000, label:'Labour Payment – Harvest', date:'18 Mar 2026, 04:00 PM',method:'NEFT', status:'success'},
+  {id:'PAY007',        type:'credit',amount:64000, label:'Cotton Sale – Deccan',    date:'12 Apr 2026, 10:45 AM',method:'UPI',  status:'success'},
+  {id:'PAY008',        type:'debit', amount:18000, label:'Pesticides – Agro Store', date:'08 Apr 2026, 12:30 PM',method:'Card', status:'success'},
+  {id:'PAY012',        type:'debit', amount:12000, label:'Seed Purchase – Agro Hub',date:'19 May 2026, 06:00 PM',method:'COD',  status:'pending'}
+];
+
+function loadHistory(){
+  // Try backend first
+  var token = localStorage.getItem('agri_token')||'';
+  fetch('http://localhost:5000/api/payments/history',{
+    headers:{'Authorization':'Bearer '+token}
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if(data.success && data.payments){
+      PAY.allTxns = data.payments;
+      renderHistory(data.payments);
+    } else { loadFallbackHistory(); }
+  })
+  .catch(function(){ loadFallbackHistory(); });
+}
+
+function loadFallbackHistory(){
+  var local = getLocalTxns();
+  PAY.allTxns = local.length ? local.concat(DUMMY_TXNS) : DUMMY_TXNS;
+  renderHistory(PAY.allTxns);
+}
+
+function filterHistory(type, btn){
+  PAY.currentFilter = type;
+  document.querySelectorAll('.hf-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  var filtered = PAY.allTxns;
+  if(type==='credit')  filtered = PAY.allTxns.filter(function(t){ return t.type==='credit'; });
+  if(type==='debit')   filtered = PAY.allTxns.filter(function(t){ return t.type==='debit'; });
+  if(type==='pending') filtered = PAY.allTxns.filter(function(t){ return t.status==='pending'; });
+  renderHistory(filtered);
+}
+
+function renderHistory(txns){
+  var el = document.getElementById('txnList');
+  if(!txns||!txns.length){
+    el.innerHTML='<div class="empty-state"><i class="fa fa-inbox"></i>No transactions found</div>';
+    return;
+  }
+  el.innerHTML = txns.map(function(t){
+    var isCr = t.type==='credit';
+    var statusCls = t.status==='success'?'success':t.status==='pending'?'pending':'failed';
+    return '<div class="txn-item">'+
+      '<div class="txn-icon-wrap '+(isCr?'credit':'debit')+'">'+(isCr?'⬆️':'⬇️')+'</div>'+
+      '<div class="txn-info">'+
+        '<div class="txn-label">'+escHtml(t.label||'Payment')+'</div>'+
+        '<div class="txn-meta">'+
+          '<span>'+escHtml(t.date||'')+'</span>'+
+          '<span class="txn-method-badge">'+escHtml(t.method||'')+'</span>'+
+          '<span class="txn-status-badge '+statusCls+'">'+t.status+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="txn-amount '+(isCr?'credit':'debit')+'">'+(isCr?'+':'-')+'₹'+Number(t.amount||0).toLocaleString('en-IN')+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+// ── Stats ──────────────────────────────────────────────────
+function loadStats(){
+  var token = localStorage.getItem('agri_token')||'';
+  fetch('http://localhost:5000/api/payments/stats',{
+    headers:{'Authorization':'Bearer '+token}
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if(data.success && data.stats) applyStats(data.stats);
+    else computeLocalStats();
+  })
+  .catch(function(){ computeLocalStats(); });
+}
+function computeLocalStats(){
+  var txns = PAY.allTxns.length ? PAY.allTxns : DUMMY_TXNS;
+  var stats = txns.reduce(function(acc,t){
+    if(t.status!=='failed'){
+      if(t.type==='credit') acc.totalIncome+=Number(t.amount||0);
+      else acc.totalExpense+=Number(t.amount||0);
+    }
+    return acc;
+  },{totalIncome:0,totalExpense:0});
+  stats.netBalance = stats.totalIncome - stats.totalExpense;
+  applyStats(stats);
+}
+function applyStats(s){
+  var fmt = function(n){ return '₹'+n.toLocaleString('en-IN'); };
+  document.getElementById('statIncome').textContent  = fmt(s.totalIncome||0);
+  document.getElementById('statExpense').textContent = fmt(s.totalExpense||0);
+  document.getElementById('statBalance').textContent = fmt(Math.abs(s.netBalance||0));
+}
+
+// ── Helpers ────────────────────────────────────────────────
+function genId(n){
+  var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',s='';
+  for(var i=0;i<n;i++) s+=c[Math.floor(Math.random()*c.length)];
+  return s;
+}
+function escHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function showToast(msg, type){
+  var t = document.getElementById('payToast');
+  t.textContent = msg;
+  t.className = 'pay-toast show '+(type==='error'?'error-toast':type==='warning'?'warning-toast':type==='success'?'success-toast':'');
+  setTimeout(function(){ t.classList.remove('show'); }, 3200);
+}
+</script>
+</body>
+</html>

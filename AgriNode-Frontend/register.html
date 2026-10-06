@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register – AgriNode</title>
+  <meta name="description" content="Create your AgriNode account and join the smart agriculture platform" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link href="css/styles.css" rel="stylesheet" />
+  <style>
+    body.auth-page {
+      background: none;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: block;
+      padding: 0;
+    }
+
+    .register-wrapper {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      flex-direction: row-reverse;
+      /* photo on RIGHT for register */
+    }
+
+    /* ── RIGHT: Photo Panel ── */
+    .photo-panel {
+      flex: 1.2;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-panel img.bg-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transform: scale(1.07);
+      animation: slowZoom 22s ease-in-out infinite alternate;
+    }
+
+    @keyframes slowZoom {
+      from {
+        transform: scale(1.07);
+      }
+
+      to {
+        transform: scale(1.15);
+      }
+    }
+
+    .photo-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+          rgba(230, 140, 0, 0.45) 0%,
+          rgba(27, 94, 32, 0.60) 50%,
+          rgba(0, 0, 0, 0.25) 100%);
+    }
+
+    /* Left-side fade to form panel */
+    .photo-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to left, transparent 58%, #0a3010 100%);
+      z-index: 1;
+    }
+
+    .photo-content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 52px 56px;
+      color: #fff;
+    }
+
+    .photo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 40px;
+      padding: 8px 20px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      width: fit-content;
+    }
+
+    .photo-headline {
+      font-size: clamp(1.9rem, 3.2vw, 3rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      text-shadow: 0 3px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .photo-headline span {
+      color: #FFF59D;
+    }
+
+    .photo-subtext {
+      font-size: 0.97rem;
+      color: rgba(255, 255, 255, 0.83);
+      max-width: 370px;
+      line-height: 1.65;
+      margin-bottom: 30px;
+    }
+
+    /* Benefits list */
+    .benefit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      animation: floatIn 0.6s ease both;
+    }
+
+    .benefit-item:nth-child(2) {
+      animation-delay: 0.12s;
+    }
+
+    .benefit-item:nth-child(3) {
+      animation-delay: 0.24s;
+    }
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .benefit-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    /* ── LEFT: Form Panel ── */
+    .form-panel {
+      width: 500px;
+      flex-shrink: 0;
+      background: linear-gradient(160deg, #0a3010 0%, #1B5E20 50%, #2E7D32 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 34px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-panel::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      top: -200px;
+      left: -200px;
+    }
+
+    .form-panel::after {
+      content: '';
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: rgba(76, 175, 80, 0.10);
+      bottom: -110px;
+      right: -90px;
+    }
+
+    .panel-leaf {
+      position: absolute;
+      bottom: 22px;
+      left: 18px;
+      opacity: 0.07;
+      width: 180px;
+      pointer-events: none;
+    }
+
+    /* Glass card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 28px;
+      padding: 36px 34px;
+      width: 100%;
+      max-width: 430px;
+      box-shadow:
+        0 32px 80px rgba(0, 0, 0, 0.38),
+        0 0 0 1px rgba(255, 255, 255, 0.18);
+      position: relative;
+      z-index: 2;
+      animation: cardIn 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      max-height: 96vh;
+      overflow-y: auto;
+    }
+
+    .glass-card::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .glass-card::-webkit-scrollbar-thumb {
+      background: #C8E6C9;
+      border-radius: 4px;
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .logo-ring {
+      width: 68px;
+      height: 68px;
+      background: linear-gradient(135deg, #1B5E20, #4CAF50);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 10px;
+      box-shadow: 0 10px 28px rgba(46, 125, 50, 0.42);
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 10px 28px rgba(46, 125, 50, 0.42);
+      }
+
+      50% {
+        box-shadow: 0 16px 40px rgba(46, 125, 50, 0.70);
+      }
+    }
+
+    .app-name {
+      font-size: 1.65rem;
+      font-weight: 900;
+      color: #1B5E20;
+      line-height: 1;
+      margin-bottom: 3px;
+      text-align: center;
+    }
+
+    .app-tagline {
+      font-size: 0.77rem;
+      color: #5f6368;
+      letter-spacing: 0.4px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #2E7D32;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 14px;
+      transition: color .2s;
+    }
+
+    .back-link:hover {
+      color: #1B5E20;
+    }
+
+    .lang-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 14px;
+    }
+
+    .lang-sel {
+      background: #F1F8E9;
+      border: 1.5px solid #C8E6C9;
+      border-radius: 10px;
+      padding: 5px 10px;
+      font-size: 0.79rem;
+      font-weight: 600;
+      color: #2E7D32;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .photo-panel {
+        display: none;
+      }
+
+      body.auth-page {
+        overflow-y: auto;
+        height: auto;
+      }
+
+      .register-wrapper {
+        height: auto;
+        min-height: 100vh;
+        flex-direction: row;
+      }
+
+      .form-panel {
+        width: 100%;
+        min-height: 100vh;
+        padding: 40px 24px;
+      }
+
+      .glass-card {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="auth-page">
+  <div id="offline-banner"><i class="fa fa-wifi me-2"></i>No Internet</div>
+  <div id="toast-container"></div>
+
+  <div class="register-wrapper">
+
+    <!-- ===== RIGHT: Photo Panel ===== -->
+    <div class="photo-panel">
+      <img class="bg-photo" src="assets/farmer_register_bg.png" alt="Indian farmer harvesting wheat" />
+      <div class="photo-content">
+        <div class="photo-badge">
+          <i class="fa fa-seedling"></i> Join AgriNode Today
+        </div>
+        <h2 class="photo-headline">
+          Start Your<br /><span>Smart Farming</span><br />Journey
+        </h2>
+        <p class="photo-subtext">
+          Join thousands of farmers and agents already benefiting from real-time crop data, market prices, and financial
+          insights.
+        </p>
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <span class="benefit-icon">📊</span>
+            <span>Real-time crop analytics & market prices</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">💰</span>
+            <span>Track income, expenses & village finances</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">🌦️</span>
+            <span>Weather alerts & seasonal crop guidance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LEFT: Form Panel ===== -->
+    <div class="form-panel">
+
+      <svg class="panel-leaf" viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 10 C160 40 190 120 100 250 C10 120 40 40 100 10Z" fill="white" />
+        <line x1="100" y1="10" x2="100" y2="250" stroke="white" stroke-width="3" />
+        <line x1="100" y1="80" x2="60" y2="110" stroke="white" stroke-width="2" />
+        <line x1="100" y1="110" x2="148" y2="138" stroke="white" stroke-width="2" />
+        <line x1="100" y1="145" x2="58" y2="170" stroke="white" stroke-width="2" />
+      </svg>
+
+      <div class="glass-card">
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <a href="login.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Login
+          </a>
+          <select class="lang-sel" id="langSelect" onchange="setLang(this.value)">
+            <option value="en">🌐 EN</option>
+            <option value="hi">🇮🇳 HI</option>
+            <option value="kn">🌿 KN</option>
+          </select>
+        </div>
+
+        <!-- Logo -->
+        <div class="logo-ring">🧑‍🌾</div>
+        <div class="app-name" data-i18n="regTitle">Create Account</div>
+        <div class="app-tagline" data-i18n="regSub">Join AgriNode today</div>
+
+        <form id="regForm" onsubmit="doRegister(event)">
+          <div class="mb-3">
+            <label class="form-label"><i class="fa fa-user me-1"></i> <span data-i18n="nameLabel">Full
+                Name</span></label>
+            <input type="text" id="regName" class="form-control" placeholder="Ramesh Kumar" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><i class="fa fa-phone me-1"></i> <span data-i18n="phoneLabel">Phone
+                Number</span></label>
+            <div class="phone-input-wrap">
+              <span class="phone-prefix">+91</span>
+              <input type="tel" id="regPhone" class="form-control" maxlength="10" placeholder="9876543210" required />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><i class="fa fa-map-marker-alt me-1"></i> <span
+                data-i18n="villageLabel">Village</span></label>
+            <input type="text" id="regVillage" class="form-control" placeholder="Kodalipura" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><i class="fa fa-users me-1"></i> <span data-i18n="roleLabel">Role</span></label>
+            <select id="regRole" class="form-select" required>
+              <option value="">Select role...</option>
+              <option value="Farmer">🧑‍🌾 Farmer</option>
+              <option value="Agent">👔 Agent</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><i class="fa fa-lock me-1"></i> <span
+                data-i18n="passLabel">Password</span></label>
+            <input type="password" id="regPass" class="form-control" placeholder="Min 4 characters" minlength="4"
+              required />
+          </div>
+          <div class="mb-4">
+            <label class="form-label"><i class="fa fa-lock me-1"></i> <span data-i18n="confirmLabel">Confirm
+                Password</span></label>
+            <input type="password" id="regPassConfirm" class="form-control" placeholder="Re-enter password" required />
+          </div>
+          <button type="submit" class="btn-primary-custom">
+            <i class="fa fa-user-plus me-2"></i><span data-i18n="regBtn">Register</span>
+          </button>
+        </form>
+
+        <hr style="border-color:#E0E0E0;margin:18px 0;" />
+        <p class="text-center" style="font-size:0.85rem;color:#5f6368;">
+          <span data-i18n="haveAccount">Already registered?</span>
+          <a href="login.html" style="color:#2E7D32;font-weight:700;" data-i18n="loginLink"> Login here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const T = {
+      en: { regTitle: "Create Account", regSub: "Join AgriNode today", nameLabel: "Full Name", phoneLabel: "Phone Number", villageLabel: "Village", roleLabel: "Role", passLabel: "Password", confirmLabel: "Confirm Password", regBtn: "Register", haveAccount: "Already registered?", loginLink: " Login here" },
+      hi: { regTitle: "खाता बनाएं", regSub: "आज एग्रीनोड से जुड़ें", nameLabel: "पूरा नाम", phoneLabel: "फ़ोन नंबर", villageLabel: "गांव", roleLabel: "भूमिका", passLabel: "पासवर्ड", confirmLabel: "पासवर्ड की पुष्टि करें", regBtn: "रजिस्टर करें", haveAccount: "पहले से रजिस्टर्ड?", loginLink: " यहाँ लॉगिन करें" },
+      kn: { regTitle: "ಖಾತೆ ರಚಿಸಿ", regSub: "ಇಂದು ಅಗ್ರಿನೋಡ್‌ಗೆ ಸೇರಿ", nameLabel: "ಪೂರ್ಣ ಹೆಸರು", phoneLabel: "ಫೋನ್ ಸಂಖ್ಯೆ", villageLabel: "ಹಳ್ಳಿ", roleLabel: "ಪಾತ್ರ", passLabel: "ಪಾಸ್‌ವರ್ಡ್", confirmLabel: "ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ", regBtn: "ನೋಂದಾಯಿಸಿ", haveAccount: "ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಲಾಗಿದೆಯೇ?", loginLink: " ಇಲ್ಲಿ ಲಾಗಿನ್ ಮಾಡಿ" }
+    };
+
+    function setLang(l) {
+      localStorage.setItem('agri_lang', l); // ✅ keep: UI preference only
+      const t = T[l] || T.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (t[k]) el.textContent = t[k]; });
+    }
+
+    function showToast(msg, type = '') {
+      const c = document.createElement('div');
+      c.className = 'toast-msg ' + type;
+      c.innerHTML = `<i class="fa fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i> ${msg}`;
+      document.getElementById('toast-container').appendChild(c);
+      setTimeout(() => c.remove(), 3500);
+    }
+
+    function doRegister(e) {
+      e.preventDefault();
+      var name    = document.getElementById('regName').value.trim();
+      var phone   = document.getElementById('regPhone').value.trim();
+      var village = document.getElementById('regVillage').value.trim();
+      var role    = document.getElementById('regRole').value;
+      var pass    = document.getElementById('regPass').value;
+      var confirm = document.getElementById('regPassConfirm').value;
+
+      // ── Validation ──
+      if (phone.length !== 10 || isNaN(phone)) { showToast('Invalid phone number', 'error'); return; }
+      if (!role) { showToast('Please select a role', 'error'); return; }
+      if (pass.length < 4) { showToast('Password must be at least 4 characters', 'error'); return; }
+      if (pass !== confirm) { showToast('Passwords do not match', 'error'); return; }
+
+      // ── Loading state ──
+      var btn = document.querySelector('#regForm button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Registering…'; }
+
+      // ── API-first + localStorage fallback ──
+      AgriAuth.register({ name: name, phone: phone, village: village, role: role, password: pass })
+        .then(function (result) {
+          if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa fa-user-plus me-2"></i><span data-i18n="regBtn">Register</span>'; }
+
+          if (result.success) {
+            var srcLabel = result.source === 'api' ? '' : ' (saved locally)';
+            showToast('✅ Registration successful' + srcLabel + '! Redirecting to login…');
+            setTimeout(function () { window.location.href = 'login.html'; }, 1800);
+          } else {
+            showToast(result.message || 'Registration failed.', 'error');
+          }
+        })
+        .catch(function (err) {
+          if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa fa-user-plus me-2"></i><span>Register</span>'; }
+          showToast('Unexpected error. Please try again.', 'error');
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const lang = localStorage.getItem('agri_lang') || 'en'; // ✅ keep: UI preference only
+      document.getElementById('langSelect').value = lang;
+      setLang(lang);
+      // Read phone pre-fill from URL param (not localStorage)
+      const params = new URLSearchParams(window.location.search);
+      const pendingPhone = params.get('phone');
+      const pendingRole  = params.get('role');
+      if (pendingPhone) document.getElementById('regPhone').value = pendingPhone;
+      if (pendingRole) {
+        const sel = document.getElementById('regRole');
+        if (sel) sel.value = pendingRole;
+      }
+    });
+  </script>
+  <script src="js/script.js"></script>
+  <script src="js/auth-fallback.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

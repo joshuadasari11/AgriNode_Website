@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farmers – AgriNode</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="offline-banner"><i class="fa fa-wifi me-2"></i>No Internet</div>
+    <div id="toast-container"></div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <div class="logo-icon-sm">🌾</div>
+                <div><span>AgriNode</span><small>Village Intel</small></div>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+            <a href="dashboard.html" class="sidebar-link"><i class="fa fa-home"></i> Dashboard</a>
+            <a href="farmer.html" class="sidebar-link active"><i class="fa fa-users"></i> Farmers</a>
+            <a href="crop.html" class="sidebar-link"><i class="fa fa-seedling"></i> Crops</a>
+            <a href="finance.html" class="sidebar-link"><i class="fa fa-rupee-sign"></i> Finance</a>
+            <a href="market.html" class="sidebar-link"><i class="fa fa-store"></i> Market</a>
+            <div class="nav-section-title mt-3">System</div>
+            <a href="admin.html" class="sidebar-link"><i class="fa fa-shield-alt"></i> Admin</a>
+            <a href="#" class="sidebar-link" onclick="doLogout()"><i class="fa fa-sign-out-alt"></i> Logout</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-chip">
+                <div class="user-avatar" id="sidebarInitial">A</div>
+                <div>
+                    <div class="name" id="sidebarName">Agent</div>
+                    <div class="role-label" id="sidebarRole">Agent</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="topbar">
+            <button class="icon-btn hamburger" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+            <span class="topbar-title">🧑‍🌾 Farmer Management</span>
+            <div class="topbar-actions">
+                <button class="icon-btn" onclick="toggleDark()"><i class="fa fa-moon"></i></button>
+                <button class="btn-primary-custom" style="width:auto;padding:8px 16px;font-size:.85rem;"
+                    onclick="showAddModal()">
+                    <i class="fa fa-plus me-1"></i> Add Farmer
+                </button>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Search & Filter -->
+            <div class="row g-2 mb-4">
+                <div class="col-md-6">
+                    <div class="search-bar">
+                        <i class="fa fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search by name, village..."
+                            oninput="renderFarmers()" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="filterVillage" onchange="renderFarmers()">
+                        <option value="">All Villages</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="filterCrop" onchange="renderFarmers()">
+                        <option value="">All Crops</option>
+                        <option value="Rice">Rice</option>
+                        <option value="Wheat">Wheat</option>
+                        <option value="Maize">Maize</option>
+                        <option value="Cotton">Cotton</option>
+                        <option value="Sugarcane">Sugarcane</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Farmer Cards -->
+            <div class="row g-3" id="farmerGrid">
+                <div class="col-12">
+                    <div class="empty-state"><i class="fa fa-users"></i>
+                        <p>No farmers found. Add your first farmer!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="dashboard.html" class="bn-item"><i class="fa fa-home"></i><span>Home</span></a>
+            <a href="farmer.html" class="bn-item active"><i class="fa fa-users"></i><span>Farmers</span></a>
+            <a href="crop.html" class="bn-item"><i class="fa fa-seedling"></i><span>Crops</span></a>
+            <a href="finance.html" class="bn-item"><i class="fa fa-rupee-sign"></i><span>Finance</span></a>
+            <a href="market.html" class="bn-item"><i class="fa fa-store"></i><span>Market</span></a>
+        </div>
+    </nav>
+
+    <!-- Add Farmer Modal -->
+    <div class="modal fade" id="addModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:20px;border:none;">
+                <div class="modal-header" style="border:none;padding:20px 24px 0;">
+                    <h5 class="modal-title fw-bold">🧑‍🌾 Add New Farmer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding:20px 24px;">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" id="fName" class="form-control" placeholder="Ramesh Kumar" />
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label">Phone *</label>
+                            <input type="tel" id="fPhone" class="form-control" maxlength="10"
+                                placeholder="9876543210" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Age</label>
+                            <input type="number" id="fAge" class="form-control" placeholder="45" min="18" max="90" />
+                        </div>
+                    </div>
+                    <div class="row g-2 mt-1">
+                        <div class="col-6">
+                            <label class="form-label">Village *</label>
+                            <input type="text" id="fVillage" class="form-control" placeholder="Kodalipura" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Land (acres)</label>
+                            <input type="number" id="fLand" class="form-control" placeholder="5" step="0.5" />
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label class="form-label">Primary Crop</label>
+                        <select id="fCrop" class="form-select">
+                            <option value="">Select crop</option>
+                            <option>Rice</option>
+                            <option>Wheat</option>
+                            <option>Maize</option>
+                            <option>Cotton</option>
+                            <option>Sugarcane</option>
+                            <option>Vegetables</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border:none;padding:0 24px 20px;gap:10px;">
+                    <button type="button" class="btn btn-light rounded-3 flex-fill"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-primary-custom" style="width:auto;flex:1;" onclick="addFarmer()">
+                        <i class="fa fa-save me-1"></i> Save Farmer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const cu = getCurrentUser(); // from script.js _currentUser (in-memory, no localStorage)
+        if (!cu) window.location.href = 'login.html';
+
+        let addModal;
+        function showAddModal() { addModal.show(); }
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('open');
+        }
+        function toggleDark() {
+            const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', t); localStorage.setItem('agri_theme', t); // ✅ keep: UI preference
+        }
+        function doLogout() { _currentUser = null; window.location.href = 'login.html'; }
+        function showToast(msg, type = '') {
+            const c = document.createElement('div'); c.className = 'toast-msg ' + type;
+            c.innerHTML = `<i class="fa fa-check-circle"></i> ${msg}`;
+            document.getElementById('toast-container').appendChild(c); setTimeout(() => c.remove(), 3500);
+        }
+
+        // Data helpers use _store from script.js (in-memory, no localStorage)
+        function saveFarmers(f) { _store.farmers = f; } // mutates in-memory store
+
+        function addFarmer() {
+            const name = document.getElementById('fName').value.trim();
+            const phone = document.getElementById('fPhone').value.trim();
+            const village = document.getElementById('fVillage').value.trim();
+            if (!name || !phone || !village) { showToast('Name, Phone and Village are required', 'error'); return; }
+            if (phone.length !== 10 || isNaN(phone)) { showToast('Enter valid 10-digit phone', 'error'); return; }
+            const farmers = getFarmers();
+            farmers.push({
+                id: Date.now(), name, phone, village,
+                age: document.getElementById('fAge').value || '',
+                land: document.getElementById('fLand').value || '',
+                crop: document.getElementById('fCrop').value || '',
+                addedAt: new Date().toLocaleDateString()
+            });
+            saveFarmers(farmers);
+            addModal.hide();
+            ['fName', 'fPhone', 'fVillage', 'fAge', 'fLand'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('fCrop').value = '';
+            showToast('Farmer added successfully! 🎉');
+            renderFarmers(); populateVillageFilter();
+        }
+
+        function deleteFarmer(id) {
+            if (!confirm('Delete this farmer?')) return;
+            saveFarmers(getFarmers().filter(f => f.id !== id));
+            showToast('Farmer removed', 'error'); renderFarmers(); populateVillageFilter();
+        }
+
+        function renderFarmers() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const vf = document.getElementById('filterVillage').value;
+            const cf = document.getElementById('filterCrop').value;
+            let farmers = getFarmers().filter(f => {
+                const match = (f.name + f.village + f.phone).toLowerCase().includes(q);
+                const vMatch = !vf || f.village === vf;
+                const cMatch = !cf || f.crop === cf;
+                return match && vMatch && cMatch;
+            });
+            const grid = document.getElementById('farmerGrid');
+            if (!farmers.length) { grid.innerHTML = '<div class="col-12"><div class="empty-state"><i class="fa fa-users"></i><p>No farmers found</p></div></div>'; return; }
+            grid.innerHTML = farmers.map(f => `
+        <div class="col-md-6 col-lg-4">
+          <div class="farmer-card">
+            <div class="farmer-avatar">${f.name.charAt(0)}</div>
+            <div class="farmer-name">${f.name}</div>
+            <div class="farmer-village"><i class="fa fa-map-marker-alt me-1"></i>${f.village}</div>
+            <div class="farmer-meta">
+              ${f.phone ? `<span class="meta-chip"><i class="fa fa-phone"></i>${f.phone}</span>` : ''}
+              ${f.land ? `<span class="meta-chip"><i class="fa fa-expand-arrows-alt"></i>${f.land} ac</span>` : ''}
+              ${f.crop ? `<span class="meta-chip"><i class="fa fa-seedling"></i>${f.crop}</span>` : ''}
+              ${f.age ? `<span class="meta-chip"><i class="fa fa-user"></i>${f.age} yrs</span>` : ''}
+            </div>
+            <div class="farmer-actions">
+              ${f.phone ? `<a href="tel:${f.phone}" class="btn-sm-custom btn-call"><i class="fa fa-phone"></i> Call</a>` : ''}
+              <a href="crop.html?farmer=${f.id}" class="btn-sm-custom btn-view"><i class="fa fa-seedling"></i> Crops</a>
+              <a href="finance.html?farmer=${f.id}" class="btn-sm-custom btn-edit"><i class="fa fa-rupee-sign"></i> Finance</a>
+              <button class="btn-sm-custom btn-delete" onclick="deleteFarmer(${f.id})"><i class="fa fa-trash"></i></button>
+            </div>
+          </div>
+        </div>`).join('');
+        }
+
+        function populateVillageFilter() {
+            const villages = [...new Set(getFarmers().map(f => f.village).filter(Boolean))];
+            const sel = document.getElementById('filterVillage');
+            const cur = sel.value;
+            sel.innerHTML = '<option value="">All Villages</option>' + villages.map(v => `<option ${v === cur ? 'selected' : ''}>${v}</option>`).join('');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            addModal = new bootstrap.Modal(document.getElementById('addModal'));
+            if (cu) { document.getElementById('sidebarName').textContent = cu.name; document.getElementById('sidebarRole').textContent = cu.role; document.getElementById('sidebarInitial').textContent = cu.name.charAt(0); }
+            document.documentElement.setAttribute('data-theme', localStorage.getItem('agri_theme') || 'light'); // ✅ keep: UI preference
+            renderFarmers(); populateVillageFilter();
+            window.addEventListener('offline', () => document.getElementById('offline-banner').style.display = 'block');
+            window.addEventListener('online', () => document.getElementById('offline-banner').style.display = 'none');
+        });
+    </script>
+</body>
+
+</html>

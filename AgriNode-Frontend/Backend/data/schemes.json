@@ -1,0 +1,22 @@
+[
+  {
+    "id": "SCH-1001",
+    "name": "PM-KISAN",
+    "category": "subsidy",
+    "benefit": "₹6000/year",
+    "ministry": "Ministry of Agriculture",
+    "deadline": "2026-12-31",
+    "status": "open",
+    "description": "Pradhan Mantri Kisan Samman Nidhi. Income support to all landholding farmers' families."
+  },
+  {
+    "id": "SCH-1002",
+    "name": "PM Fasal Bima Yojana",
+    "category": "insurance",
+    "benefit": "Crop Insurance Cover",
+    "ministry": "Ministry of Agriculture",
+    "deadline": "2026-07-31",
+    "status": "open",
+    "description": "Comprehensive crop insurance scheme against natural calamities, pests & diseases."
+  }
+]

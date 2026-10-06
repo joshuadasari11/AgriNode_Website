@@ -1,0 +1,116 @@
+%PDF-1.4
+%AgriNode Demo Assets
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 2472 >>
+stream
+BT
+/F1 18 Tf
+46 786 Td
+(AgriNode User Guide | Demo Edition 2026) Tj
+0 -20 Td
+/F1 9 Tf
+(-----------------------------------------------------------------------------------------------) Tj
+0 -14 Td
+0 -4 Td
+/F1 12 Tf
+(Login Instructions) Tj
+/F1 9 Tf
+0 -14 Td
+(1. Open login page and choose language \\(EN/HI/KN\\).) Tj
+0 -12 Td
+(2. Select role: Farmer, Agent, or Admin.) Tj
+0 -12 Td
+(3. Use password mode or OTP mode and submit credentials.) Tj
+0 -12 Td
+(4. On success, user is redirected to role-specific dashboard.) Tj
+0 -12 Td
+(-----------------------------------------------------------------------------------------------) Tj
+0 -12 Td
+0 -4 Td
+/F1 12 Tf
+(Dashboard Usage) Tj
+/F1 9 Tf
+0 -14 Td
+(- Review KPIs for farmers, crops, finance, and system status.) Tj
+0 -12 Td
+(- Use quick links for schemes, loans, APMC, and support.) Tj
+0 -12 Td
+(- Access reports and downloads from the Downloads Center.) Tj
+0 -12 Td
+(-----------------------------------------------------------------------------------------------) Tj
+0 -12 Td
+0 -4 Td
+/F1 12 Tf
+(Farmer Workflow) Tj
+/F1 9 Tf
+0 -14 Td
+(- Update profile and KYC documents.) Tj
+0 -12 Td
+(- Track crop progress and expected harvest timeline.) Tj
+0 -12 Td
+(- Review income/expense records and export farmer reports.) Tj
+0 -12 Td
+(- Raise support tickets and monitor resolution status.) Tj
+0 -12 Td
+(-----------------------------------------------------------------------------------------------) Tj
+0 -12 Td
+0 -4 Td
+/F1 12 Tf
+(Agent Workflow) Tj
+/F1 9 Tf
+0 -14 Td
+(- Onboard farmers and verify submitted details.) Tj
+0 -12 Td
+(- Manage marketplace listings and buyer interactions.) Tj
+0 -12 Td
+(- Track payments and export records for field follow-up.) Tj
+0 -12 Td
+(- Support scheme enrollment and loan requests.) Tj
+0 -12 Td
+(-----------------------------------------------------------------------------------------------) Tj
+0 -12 Td
+0 -4 Td
+/F1 12 Tf
+(Admin Workflow) Tj
+/F1 9 Tf
+0 -14 Td
+(- Approve/reject users and monitor compliance status.) Tj
+0 -12 Td
+(- Review audits, complaints, and operational metrics.) Tj
+0 -12 Td
+(- Export annual, village analytics, and CSV data reports.) Tj
+0 -12 Td
+(- Maintain platform health and service standards.) Tj
+0 -12 Td
+(-----------------------------------------------------------------------------------------------) Tj
+0 -12 Td
+(Helpdesk: support@agrinode.in | Helpline: 1800-180-2474) Tj
+0 -12 Td
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000033 00000 n 
+0000000082 00000 n 
+0000000139 00000 n 
+0000000265 00000 n 
+0000002788 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2885
+%%EOF

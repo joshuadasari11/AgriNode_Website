@@ -1,0 +1,16 @@
+[
+  {
+    "id": "NEWS-1",
+    "title": "Monsoon Alert: Heavy Rainfall Expected",
+    "type": "alert",
+    "content": "IMD predicts heavy to very heavy rainfall over the next 48 hours in coastal regions. Farmers are advised to ensure proper drainage.",
+    "timestamp": "2026-05-24T10:00:00Z"
+  },
+  {
+    "id": "NEWS-2",
+    "title": "New MSP Announced for Kharif Crops",
+    "type": "gov",
+    "content": "Government has increased the MSP for Paddy by ₹150 per quintal for the upcoming season.",
+    "timestamp": "2026-05-23T14:30:00Z"
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "complaints": [
+    {
+      "id": "cmp-001",
+      "farmerId": "usr-001",
+      "farmerName": "Ramesh Kumar",
+      "category": "Market Price",
+      "subject": "Mandi price not updated for 3 days",
+      "description": "The soybean price in Nanded mandi has not been updated since October 13. We are unable to decide when to sell our produce.",
+      "status": "open",
+      "priority": "high",
+      "assignedTo": null,
+      "adminNotes": "",
+      "createdAt": "2025-10-16T09:00:00Z",
+      "resolvedAt": null
+    },
+    {
+      "id": "cmp-002",
+      "farmerId": "usr-002",
+      "farmerName": "Sunita Devi",
+      "category": "Agent Issue",
+      "subject": "Agent not responding to calls",
+      "description": "Agent Vijay Sharma has not responded for 5 days. I need help with PM-KISAN application submission.",
+      "status": "in-progress",
+      "priority": "medium",
+      "assignedTo": "adm-001",
+      "adminNotes": "Agent has been notified. Follow-up scheduled.",
+      "createdAt": "2025-11-05T11:30:00Z",
+      "resolvedAt": null
+    },
+    {
+      "id": "cmp-003",
+      "farmerId": "usr-004",
+      "farmerName": "Priya Patil",
+      "category": "Loan",
+      "subject": "Kisan Credit Card application pending for 2 months",
+      "description": "I submitted my KCC application on September 1 but have not received any update from the bank or AgriNode.",
+      "status": "resolved",
+      "priority": "high",
+      "assignedTo": "adm-001",
+      "adminNotes": "Connected farmer with SBI Solapur branch. KCC issued on Dec 1.",
+      "createdAt": "2025-11-01T14:00:00Z",
+      "resolvedAt": "2025-12-01T16:00:00Z"
+    }
+  ]
+}

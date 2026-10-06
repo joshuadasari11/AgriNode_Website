@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Agent Dashboard – AgriNode</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="css/styles.css" rel="stylesheet"/>
+  <style>
+    /* Add Agent Specific styling here */
+    .dashboard-panel { display: none; }
+    .dashboard-panel.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="topbar" style="position:sticky;top:0;z-index:900">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:38px;height:38px;background:linear-gradient(135deg,#1B5E20,#4CAF50);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;flex-shrink:0">👨‍💼</div>
+      <div><div style="font-weight:900;font-size:.92rem;color:var(--primary)">AgriNode</div><div style="font-size:.65rem;color:var(--text-muted)">Agent Portal</div></div>
+    </div>
+    <div style="font-size:.92rem;font-weight:700;color:var(--text)">Village Operations Center</div>
+    <div class="topbar-actions">
+      <button class="icon-btn" onclick="toggleDark()"><i class="fa fa-moon" id="themeIcon"></i></button>
+      <button class="icon-btn" style="background:linear-gradient(135deg,#1B5E20,#4CAF50);color:#fff;border:none" onclick="doLogout()"><i class="fa fa-sign-out-alt"></i></button>
+    </div>
+  </div>
+  
+  <div class="page-content" style="max-width:1200px;margin:0 auto">
+    <!-- Live Marquee Notification -->
+    <div class="marquee-container">
+      <i class="fa fa-info-circle" style="margin-right: 12px; color: var(--accent-dark);"></i>
+      <div class="marquee-content">
+        <span>Agent Alert: Field visits scheduled for tomorrow in Devapur village.</span>
+        <span>Update: Verification pending for 3 new farmers. Please complete KYC checks.</span>
+      </div>
+    </div>
+
+    <!-- Navigation Pills -->
+    <div class="nav-pill-row" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:20px;">
+      <button class="fp-pill active" onclick="showPanel('panel-farmers', this)"><i class="fa fa-users"></i> Assigned Farmers</button>
+      <button class="fp-pill" onclick="showPanel('panel-verification', this)"><i class="fa fa-check-circle"></i> Verification Queue</button>
+      <button class="fp-pill" onclick="showPanel('panel-crops', this)"><i class="fa fa-leaf"></i> Crop Monitoring</button>
+      <button class="fp-pill" onclick="showPanel('panel-village', this)"><i class="fa fa-home"></i> Village Dashboard</button>
+      <button class="fp-pill" onclick="showPanel('panel-forecast', this)"><i class="fa fa-chart-line"></i> Demand Forecast</button>
+      <button class="fp-pill" onclick="showPanel('panel-logistics', this)"><i class="fa fa-truck"></i> Logistics Center</button>
+      <button class="fp-pill" onclick="showPanel('panel-visits', this)"><i class="fa fa-calendar-alt"></i> Field Visits</button>
+      <button class="fp-pill" onclick="showPanel('panel-broadcast', this)"><i class="fa fa-bullhorn"></i> Broadcast Center</button>
+      <button class="fp-pill" onclick="showPanel('panel-schemes', this)"><i class="fa fa-landmark"></i> Scheme Assistance</button>
+      <button class="fp-pill" onclick="showPanel('panel-complaints', this)"><i class="fa fa-exclamation-triangle"></i> Complaints</button>
+      <button class="fp-pill" onclick="showPanel('panel-chat', this)"><i class="fa fa-comments"></i> Farmer Chat</button>
+    </div>
+
+    <!-- Panels -->
+    <div id="panel-farmers" class="dashboard-panel active">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-users text-primary me-2"></i> Assigned Farmer Management</h5></div>
+        <div class="mb-3 d-flex gap-2">
+          <input type="text" class="form-control" placeholder="Search by Farmer ID or Name..." />
+          <button class="btn-primary-custom" style="width:auto;"><i class="fa fa-search"></i></button>
+        </div>
+        <table class="mandi-table">
+          <thead><tr><th>Farmer ID</th><th>Name</th><th>Village</th><th>Land Area</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td>F-1029</td><td>Geetha Devi</td><td>Shiraguppi</td><td>4.5 Acres</td><td><span class="kyc-badge done"><i class="fa fa-check-circle"></i> Active</span></td><td><button class="btn-sm-custom btn-call"><i class="fa fa-phone"></i></button> <button class="btn-sm-custom btn-view"><i class="fa fa-eye"></i></button></td></tr>
+            <tr><td>F-1030</td><td>Ramesh Kumar</td><td>Shiraguppi</td><td>2.0 Acres</td><td><span class="kyc-badge done"><i class="fa fa-check-circle"></i> Active</span></td><td><button class="btn-sm-custom btn-call"><i class="fa fa-phone"></i></button> <button class="btn-sm-custom btn-view"><i class="fa fa-eye"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="panel-verification" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-check-double text-warning me-2"></i> Verification Queue</h5></div>
+        <div class="alert alert-info">2 pending KYC verifications. Physical visit required before approval.</div>
+        <table class="mandi-table">
+          <thead><tr><th>Application ID</th><th>Type</th><th>Farmer</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>APP-KYC-901</td><td>KYC/Land Record</td><td>Suresh B.</td><td>Today</td><td><button class="btn-sm-custom btn-view" onclick="openAgentVerifyModal()">Review Docs</button></td></tr>
+            <tr><td>APP-LOAN-402</td><td>Loan Verification</td><td>Geetha Devi</td><td>Yesterday</td><td><button class="btn-sm-custom btn-view" onclick="openAgentVerifyModal()">Review Docs</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="panel-crops" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-leaf text-success me-2"></i> Crop Monitoring</h5></div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div style="background:var(--card-bg); border:1px solid var(--border); padding:15px; border-radius:10px;">
+              <h6>Kharif Season Progress</h6>
+              <div class="progress mt-2 mb-2" style="height:8px;"><div class="progress-bar bg-success" style="width: 75%"></div></div>
+              <small class="text-muted">75% Harvesting completed in assigned region.</small>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div style="background:var(--card-bg); border:1px solid var(--border); padding:15px; border-radius:10px;">
+              <h6>Pest Outbreak Alert</h6>
+              <div class="text-danger fw-bold"><i class="fa fa-bug"></i> High risk of Fall Armyworm</div>
+              <small class="text-muted">Send broadcast message to 45 affected farmers.</small>
+              <button class="btn-sm-custom mt-2 bg-danger text-white border-0 w-100" onclick="showToast('Alert broadcasted!','success')">Broadcast Alert</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-village" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-map-marked-alt text-info me-2"></i> Village Dashboard</h5></div>
+        <div class="row text-center mb-3">
+          <div class="col-4"><h3 class="text-primary mb-0">124</h3><small class="text-muted">Total Farmers</small></div>
+          <div class="col-4"><h3 class="text-success mb-0">580</h3><small class="text-muted">Total Acres</small></div>
+          <div class="col-4"><h3 class="text-warning mb-0">98%</h3><small class="text-muted">KYC Verified</small></div>
+        </div>
+        <button class="btn-secondary-custom w-100"><i class="fa fa-download text-primary"></i> Export Village Analytics PDF</button>
+      </div>
+    </div>
+
+    <div id="panel-forecast" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-chart-line text-primary me-2"></i> Demand Forecast</h5></div>
+        <table class="mandi-table">
+          <thead><tr><th>Crop</th><th>Expected Harvest Date</th><th>Est. Yield (Qtl)</th><th>Buyer Demand</th></tr></thead>
+          <tbody>
+            <tr><td>Rice (Paddy)</td><td>Nov 15, 2026</td><td>4,500</td><td><span class="text-success">High (FCI, ITC)</span></td></tr>
+            <tr><td>Wheat</td><td>Mar 10, 2027</td><td>2,200</td><td><span class="text-warning">Moderate</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="panel-logistics" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-truck text-secondary me-2"></i> Logistics Center</h5></div>
+        <div class="alert alert-warning">14 upcoming harvests require transport allocation this week.</div>
+        <button class="btn-primary-custom mb-3"><i class="fa fa-plus"></i> Request Truck Allocation</button>
+        <table class="mandi-table">
+          <thead><tr><th>Request ID</th><th>Farmer</th><th>Crop</th><th>Destination</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>TRK-992</td><td>Geetha Devi</td><td>Rice (40 Qtl)</td><td>Dharwad APMC</td><td><span class="kyc-badge pending">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="panel-visits" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-calendar-check text-success me-2"></i> Field Visit Scheduler</h5></div>
+        <div class="mb-3 d-flex gap-2">
+          <input type="date" class="form-control" />
+          <button class="btn-primary-custom" style="width:auto;"><i class="fa fa-plus"></i> Add Visit</button>
+        </div>
+        <div style="background:var(--card-bg); border:1px solid var(--border); padding:10px; border-radius:8px;">
+          <div class="fw-bold">Today, 2:00 PM - Ramesh Kumar (F-1030)</div>
+          <div class="text-muted" style="font-size:0.85rem;">Purpose: Verify crop damage due to heavy rain.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-broadcast" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-broadcast-tower text-danger me-2"></i> Broadcast Center</h5></div>
+        <div class="mb-3">
+          <label class="form-label">Message Audience</label>
+          <select class="form-select"><option>All Farmers (124)</option><option>Rice Growers (85)</option><option>Pending KYC (2)</option></select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Message Content</label>
+          <textarea class="form-control" rows="3" placeholder="Type message in Kannada/English..."></textarea>
+        </div>
+        <button class="btn-primary-custom" onclick="showToast('Broadcast Sent!', 'success')"><i class="fa fa-paper-plane"></i> Send via SMS & App</button>
+      </div>
+    </div>
+
+    <div id="panel-schemes" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-landmark text-primary me-2"></i> Scheme Assistance</h5></div>
+        <p>Assist farmers who lack smartphone access to apply for schemes.</p>
+        <div class="mb-3">
+          <input type="text" class="form-control mb-2" placeholder="Farmer ID" />
+          <select class="form-select mb-2"><option>PM-KISAN</option><option>Fasal Bima Yojana</option></select>
+          <button class="btn-primary-custom"><i class="fa fa-file-upload"></i> Upload Docs & Apply on Behalf</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-complaints" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-exclamation-triangle text-danger me-2"></i> Complaint Escalation</h5></div>
+        <table class="mandi-table">
+          <thead><tr><th>Ticket ID</th><th>Farmer</th><th>Subject</th><th>Priority</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>CMP-8812</td><td>Geetha Devi</td><td>Subsidy delayed</td><td><span class="text-danger fw-bold">High</span></td><td><button class="btn-sm-custom btn-call">Resolve / Escalate</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="panel-chat" class="dashboard-panel">
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-comments text-primary me-2"></i> Farmer Chat</h5></div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; height: 300px; display:flex; flex-direction:column;">
+          <div style="flex:1; padding:16px; overflow-y:auto;">
+            <div class="mb-3" style="text-align:right;">
+              <div style="display:inline-block; background:var(--primary); color:#fff; padding:8px 12px; border-radius:12px;">Please upload your pending land records.</div>
+              <div class="text-muted" style="font-size:0.7rem;">10:30 AM</div>
+            </div>
+            <div class="mb-3" style="text-align:left;">
+              <div style="display:inline-block; background:var(--card-bg); border:1px solid var(--border); padding:8px 12px; border-radius:12px;">Okay sir, I will upload it today.</div>
+              <div class="text-muted" style="font-size:0.7rem;">Geetha Devi • 10:45 AM</div>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--border); padding:10px; display:flex; gap:10px;">
+            <input type="text" class="form-control" placeholder="Type a message..." style="margin:0" />
+            <button class="btn-primary-custom" style="width:auto;"><i class="fa fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Agent Verify Modal -->
+    <div class="modal fade" id="agentVerifyModal" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:16px;">
+          <div class="modal-header" style="border-bottom:1px solid var(--border);">
+            <h5 class="modal-title"><i class="fa fa-file-contract text-primary"></i> Review Document Application</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1) grayscale(1) contrast(9)"></button>
+          </div>
+          <div class="modal-body text-center">
+            <div style="height:300px; background:#e0e0e0; display:flex; align-items:center; justify-content:center; color:#333; margin-bottom:15px; border-radius:8px;">
+              <i class="fa fa-file-pdf fa-3x text-danger me-2"></i> [Simulated PDF Viewer: Land Record]
+            </div>
+            <div class="d-flex gap-3">
+              <button class="btn-primary-custom bg-success border-0 flex-1" onclick="approveAgentVerify()"><i class="fa fa-check"></i> Verify & Forward to Admin</button>
+              <button class="btn-primary-custom bg-danger border-0 flex-1" onclick="rejectAgentVerify()"><i class="fa fa-times"></i> Reject / Request Re-upload</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function toggleDark() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    }
+    function showPanel(panelId, btn) {
+      document.querySelectorAll('.dashboard-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(panelId).classList.add('active');
+      document.querySelectorAll('.fp-pill').forEach(b => b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+    }
+    function doLogout() {
+      localStorage.removeItem('cu');
+      localStorage.removeItem('agri_token');
+      sessionStorage.removeItem('agri_session_user');
+      window.location.href = 'login.html';
+    }
+    function openAgentVerifyModal() {
+      var m = new bootstrap.Modal(document.getElementById('agentVerifyModal'));
+      m.show();
+    }
+    function approveAgentVerify() {
+      showToast('Document Verified! Forwarded to Admin.', 'success');
+      var m = bootstrap.Modal.getInstance(document.getElementById('agentVerifyModal'));
+      if(m) m.hide();
+    }
+    function rejectAgentVerify() {
+      showToast('Application Rejected. Requesting Re-upload.', 'error');
+      var m = bootstrap.Modal.getInstance(document.getElementById('agentVerifyModal'));
+      if(m) m.hide();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriNode – Farmer Hub</title>
+<meta name="description" content="AgriNode Farmer Command Center – Marketplace, Schemes, Weather, Agri Store">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+/* =========================================================
+   HUB.HTML – Farmer Ecosystem Hub Styles
+   ========================================================= */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f0f4f0;color:#1a1a1a;min-height:100vh}
+
+/* DARK MODE */
+[data-theme="dark"]{background:var(--bg)!important;color:var(--text)!important}
+[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+[data-theme="dark"] .hub-pill-nav{background:#071420;border-color:#1e3a5f}
+[data-theme="dark"] .pill{background:#0f2039;color:#86efac;border-color:#1e3a5f}
+[data-theme="dark"] .pill.active{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 16px rgba(74,222,128,.35)}
+[data-theme="dark"] .card{background:#0f2039;border-color:#1e3a5f;color:var(--text)}
+[data-theme="dark"] .product-card{background:#0f2039;border-color:#1e3a5f}
+[data-theme="dark"] .scheme-card{background:#0f2039;border-color:#1e3a5f}
+[data-theme="dark"] .buyer-row{background:#0f2039;border-color:#1e3a5f}
+[data-theme="dark"] .mp-card{background:#0f2039;border-color:#1e3a5f}
+[data-theme="dark"] .forecast-card{background:#0f2039;border-color:#1e3a5f;color:var(--text)}
+[data-theme="dark"] .alert-item{background:#071a2e}
+[data-theme="dark"] .cart-sidebar{background:#0f2039;border-color:#1e3a5f}
+[data-theme="dark"] .cart-item{border-color:#1e3a5f}
+[data-theme="dark"] .cart-footer{border-color:#1e3a5f}
+[data-theme="dark"] .sell-form-box{background:#071a2e;border-color:#1e3a5f}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#071420;color:var(--text);border-color:#1e3a5f}
+[data-theme="dark"] table{color:var(--text)}
+[data-theme="dark"] th{background:#071a2e!important;color:#8ab4d4}
+[data-theme="dark"] td{border-color:#1e3a5f!important;color:var(--text)}
+[data-theme="dark"] .profile-section-card{background:#0f2039;border-color:#1e3a5f}
+[data-theme="dark"] .rec-card{background:#071a2e;border-left-color:#4ade80}
+[data-theme="dark"] .advisory-box{background:linear-gradient(135deg,#071a2e,#0a2018);border-color:#1e3a5f}
+[data-theme="dark"] .cat-tab{background:#0f2039;color:#86efac;border-color:#1e3a5f}
+[data-theme="dark"] .qa-btn{background:#0f2039;border-color:#1e3a5f;color:#86efac}
+[data-theme="dark"] .qa-btn:hover{background:#16a34a;color:#fff}
+[data-theme="dark"] .fc-day{color:#8ab4d4}
+[data-theme="dark"] .fc-temp{color:#86efac}
+[data-theme="dark"] .mp-lbl{color:#8ab4d4}
+[data-theme="dark"] .modal-box{background:#0f2039;color:var(--text)}
+[data-theme="dark"] .scheme-ministry{color:#86efac}
+[data-theme="dark"] .product-brand{color:#8ab4d4}
+[data-theme="dark"] .product-desc{color:#8ab4d4}
+[data-theme="dark"] .pay-method-card{background:#0f2039;border-color:#1e3a5f;color:var(--text)}
+[data-theme="dark"] .pay-method-card:hover,[data-theme="dark"] .pay-method-card.selected{border-color:#4ade80;background:rgba(74,222,128,.1)}
+[data-theme="dark"] .hub-topbar{background:linear-gradient(135deg,#061209,#0d1f10,#112614)}
+
+/* TOPBAR */
+.hub-topbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 60%,#388E3C 100%);color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 3px 20px rgba(0,0,0,.35);height:58px}
+.hub-top-left{display:flex;align-items:center;gap:10px}
+.hub-logo{font-size:1.5rem}
+.hub-brand{font-size:1.15rem;font-weight:900;letter-spacing:.3px}
+.hub-sub{font-size:.7rem;opacity:.75;background:rgba(255,255,255,.18);padding:2px 8px;border-radius:10px;margin-left:4px}
+.hub-top-right{display:flex;align-items:center;gap:8px}
+.hub-farmer-chip{background:rgba(255,255,255,.18);border-radius:20px;padding:5px 12px;font-size:.82rem;font-weight:600;white-space:nowrap}
+.icon-btn{background:rgba(255,255,255,.18);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.95rem;transition:.2s}
+.icon-btn:hover{background:rgba(255,255,255,.3)}
+.logout-btn-top{background:rgba(255,60,60,.25);border:1px solid rgba(255,120,120,.4);color:#fff;padding:6px 13px;border-radius:20px;cursor:pointer;font-size:.78rem;font-weight:600;transition:.2s}
+.logout-btn-top:hover{background:rgba(255,60,60,.45)}
+.lang-sel{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 8px;border-radius:8px;font-size:.78rem}
+.lang-sel option{color:#000;background:#fff}
+
+/* PILL NAV */
+.hub-pill-nav{position:fixed;top:58px;left:0;right:0;z-index:999;background:#eef5ee;border-bottom:2px solid #c8e6c9;padding:9px 14px;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.hub-pill-nav::-webkit-scrollbar{display:none}
+.pill{background:#fff;border:2px solid #c8e6c9;color:#2E7D32;padding:7px 15px;border-radius:24px;cursor:pointer;font-size:.82rem;font-weight:700;white-space:nowrap;transition:.2s;flex-shrink:0}
+.pill:hover{background:#e8f5e9;border-color:#4CAF50}
+.pill.active{background:#2E7D32;color:#fff;border-color:#2E7D32;box-shadow:0 4px 14px rgba(46,125,50,.4)}
+
+/* CONTENT AREA */
+.hub-content{margin-top:110px;padding:14px;max-width:1200px;margin-left:auto;margin-right:auto;padding-top:110px}
+.hub-section{display:none;animation:fadeIn .25s ease}
+.hub-section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* GENERIC CARD */
+.card{background:#fff;border-radius:16px;border:1px solid #e0f0e0;padding:20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.card-hdr h2{font-size:1.1rem;font-weight:800;color:#1B5E20;display:flex;align-items:center;gap:7px}
+
+/* KPI MINI */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:11px;margin-bottom:14px}
+.kpi-m{border-radius:14px;padding:16px;text-align:center;color:#fff}
+.kpi-m-val{font-size:1.65rem;font-weight:900}
+.kpi-m-lbl{font-size:.72rem;opacity:.85;margin-top:3px}
+
+/* QUICK ACTIONS */
+.qa-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:10px}
+.qa-btn{background:#fff;border:2px solid #c8e6c9;border-radius:14px;padding:14px 8px;text-align:center;cursor:pointer;transition:.2s;color:#1B5E20;font-weight:700;font-size:.78rem}
+.qa-btn:hover{background:#e8f5e9;border-color:#4CAF50;transform:translateY(-3px);box-shadow:0 6px 16px rgba(46,125,50,.2)}
+.qa-icon{font-size:1.7rem;display:block;margin-bottom:7px}
+
+/* GOVT ALERTS */
+.alert-item{border-radius:12px;padding:13px 15px;margin-bottom:9px;display:flex;gap:12px;border-left:4px solid #ccc}
+.alert-item.high{background:#fff3f3;border-color:#e53935}
+.alert-item.medium{background:#fff8e1;border-color:#FB8C00}
+.alert-item.info{background:#e3f2fd;border-color:#1E88E5}
+.alert-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:.88rem;font-weight:700;margin-bottom:3px}
+.alert-body{font-size:.78rem;opacity:.75;line-height:1.4}
+.alert-time{font-size:.68rem;opacity:.55;margin-top:4px}
+
+/* MARKET PRICE STRIP */
+.mp-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.mp-strip::-webkit-scrollbar{display:none}
+.mp-card{background:#fff;border:1px solid #c8e6c9;border-radius:12px;padding:12px 16px;min-width:130px;text-align:center;flex-shrink:0}
+.mp-crop{font-size:.78rem;font-weight:700;color:#555}
+.mp-price{font-size:1.25rem;font-weight:900;color:#1B5E20;margin:4px 0}
+.mp-lbl{font-size:.7rem;color:#666}
+.mp-up{color:#4CAF50}.mp-down{color:#e53935}.mp-flat{color:#888}
+
+/* BUYER ROWS */
+.buyer-list{display:flex;flex-direction:column;gap:9px}
+.buyer-row{background:#fff;border:1px solid #e0f0e0;border-radius:12px;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px}
+.buyer-name{font-weight:700;font-size:.92rem;color:#1B5E20;margin-bottom:3px}
+.buyer-meta{font-size:.76rem;color:#666;display:flex;gap:8px;flex-wrap:wrap}
+.contact-btn{background:#2E7D32;color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:.78rem;cursor:pointer;font-weight:700;transition:.2s}
+.contact-btn:hover{background:#1B5E20;transform:scale(1.04)}
+
+/* PRODUCT GRID */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.product-card{background:#fff;border:1px solid #e0f0e0;border-radius:16px;padding:16px;transition:.22s;display:flex;flex-direction:column}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 8px 22px rgba(46,125,50,.15);border-color:#66BB6A}
+.p-icon{font-size:2rem;margin-bottom:7px}
+.p-name{font-size:.88rem;font-weight:800;color:#1B5E20;line-height:1.3;margin-bottom:3px}
+.p-brand{font-size:.72rem;color:#888;margin-bottom:6px}
+.p-stars{color:#FFC107;font-size:.75rem;margin-bottom:6px}
+.p-desc{font-size:.74rem;color:#666;line-height:1.4;margin-bottom:10px;flex:1}
+.p-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+.p-price{font-size:1.08rem;font-weight:900;color:#1B5E20}
+.p-unit{font-size:.68rem;color:#888;display:block}
+.add-cart-btn{background:#2E7D32;color:#fff;border:none;border-radius:20px;padding:7px 13px;font-size:.76rem;cursor:pointer;font-weight:700;transition:.2s}
+.add-cart-btn:hover{background:#1B5E20;transform:scale(1.06)}
+.stock-badge{font-size:.68rem;background:#e8f5e9;color:#2E7D32;padding:2px 8px;border-radius:10px;font-weight:700;margin-bottom:6px;display:inline-block}
+
+/* CATEGORY TABS */
+.cat-tabs{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.cat-tab{background:#e8f5e9;border:1.5px solid #c8e6c9;color:#2E7D32;border-radius:20px;padding:6px 13px;cursor:pointer;font-size:.78rem;font-weight:700;transition:.2s}
+.cat-tab:hover{background:#c8e6c9}
+.cat-tab.active{background:#2E7D32;color:#fff;border-color:#2E7D32}
+
+/* CART SIDEBAR */
+.cart-sidebar{position:fixed;right:0;top:0;bottom:0;width:310px;background:#fff;z-index:2000;box-shadow:-4px 0 24px rgba(0,0,0,.2);transform:translateX(100%);transition:.3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.cart-sidebar.open{transform:translateX(0)}
+.cart-hdr{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;padding:16px 18px;display:flex;justify-content:space-between;align-items:center}
+.cart-hdr h3{font-size:1rem;font-weight:800}
+.cart-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem}
+.cart-body{flex:1;overflow-y:auto;padding:14px}
+.cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e8f5e9;gap:10px}
+.cart-item-name{font-size:.83rem;font-weight:600;color:#1B5E20}
+.cart-item-qty{font-size:.72rem;color:#888}
+.cart-item-price{font-size:.88rem;font-weight:700;color:#2E7D32;white-space:nowrap}
+.remove-btn{background:none;border:none;color:#e53935;cursor:pointer;font-size:.85rem;padding:3px}
+.cart-footer{padding:14px;border-top:1px solid #e8f5e9}
+.cart-total-row{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:800;color:#1B5E20;margin-bottom:12px}
+.checkout-btn{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border:none;width:100%;padding:13px;border-radius:12px;font-size:.95rem;font-weight:800;cursor:pointer;transition:.2s}
+.checkout-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(46,125,50,.4)}
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1999;display:none}
+.cart-fab{position:fixed;bottom:22px;right:22px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border:none;font-size:1.3rem;cursor:pointer;z-index:1500;box-shadow:0 4px 18px rgba(46,125,50,.55);transition:.2s;display:flex;align-items:center;justify-content:center}
+.cart-fab:hover{transform:scale(1.12)}
+.cart-fab-badge{position:absolute;top:-5px;right:-5px;background:#e53935;color:#fff;border-radius:50%;width:20px;height:20px;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* SCHEME GRID */
+.scheme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:14px}
+.scheme-card{background:#fff;border:2px solid #e0f0e0;border-radius:16px;padding:20px;transition:.22s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.scheme-card:hover{border-color:#66BB6A;box-shadow:0 8px 24px rgba(46,125,50,.12);transform:translateY(-2px)}
+.scheme-card.applied{border-color:#4CAF50}
+.s-icon{font-size:2rem;margin-bottom:7px}
+.s-name{font-size:.92rem;font-weight:800;color:#1B5E20;line-height:1.3;margin-bottom:3px}
+.s-ministry{font-size:.72rem;color:#888;margin-bottom:8px}
+.s-benefit{background:#e8f5e9;border-radius:8px;padding:8px 12px;font-size:.8rem;color:#1B5E20;font-weight:600;margin-bottom:8px}
+.s-deadline{font-size:.74rem;color:#e65100;font-weight:700;margin-bottom:12px}
+.s-deadline.open{color:#2E7D32}
+.apply-btn{width:100%;background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border:none;border-radius:10px;padding:10px;font-size:.84rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:auto}
+.apply-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 12px rgba(46,125,50,.4)}
+.apply-btn.applied-btn{background:linear-gradient(135deg,#388E3C,#4CAF50);cursor:default}
+.applied-tag{position:absolute;top:12px;right:12px;background:#4CAF50;color:#fff;font-size:.65rem;font-weight:800;padding:3px 10px;border-radius:20px}
+
+/* WEATHER */
+.weather-hero{background:linear-gradient(135deg,#0D2010,#1B5E20,#2E7D32);color:#fff;border-radius:16px;padding:22px;margin-bottom:14px}
+.w-temp{font-size:3.2rem;font-weight:900;line-height:1}
+.w-city{font-size:.92rem;opacity:.82;margin-top:4px}
+.w-cond{font-size:.85rem;opacity:.72;margin-top:6px}
+.w-stats{display:flex;gap:22px;margin-top:14px;flex-wrap:wrap}
+.w-stat-val{font-size:1rem;font-weight:700}
+.w-stat-lbl{font-size:.68rem;opacity:.7}
+.forecast-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.forecast-card{background:#fff;border:1px solid #e0f0e0;border-radius:12px;padding:11px 6px;text-align:center}
+.fc-day{font-size:.72rem;font-weight:700;color:#555}
+.fc-icon{font-size:1.5rem;margin:5px 0}
+.fc-temp{font-size:.82rem;font-weight:700;color:#1B5E20}
+.fc-rain{font-size:.68rem;color:#1976D2;margin-top:3px}
+.advisory-box{background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1px solid #c8e6c9;border-radius:14px;padding:16px;margin-top:14px}
+.advisory-box h3{color:#1B5E20;font-size:.9rem;margin-bottom:8px}
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:11px;margin-top:11px}
+.rec-card{background:#fff;border-radius:12px;padding:14px;border-left:4px solid #4CAF50}
+.rec-card h4{font-size:.84rem;color:#1B5E20;font-weight:800;margin-bottom:5px}
+.rec-card p{font-size:.76rem;color:#555;line-height:1.4}
+
+/* MARKETPLACE */
+.mp-subtabs{display:flex;gap:8px;margin-bottom:14px}
+.mp-stab{background:#e8f5e9;border:1.5px solid #c8e6c9;color:#2E7D32;border-radius:20px;padding:7px 16px;cursor:pointer;font-size:.82rem;font-weight:700;transition:.2s}
+.mp-stab.active{background:#2E7D32;color:#fff}
+.mp-listing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.mp-listing-card{background:#fff;border:1px solid #e0f0e0;border-radius:14px;padding:16px;position:relative;transition:.22s}
+.mp-listing-card:hover{border-color:#66BB6A;box-shadow:0 6px 16px rgba(46,125,50,.12)}
+.avail-tag{position:absolute;top:11px;right:11px;font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:20px}
+.avail-tag.yes{background:#e8f5e9;color:#2E7D32}
+.avail-tag.no{background:#fce4e4;color:#c62828}
+.mp-crop-ico{font-size:1.9rem;margin-bottom:5px}
+.mp-crop-nm{font-size:.96rem;font-weight:800;color:#1B5E20}
+.mp-farmer-lbl{font-size:.78rem;color:#666;margin-top:3px}
+.mp-price-big{font-size:1.3rem;font-weight:900;color:#2E7D32;margin:7px 0 4px}
+.mp-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:11px;font-size:.74rem;color:#666}
+.sell-form-box{background:#f6fdf6;border:1.5px solid #c8e6c9;border-radius:14px;padding:18px;margin-bottom:16px}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.form-grp{display:flex;flex-direction:column;gap:5px}
+.form-grp label{font-size:.8rem;font-weight:700;color:#1B5E20}
+.form-grp input,.form-grp select,.form-grp textarea{border:1.5px solid #c8e6c9;border-radius:8px;padding:9px 11px;font-size:.86rem;outline:none;transition:.2s;font-family:'Inter',sans-serif}
+.form-grp input:focus,.form-grp select:focus{border-color:#4CAF50;box-shadow:0 0 0 3px rgba(76,175,80,.12)}
+.submit-btn{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:.92rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:8px}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(46,125,50,.4)}
+
+/* PROFILE */
+.profile-hero{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border-radius:16px;padding:22px;margin-bottom:14px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.profile-avatar{width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;font-weight:900}
+.profile-name{font-size:1.25rem;font-weight:900}
+.profile-sub{font-size:.84rem;opacity:.8;margin-top:3px}
+.kyc-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:.76rem;font-weight:700;margin-top:8px}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.profile-section-card{background:#fff;border:1px solid #e0f0e0;border-radius:14px;padding:18px}
+.profile-section-card h3{font-size:.9rem;font-weight:800;color:#1B5E20;margin-bottom:12px}
+.profile-row{display:flex;justify-content:space-between;font-size:.83rem;padding:7px 0;border-bottom:1px solid #f0f8f0}
+.profile-row:last-child{border:none}
+.profile-row-label{color:#666}
+.profile-row-val{font-weight:700;color:#1a1a1a;text-align:right}
+[data-theme="dark"] .profile-row-val{color:#e8f5e9}
+
+/* CONTACT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3000;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:18px;padding:26px;max-width:380px;width:92%;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#888;line-height:1}
+.modal-buyer-name{font-size:1.15rem;font-weight:800;color:#1B5E20;margin-bottom:4px}
+.modal-buyer-meta{font-size:.82rem;color:#888;margin-bottom:14px}
+.modal-phone-box{background:#e8f5e9;border-radius:12px;padding:14px;text-align:center;margin-bottom:14px}
+.modal-phone{font-size:1.3rem;font-weight:900;color:#1B5E20}
+.modal-btns{display:flex;gap:10px}
+.modal-btn{flex:1;border:none;border-radius:10px;padding:12px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s}
+.modal-btn:hover{transform:translateY(-2px)}
+.modal-btn.call{background:#2E7D32;color:#fff}
+.modal-btn.whatsapp{background:#25D366;color:#fff}
+
+/* TOASTS */
+#toast-container{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none;min-width:240px}
+.toast-msg{background:#1B5E20;color:#fff;padding:11px 18px;border-radius:10px;font-size:.85rem;box-shadow:0 4px 16px rgba(0,0,0,.3);animation:slideUp .28s ease;pointer-events:auto}
+.toast-msg.error{background:#c62828}
+.toast-msg.warning{background:#e65100}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* STATUS BADGES */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.68rem;font-weight:800}
+.bg-green{background:#e8f5e9;color:#2E7D32}
+.bg-blue{background:#e3f2fd;color:#1565C0}
+.bg-orange{background:#fff3e0;color:#e65100}
+.bg-red{background:#ffebee;color:#c62828}
+.bg-grey{background:#f5f5f5;color:#555}
+
+/* TABLE STYLES */
+.hub-table{width:100%;border-collapse:collapse;font-size:.83rem}
+.hub-table th{background:#e8f5e9;color:#1B5E20;padding:10px 12px;text-align:left;font-weight:800}
+.hub-table td{padding:9px 12px;border-bottom:1px solid #f0f8f0}
+.hub-table tr:hover td{background:#f9fdf9}
+[data-theme="dark"] .hub-table tr:hover td{background:#1e3a1e}
+
+/* OFFLINE BANNER */
+#offline-banner{display:none;background:#e53935;color:#fff;text-align:center;padding:8px;position:fixed;top:0;left:0;right:0;z-index:9998;font-size:.85rem}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hub-brand{display:none}
+  .hub-sub{display:none}
+  .hub-farmer-chip{display:none}
+  .hub-content{padding:8px;padding-top:108px}
+  .forecast-grid{grid-template-columns:repeat(4,1fr)}
+  .form-grid-2{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .forecast-grid{grid-template-columns:repeat(4,1fr)}
+  .product-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .scheme-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="offline-banner">⚠️ You are offline. Some features may not work.</div>
+
+<!-- ===== TOPBAR ===== -->
+<div class="hub-topbar">
+  <div class="hub-top-left">
+    <span class="hub-logo">🌾</span>
+    <span class="hub-brand">AgriNode</span>
+    <span class="hub-sub">Farmer Hub</span>
+  </div>
+  <div class="hub-top-right">
+    <button class="icon-btn" onclick="toggleDark()" title="Toggle Dark Mode">🌙</button>
+    <select class="lang-select lang-sel" id="topLang" onchange="changeLang(this.value)">
+      <option value="en">EN</option>
+      <option value="hi">हि</option>
+      <option value="kn">ಕ</option>
+    </select>
+    <div class="hub-farmer-chip">👤 <span id="hub-farmer-name">Farmer</span></div>
+    <button class="logout-btn-top" onclick="doLogout()">Logout</button>
+  </div>
+</div>
+
+<!-- ===== PILL NAV ===== -->
+<nav class="hub-pill-nav" role="navigation">
+  <button class="pill active" id="pill-cmd-center" onclick="showSection('cmd-center',this)" data-i18n="dashboard">🏠 Dashboard</button>
+  <button class="pill" id="pill-marketplace" onclick="showSection('marketplace',this)" data-i18n="market">🌿 Market</button>
+  <button class="pill" id="pill-agri-store" onclick="showSection('agri-store',this)">🏪 Agri Store</button>
+  <button class="pill" id="pill-schemes" onclick="showSection('schemes',this)" data-i18n="schemes">📋 Schemes</button>
+  <button class="pill" id="pill-payments" onclick="showSection('payments',this)" data-i18n="payments">💳 Payments</button>
+  <button class="pill" id="pill-weather" onclick="showSection('weather',this)" data-i18n="weatherForecast">🌦️ Weather</button>
+  <button class="pill" id="pill-profile" onclick="showSection('profile',this)" data-i18n="profile">👤 Profile</button>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="hub-content">
+
+<!-- ─────────────────────────────────────────
+     SECTION 1: COMMAND CENTER
+     ───────────────────────────────────────── -->
+<div id="cmd-center" class="hub-section active">
+
+  <!-- Welcome Banner -->
+  <div style="background:linear-gradient(135deg,#0D2010,#1B5E20,#2E7D32);border-radius:16px;padding:20px 24px;color:#fff;margin-bottom:14px">
+    <div style="font-size:.75rem;opacity:.7;text-transform:uppercase;letter-spacing:1px">AgriNode Farmer Hub</div>
+    <h1 id="cmd-greeting" style="font-size:1.5rem;font-weight:900;margin:6px 0">Good Morning!</h1>
+    <p style="opacity:.8;font-size:.88rem" id="cmd-subtitle">Platform is live. Check today's alerts and market prices below.</p>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+      <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:4px 13px;font-size:.75rem">🟢 Platform Online</span>
+      <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:4px 13px;font-size:.75rem" id="cmd-date-badge">24 May 2026</span>
+    </div>
+  </div>
+
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="kpi-m" style="background:linear-gradient(135deg,#1B5E20,#2E7D32)"><div class="kpi-m-val" id="kpi-crops">5</div><div class="kpi-m-lbl">My Crops</div></div>
+    <div class="kpi-m" style="background:linear-gradient(135deg,#0d47a1,#1565C0)"><div class="kpi-m-val" id="kpi-income">₹4.8L</div><div class="kpi-m-lbl">Total Income</div></div>
+    <div class="kpi-m" style="background:linear-gradient(135deg,#4a148c,#6a1b9a)"><div class="kpi-m-val" id="kpi-schemes">2</div><div class="kpi-m-lbl">Schemes Applied</div></div>
+    <div class="kpi-m" style="background:linear-gradient(135deg,#bf360c,#e64a19)"><div class="kpi-m-val" id="kpi-complaints">1</div><div class="kpi-m-lbl">Open Complaints</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:14px">
+    <!-- LEFT COLUMN -->
+    <div>
+      <!-- Govt Alerts -->
+      <div class="card">
+        <div class="card-hdr">
+          <h2>⚠️ Govt Alerts</h2>
+          <button onclick="showSection('weather',document.getElementById('pill-weather'))" style="background:#e8f5e9;border:none;color:#2E7D32;border-radius:20px;padding:5px 12px;font-size:.75rem;cursor:pointer;font-weight:700">Full Weather →</button>
+        </div>
+        <div id="cmd-alerts-list"><!-- rendered by JS --></div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-hdr"><h2>⚡ Quick Actions</h2></div>
+        <div class="qa-grid">
+          <div class="qa-btn" onclick="showSection('marketplace',document.getElementById('pill-marketplace'))"><span class="qa-icon">🌿</span>Sell Crops</div>
+          <div class="qa-btn" onclick="showSection('schemes',document.getElementById('pill-schemes'))"><span class="qa-icon">📋</span>Apply Scheme</div>
+          <div class="qa-btn" onclick="showSection('agri-store',document.getElementById('pill-agri-store'))"><span class="qa-icon">🏪</span>Buy Inputs</div>
+          <div class="qa-btn" onclick="showSection('weather',document.getElementById('pill-weather'))"><span class="qa-icon">🌦️</span>Weather</div>
+          <div class="qa-btn" onclick="downloadBrochure()"><span class="qa-icon">📥</span>Download Report</div>
+          <div class="qa-btn" onclick="showToast('📞 Calling your agent: Ramesh Kumar – 9876543210')"><span class="qa-icon">📞</span>Call Agent</div>
+          <div class="qa-btn" onclick="showSection('profile',document.getElementById('pill-profile'))"><span class="qa-icon">👤</span>My Profile</div>
+          <div class="qa-btn" onclick="fileComplaint()"><span class="qa-icon">🚨</span>File Complaint</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+      <!-- Live Market Prices -->
+      <div class="card">
+        <div class="card-hdr"><h2>📊 Live Market Prices</h2></div>
+        <div class="mp-strip" id="cmd-mp-strip"><!-- rendered by JS --></div>
+      </div>
+
+      <!-- Nearby Buyers -->
+      <div class="card">
+        <div class="card-hdr">
+          <h2>🏪 Nearby Buyers</h2>
+          <button onclick="showSection('marketplace',document.getElementById('pill-marketplace'));setTimeout(function(){switchMpTab('buy',null);},100)" style="background:#e8f5e9;border:none;color:#2E7D32;border-radius:20px;padding:5px 12px;font-size:.75rem;cursor:pointer;font-weight:700">See All →</button>
+        </div>
+        <div class="buyer-list" id="cmd-buyers-list"><!-- rendered by JS --></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /cmd-center -->
+
+
+<!-- ─────────────────────────────────────────
+     SECTION 2: MARKETPLACE
+     ───────────────────────────────────────── -->
+<div id="marketplace" class="hub-section">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <div style="font-size:2rem">🌿</div>
+    <div><h2 style="font-size:1.3rem;font-weight:900;color:#1B5E20">Crop Marketplace</h2><p style="font-size:.82rem;color:#666">Sell your crops & connect directly with buyers</p></div>
+  </div>
+
+  <!-- Sub-tab bar -->
+  <div class="mp-subtabs">
+    <button class="mp-stab active" id="stab-sell" onclick="switchMpTab('sell',this)">📤 Sell Crops</button>
+    <button class="mp-stab" id="stab-buy" onclick="switchMpTab('buy',this)">🛒 Buyer Listings</button>
+    <button class="mp-stab" id="stab-buyers" onclick="switchMpTab('buyers',this)">🏪 All Buyers</button>
+  </div>
+
+  <!-- SELL PANE -->
+  <div id="mp-sell-pane">
+    <div class="sell-form-box">
+      <h3 style="color:#1B5E20;font-weight:800;margin-bottom:14px;font-size:1rem">📝 List Your Crop for Sale</h3>
+      <form id="sell-form" onsubmit="submitSellForm(event)">
+        <div class="form-grid-2">
+          <div class="form-grp">
+            <label>Crop Name *</label>
+            <select name="cropName" required>
+              <option value="">Select Crop</option>
+              <option>Rice / Paddy</option><option>Wheat</option><option>Maize</option>
+              <option>Cotton</option><option>Sugarcane</option><option>Tur Dal</option>
+              <option>Groundnut</option><option>Sunflower</option><option>Jowar</option>
+              <option>Onion</option><option>Tomato</option><option>Chilli</option>
+            </select>
+          </div>
+          <div class="form-grp">
+            <label>Quantity (Qtl) *</label>
+            <input type="number" name="qty" placeholder="e.g. 25" min="1" required>
+          </div>
+          <div class="form-grp">
+            <label>Ask Price (₹/Qtl) *</label>
+            <input type="number" name="askPrice" placeholder="e.g. 2400" min="1" required>
+          </div>
+          <div class="form-grp">
+            <label>Quality Grade *</label>
+            <select name="quality" required>
+              <option value="">Select Grade</option>
+              <option>Grade A – Premium</option><option>Grade B – Standard</option><option>Grade C – Commercial</option>
+            </select>
+          </div>
+          <div class="form-grp" style="grid-column:1/-1">
+            <label>Additional Notes</label>
+            <textarea name="notes" rows="2" placeholder="Harvest date, transportation available, etc."></textarea>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">📤 List My Crop for Sale</button>
+      </form>
+    </div>
+
+    <!-- Existing Listings Preview -->
+    <div class="card">
+      <div class="card-hdr"><h2>📦 My Active Listings</h2></div>
+      <div class="mp-listing-grid" id="mp-my-listings"><!-- rendered by JS --></div>
+    </div>
+  </div>
+
+  <!-- BUY PANE -->
+  <div id="mp-buy-pane" style="display:none">
+    <div class="card">
+      <div class="card-hdr"><h2>🌾 All Crop Listings</h2></div>
+      <div class="mp-listing-grid" id="mp-all-listings"><!-- rendered by JS --></div>
+    </div>
+  </div>
+
+  <!-- ALL BUYERS PANE -->
+  <div id="mp-buyers-pane" style="display:none">
+    <div class="card">
+      <div class="card-hdr"><h2>🏪 Verified Buyers Near You</h2>
+        <input type="text" id="buyer-search" oninput="filterBuyers(this.value)" placeholder="Search buyers..." style="border:1.5px solid #c8e6c9;border-radius:8px;padding:7px 12px;font-size:.82rem;outline:none">
+      </div>
+      <div style="overflow-x:auto">
+        <table class="hub-table" id="buyers-table">
+          <thead><tr><th>Buyer</th><th>Type</th><th>Crops</th><th>Distance</th><th>Rating</th><th>Verified</th><th>Action</th></tr></thead>
+          <tbody id="buyers-tbody"><!-- rendered by JS --></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div><!-- /marketplace -->
+
+
+<!-- ─────────────────────────────────────────
+     SECTION 3: AGRI STORE
+     ───────────────────────────────────────── -->
+<div id="agri-store" class="hub-section">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <div style="font-size:2rem">🏪</div>
+    <div><h2 style="font-size:1.3rem;font-weight:900;color:#1B5E20">Agricultural Store</h2><p style="font-size:.82rem;color:#666">Buy fertilizers, seeds, equipment & pesticides directly</p></div>
+  </div>
+
+  <div class="cat-tabs" id="store-cat-tabs">
+    <button class="cat-tab active" data-cat="all" onclick="renderStore('all',this)">All Products</button>
+    <button class="cat-tab" data-cat="fertilizer" onclick="renderStore('fertilizer',this)">🧪 Fertilizers</button>
+    <button class="cat-tab" data-cat="seed" onclick="renderStore('seed',this)">🌾 Seeds</button>
+    <button class="cat-tab" data-cat="tractor" onclick="renderStore('tractor',this)">🚜 Equipment</button>
+    <button class="cat-tab" data-cat="pesticide" onclick="renderStore('pesticide',this)">🧴 Pesticides</button>
+  </div>
+
+  <div class="product-grid" id="store-product-grid"><!-- rendered by JS --></div>
+</div><!-- /agri-store -->
+
+
+<!-- ─────────────────────────────────────────
+     SECTION 4: GOVT SCHEMES PORTAL
+     ───────────────────────────────────────── -->
+<div id="schemes" class="hub-section">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <div style="font-size:2rem">📋</div>
+    <div><h2 style="font-size:1.3rem;font-weight:900;color:#1B5E20">Government Schemes Portal</h2><p style="font-size:.82rem;color:#666">PM-KISAN, Crop Insurance, KCC, Subsidies & more</p></div>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="cat-tabs">
+    <button class="cat-tab active" data-filter="all" onclick="renderSchemes('all',this)">All Schemes</button>
+    <button class="cat-tab" data-filter="subsidy" onclick="renderSchemes('subsidy',this)">💰 Subsidy</button>
+    <button class="cat-tab" data-filter="insurance" onclick="renderSchemes('insurance',this)">🛡️ Insurance</button>
+    <button class="cat-tab" data-filter="loan" onclick="renderSchemes('loan',this)">💳 Credit</button>
+    <button class="cat-tab" data-filter="advisory" onclick="renderSchemes('advisory',this)">📊 Advisory</button>
+    <button class="cat-tab" data-filter="market" onclick="renderSchemes('market',this)">🏪 Market</button>
+  </div>
+
+  <div class="scheme-grid" id="scheme-grid"><!-- rendered by JS --></div>
+
+  <!-- Scheme Tracker -->
+  <div class="card" style="margin-top:6px">
+    <div class="card-hdr"><h2>📌 My Applied Schemes Tracker</h2></div>
+    <div style="overflow-x:auto" id="scheme-tracker-wrap">
+      <div style="text-align:center;padding:20px;color:#888" id="scheme-tracker-empty">No schemes applied yet.</div>
+      <table class="hub-table" id="scheme-tracker-table" style="display:none">
+        <thead><tr><th>Scheme</th><th>Category</th><th>Benefit</th><th>Deadline</th><th>Status</th></tr></thead>
+        <tbody id="scheme-tracker-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- /schemes -->
+
+
+<!-- ─────────────────────────────────────────
+     SECTION 5: WEATHER INTELLIGENCE
+     ───────────────────────────────────────── -->
+<div id="weather" class="hub-section">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <div style="font-size:2rem">🌦️</div>
+    <div><h2 style="font-size:1.3rem;font-weight:900;color:#1B5E20">Weather Intelligence Dashboard</h2><p style="font-size:.82rem;color:#666">Live forecast with AI-powered farming recommendations</p></div>
+  </div>
+
+  <!-- Current Weather Hero -->
+  <div class="weather-hero" id="weather-hero"><!-- rendered by JS --></div>
+
+  <!-- 7-Day Forecast -->
+  <div class="card">
+    <div class="card-hdr"><h2>📅 7-Day Forecast</h2></div>
+    <div class="forecast-grid" id="forecast-grid"><!-- rendered by JS --></div>
+  </div>
+
+  <!-- Advisory + Recommendations -->
+  <div class="advisory-box">
+    <h3>🌾 Farm Advisory</h3>
+    <p style="font-size:.83rem;color:#555;line-height:1.5" id="weather-advisory"></p>
+    <div class="rec-grid" id="rec-grid"><!-- rendered by JS --></div>
+  </div>
+</div><!-- /weather -->
+
+
+<!-- ─────────────────────────────────────────
+     SECTION 6: MY PROFILE
+     ───────────────────────────────────────── -->
+<div id="profile" class="hub-section">
+  <!-- Profile Hero -->
+  <div class="profile-hero">
+    <div class="profile-avatar" id="profile-avatar">👨‍🌾</div>
+    <div>
+      <div class="profile-name" id="profile-farmer-name">Geetha Devi</div>
+      <div class="profile-sub" id="profile-village-phone">Devapur · 9111111111</div>
+      <div class="kyc-chip" id="profile-kyc-chip">✅ KYC Verified</div>
+    </div>
+  </div>
+
+  <!-- Profile Grid -->
+  <div class="profile-grid">
+    <!-- Finance Summary -->
+    <div class="profile-section-card">
+      <h3>💰 Finance Summary</h3>
+      <div class="profile-row"><span class="profile-row-label">Total Income</span><span class="profile-row-val" id="pr-income">—</span></div>
+      <div class="profile-row"><span class="profile-row-label">Total Expense</span><span class="profile-row-val" id="pr-expense">—</span></div>
+      <div class="profile-row"><span class="profile-row-label">Net Profit</span><span class="profile-row-val" id="pr-profit" style="color:#2E7D32">—</span></div>
+    </div>
+
+    <!-- Crop Summary -->
+    <div class="profile-section-card">
+      <h3>🌾 My Crops</h3>
+      <div id="profile-crops-list"><!-- rendered by JS --></div>
+    </div>
+
+    <!-- Agent Contact -->
+    <div class="profile-section-card">
+      <h3>👨‍💼 My Agent</h3>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div style="width:44px;height:44px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:1.4rem">👤</div>
+        <div><div style="font-weight:800;color:#1B5E20">Ramesh Kumar</div><div style="font-size:.78rem;color:#666">Field Agent · Kodalipura</div></div>
+      </div>
+      <button class="contact-btn" onclick="showToast('📞 Calling Ramesh Kumar – 9876543210')" style="width:100%;justify-content:center;margin-bottom:8px">📞 Call Agent</button>
+      <button class="contact-btn" onclick="showToast('💬 WhatsApp message sent to Ramesh Kumar!')" style="width:100%;justify-content:center;background:#25D366">💬 WhatsApp</button>
+    </div>
+
+    <!-- KYC Details -->
+    <div class="profile-section-card">
+      <h3>🪪 KYC & Account</h3>
+      <div class="profile-row"><span class="profile-row-label">Aadhaar</span><span class="profile-row-val">XXXX-XXXX-1234</span></div>
+      <div class="profile-row"><span class="profile-row-label">Bank Account</span><span class="profile-row-val">SBI ****6789</span></div>
+      <div class="profile-row"><span class="profile-row-label">PM-KISAN</span><span class="profile-row-val"><span class="badge bg-green">Active</span></span></div>
+      <div class="profile-row"><span class="profile-row-label">KCC Holder</span><span class="profile-row-val"><span class="badge bg-green">Yes</span></span></div>
+      <div class="profile-row"><span class="profile-row-label">Land Area</span><span class="profile-row-val">3 Acres</span></div>
+    </div>
+  </div>
+
+  <!-- Edit Profile -->
+  <div class="card" style="margin-top:4px">
+    <div class="card-hdr"><h2>✏️ Edit Profile</h2></div>
+    <form onsubmit="event.preventDefault();showToast('✅ Profile updated successfully!')">
+      <div class="form-grid-2" style="gap:11px">
+        <div class="form-grp"><label>Full Name</label><input type="text" id="edit-name" placeholder="Your full name"></div>
+        <div class="form-grp"><label>Phone Number</label><input type="tel" id="edit-phone" placeholder="+91 XXXXXXXXXX"></div>
+        <div class="form-grp"><label>Village / Town</label><input type="text" id="edit-village" placeholder="Village name"></div>
+        <div class="form-grp"><label>Land Area (Acres)</label><input type="number" id="edit-land" placeholder="e.g. 3"></div>
+      </div>
+      <button type="submit" class="submit-btn" style="margin-top:12px">💾 Save Profile</button>
+    </form>
+  </div>
+</div><!-- /profile -->
+
+<!-- ─────────────────────────────────────────
+     SECTION: PAYMENTS
+     ───────────────────────────────────────── -->
+<div id="payments" class="hub-section">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <div style="font-size:2rem">💳</div>
+    <div><h2 style="font-size:1.3rem;font-weight:900;color:#1B5E20" data-i18n="payments">Payments</h2><p style="font-size:.82rem;color:#666">Pay securely with multiple payment methods</p></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <!-- LEFT: Payment Form -->
+    <div>
+      <div class="card" id="pay-form-card">
+        <div class="card-hdr"><h3>💸 New Payment</h3></div>
+
+        <!-- Amount input -->
+        <div class="amount-input-wrap" style="background:var(--bg);border-radius:12px;padding:20px;text-align:center;border:2px dashed var(--border);margin-bottom:14px">
+          <div style="font-size:.78rem;color:var(--text-muted);font-weight:700;margin-bottom:6px" data-i18n="amount">Amount (₹)</div>
+          <input id="pay-amount" type="number" min="1" placeholder="Enter amount" style="border:none;background:transparent;font-size:2.2rem;font-weight:900;color:var(--primary);text-align:center;width:100%;outline:none" oninput="updatePayAmount(this.value)">
+          <div id="pay-amount-words" style="font-size:.75rem;color:var(--text-muted);margin-top:4px"></div>
+        </div>
+
+        <!-- Description -->
+        <div style="margin-bottom:14px">
+          <label style="font-size:.82rem;font-weight:700;display:block;margin-bottom:5px">Description (optional)</label>
+          <input id="pay-desc" type="text" class="form-control" placeholder="e.g. Rice sale payment" style="width:100%">
+        </div>
+
+        <!-- Payment methods -->
+        <div style="font-size:.82rem;font-weight:700;margin-bottom:10px" data-i18n="paymentMethod">Payment Method</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px" id="pay-methods-grid">
+          <button class="pay-method-card selected" id="pm-upi" onclick="selectPayMethod('upi',this)" style="display:flex;align-items:center;gap:10px;padding:12px;border:2px solid var(--primary);border-radius:12px;background:var(--bg);cursor:pointer;font-weight:700;font-size:.85rem;transition:.2s;color:var(--text)">
+            <span style="font-size:1.5rem">📱</span><div><div data-i18n="upi">UPI</div><div style="font-size:.68rem;font-weight:400;color:var(--text-muted)">GPay, PhonePe</div></div>
+          </button>
+          <button class="pay-method-card" id="pm-debit" onclick="selectPayMethod('debit',this)" style="display:flex;align-items:center;gap:10px;padding:12px;border:2px solid var(--border);border-radius:12px;background:var(--bg);cursor:pointer;font-weight:700;font-size:.85rem;transition:.2s;color:var(--text)">
+            <span style="font-size:1.5rem">💳</span><div><div data-i18n="debitCard">Debit Card</div><div style="font-size:.68rem;font-weight:400;color:var(--text-muted)">Visa / RuPay</div></div>
+          </button>
+          <button class="pay-method-card" id="pm-credit" onclick="selectPayMethod('credit',this)" style="display:flex;align-items:center;gap:10px;padding:12px;border:2px solid var(--border);border-radius:12px;background:var(--bg);cursor:pointer;font-weight:700;font-size:.85rem;transition:.2s;color:var(--text)">
+            <span style="font-size:1.5rem">🏦</span><div><div data-i18n="creditCard">Credit Card</div><div style="font-size:.68rem;font-weight:400;color:var(--text-muted)">MasterCard</div></div>
+          </button>
+          <button class="pay-method-card" id="pm-netb" onclick="selectPayMethod('netb',this)" style="display:flex;align-items:center;gap:10px;padding:12px;border:2px solid var(--border);border-radius:12px;background:var(--bg);cursor:pointer;font-weight:700;font-size:.85rem;transition:.2s;color:var(--text)">
+            <span style="font-size:1.5rem">🌐</span><div><div data-i18n="netBanking">Net Banking</div><div style="font-size:.68rem;font-weight:400;color:var(--text-muted)">All Banks</div></div>
+          </button>
+          <button class="pay-method-card" id="pm-cod" onclick="selectPayMethod('cod',this)" style="display:flex;align-items:center;gap:10px;padding:12px;border:2px solid var(--border);border-radius:12px;background:var(--bg);cursor:pointer;font-weight:700;font-size:.85rem;transition:.2s;color:var(--text);grid-column:1/-1">
+            <span style="font-size:1.5rem">💵</span><div><div data-i18n="cashOnDelivery">Cash on Delivery</div><div style="font-size:.68rem;font-weight:400;color:var(--text-muted)">Pay on receipt</div></div>
+          </button>
+        </div>
+
+        <!-- UPI QR area -->
+        <div id="upi-area">
+          <div style="font-size:.82rem;font-weight:700;margin-bottom:8px">Pay to UPI ID</div>
+          <div style="display:flex;gap:8px;margin-bottom:14px">
+            <button class="upi-btn" onclick="selectUpiApp('gpay',this)" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;font-weight:700;font-size:.82rem;transition:.2s;color:var(--text)">
+              <span>🟢</span> GPay
+            </button>
+            <button class="upi-btn" onclick="selectUpiApp('phonepe',this)" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;font-weight:700;font-size:.82rem;transition:.2s;color:var(--text)">
+              <span>💜</span> PhonePe
+            </button>
+            <button class="upi-btn" onclick="selectUpiApp('paytm',this)" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;font-weight:700;font-size:.82rem;transition:.2s;color:var(--text)">
+              <span>🔵</span> Paytm
+            </button>
+          </div>
+          <!-- QR code placeholder -->
+          <div class="qr-placeholder" id="qr-display" style="border:2px dashed var(--border);border-radius:16px;padding:30px;text-align:center;background:var(--bg);margin-bottom:14px">
+            <div style="font-size:4rem;margin-bottom:8px">📱</div>
+            <div style="font-weight:800;color:var(--primary);margin-bottom:4px">Scan QR to Pay</div>
+            <div style="font-size:.78rem;color:var(--text-muted)">agrinode@sbi · AgriNode Platform</div>
+            <div style="margin-top:12px;display:grid;grid-template-columns:repeat(8,14px);gap:2px;justify-content:center" id="qr-grid"></div>
+            <div id="upi-id-display" style="margin-top:12px;background:#e8f5e9;border:1px solid #c8e6c9;border-radius:8px;padding:8px 14px;font-size:.8rem;font-weight:700;color:#1B5E20;letter-spacing:.5px">agrinode@sbi</div>
+          </div>
+        </div>
+
+        <!-- Card input area (hidden by default) -->
+        <div id="card-area" style="display:none">
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+            <input type="text" class="form-control" placeholder="Card Number **** **** **** ****" maxlength="19" oninput="this.value=this.value.replace(/[^0-9]/g,'').replace(/(\d{4})/g,'$1 ').trim()">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">
+              <input type="text" class="form-control" placeholder="CVV" maxlength="3">
+            </div>
+            <input type="text" class="form-control" placeholder="Name on Card">
+          </div>
+        </div>
+
+        <!-- Net Banking area (hidden) -->
+        <div id="netb-area" style="display:none;margin-bottom:14px">
+          <select class="form-control" style="width:100%">
+            <option>Select Bank</option>
+            <option>State Bank of India</option><option>Punjab National Bank</option>
+            <option>Bank of Baroda</option><option>HDFC Bank</option>
+            <option>ICICI Bank</option><option>Axis Bank</option>
+            <option>Canara Bank</option><option>Union Bank of India</option>
+          </select>
+        </div>
+
+        <!-- COD area (hidden) -->
+        <div id="cod-area" style="display:none;margin-bottom:14px">
+          <div style="background:#e8f5e9;border-radius:12px;padding:16px;border-left:4px solid #4CAF50;font-size:.85rem">
+            <div style="font-weight:800;margin-bottom:4px">💵 Cash on Delivery</div>
+            <p style="color:var(--text-muted)">Pay in cash when your order or goods arrive. No extra charges. Ensure exact change.</p>
+          </div>
+        </div>
+
+        <button class="submit-btn" onclick="processHubPayment()" style="width:100%;font-size:1rem;letter-spacing:.3px" data-i18n="payNow">💸 Pay Now</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Payment History -->
+    <div>
+      <div class="card">
+        <div class="card-hdr"><h3 data-i18n="transactionHistory">💰 Transaction History</h3></div>
+        <div id="hub-pay-history"><!-- rendered by JS --></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /payments -->
+
+</main><!-- /hub-content -->
+
+
+<!-- ===== CART SIDEBAR ===== -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-hdr">
+    <h3>🛒 My Cart</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cart-body">
+    <div style="text-align:center;padding:40px;color:#888">🛒<br>Your cart is empty</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total-row"><span>Total</span><span id="cart-total-amt">₹0</span></div>
+    <button class="checkout-btn" onclick="checkout()">✅ Place Order</button>
+  </div>
+</div>
+
+<!-- Cart FAB -->
+<button class="cart-fab" id="cart-fab" onclick="openCart()" title="View Cart" style="display:none">
+  🛒<span class="cart-fab-badge" id="cart-count-badge">0</span>
+</button>
+
+
+<!-- ===== CONTACT MODAL ===== -->
+<div class="modal-overlay" id="contact-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeContactModal()">✕</button>
+    <div class="modal-buyer-name" id="modal-name">Buyer Name</div>
+    <div class="modal-buyer-meta" id="modal-meta">Type · Location</div>
+    <div class="modal-phone-box"><div class="modal-phone" id="modal-phone">Phone Number</div></div>
+    <div class="modal-btns">
+      <button class="modal-btn call" onclick="showToast('📞 Calling...');closeContactModal()">📞 Call Now</button>
+      <button class="modal-btn whatsapp" onclick="showToast('💬 WhatsApp message sent!');closeContactModal()">💬 WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="toast-container"></div>
+<div id="print-report" style="display:none"></div>
+
+<script src="js/script.js"></script>
+<script>
+/* =====================================================
+   HUB.HTML – Farmer Hub Inline Script
+   ===================================================== */
+
+var _cart = [];
+var _storeCat = 'all';
+var _mpPane   = 'sell';
+var _cu       = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+  var cu = getCurrentUser();
+  if (!cu) {
+    // Demo mode: default to demo farmer
+    cu = { name:'Geetha Devi', role:'Farmer', phone:'9111111111', village:'Devapur', kycDone:true };
+    setCurrentUser(cu);
+  }
+  if (cu.role !== 'Farmer') { window.location.href = 'login.html'; return; }
+  _cu = cu;
+  initHub(cu);
+});
+
+function initHub(cu) {
+  initLang(); // Apply stored language on load
+  // Update name badges
+  document.querySelectorAll('#hub-farmer-name').forEach(function(el){ el.textContent = cu.name || 'Farmer'; });
+
+
+  // Greeting
+  var h = new Date().getHours();
+  var greet = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
+  var gEl = document.getElementById('cmd-greeting');
+  if (gEl) gEl.textContent = greet + ', ' + (cu.name ? cu.name.split(' ')[0] : 'Farmer') + '!';
+  var dEl = document.getElementById('cmd-date-badge');
+  if (dEl) dEl.textContent = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+
+  // Render all sections
+  renderCommandCenter(cu);
+  renderMarketplace();
+  renderStore('all', null);
+  renderSchemes('all', null);
+  renderWeather();
+  renderProfile(cu);
+  renderPayHistory();
+}
+
+/* ── SECTION SWITCHER ───────────────────────────── */
+function showSection(id, clickedBtn) {
+  document.querySelectorAll('.hub-section').forEach(function(s){ s.classList.remove('active'); });
+  var el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('active'); });
+  if (clickedBtn) clickedBtn.classList.add('active');
+  window.scrollTo(0,0);
+  // Show cart FAB only on agri-store
+  var fab = document.getElementById('cart-fab');
+  if (fab) fab.style.display = (id === 'agri-store') ? 'flex' : 'none';
+}
+
+/* ── COMMAND CENTER ─────────────────────────────── */
+function renderCommandCenter(cu) {
+  // KPIs
+  var crops    = getCrops();
+  var finance  = getFinance();
+  var income   = finance.filter(function(r){return r.type==='income';}).reduce(function(s,r){return s+r.amount;},0);
+  var applied  = getSchemes().filter(function(s){return s.applied;}).length;
+  var openCmpl = getComplaints().filter(function(c){return c.status!=='resolved';}).length;
+  setText('kpi-crops', crops.length);
+  setText('kpi-income', 'Rs.' + (income/1000).toFixed(0) + 'K');
+  setText('kpi-schemes', applied);
+  setText('kpi-complaints', openCmpl);
+
+  // Govt Alerts
+  var alertsEl = document.getElementById('cmd-alerts-list');
+  if (alertsEl) {
+    alertsEl.innerHTML = getGovtAlerts().map(function(a) {
+      return '<div class="alert-item '+a.severity+'">'+
+        '<div class="alert-icon">'+a.icon+'</div>'+
+        '<div><div class="alert-title">'+a.title+'</div>'+
+        '<div class="alert-body">'+a.body+'</div>'+
+        '<div class="alert-time">'+a.time+'</div></div></div>';
+    }).join('');
+  }
+
+  // Market price strip
+  var strip = document.getElementById('cmd-mp-strip');
+  if (strip) {
+    var prices = [];
+    getAPMC().forEach(function(a){ a.commodities.forEach(function(c){ prices.push({name:c.name,price:c.modal,trend:c.trend}); }); });
+    strip.innerHTML = prices.slice(0,8).map(function(p){
+      var arrow = p.trend==='up' ? '▲' : p.trend==='down' ? '▼' : '─';
+      var cls   = p.trend==='up' ? 'mp-up' : p.trend==='down' ? 'mp-down' : 'mp-flat';
+      return '<div class="mp-card"><div class="mp-crop">'+p.name+'</div>'+
+        '<div class="mp-price">₹'+p.price+'</div>'+
+        '<div class="mp-lbl '+cls+'">'+arrow+' per Qtl</div></div>';
+    }).join('');
+  }
+
+  // Nearby buyers (top 3)
+  var buyEl = document.getElementById('cmd-buyers-list');
+  if (buyEl) {
+    buyEl.innerHTML = getBuyers().slice(0,3).map(function(b){
+      return '<div class="buyer-row">'+
+        '<div><div class="buyer-name">'+b.name+(b.verified?' ✅':'')+'</div>'+
+        '<div class="buyer-meta"><span>'+b.type+'</span><span>📍'+b.location+'</span><span>⭐'+b.rating+'</span><span>'+b.distance+'km</span></div></div>'+
+        '<button class="contact-btn" onclick="openContactModal('+JSON.stringify(b)+')">Contact</button>'+
+        '</div>';
+    }).join('');
+  }
+}
+
+function setText(id, val) { var el=document.getElementById(id); if(el) el.textContent=val; }
+
+function fileComplaint() {
+  var id = 'CMP-' + Date.now().toString().slice(-5);
+  showToast('🚨 Complaint filed! Ticket ID: ' + id + '. Your agent will respond within 24 hours.', 'warning');
+}
+
+/* ── MARKETPLACE ────────────────────────────────── */
+function renderMarketplace() {
+  renderMyListings();
+  renderAllListings();
+  renderBuyerTable();
+}
+
+function switchMpTab(tab, btn) {
+  _mpPane = tab;
+  document.getElementById('mp-sell-pane').style.display  = (tab==='sell')    ? 'block' : 'none';
+  document.getElementById('mp-buy-pane').style.display   = (tab==='buy')     ? 'block' : 'none';
+  document.getElementById('mp-buyers-pane').style.display= (tab==='buyers')  ? 'block' : 'none';
+  document.querySelectorAll('.mp-stab').forEach(function(b){ b.classList.remove('active'); });
+  var activeBtn = document.getElementById('stab-'+tab);
+  if (activeBtn) activeBtn.classList.add('active');
+  if (btn) { document.querySelectorAll('.mp-stab').forEach(function(b){b.classList.remove('active');}); btn.classList.add('active'); }
+}
+
+function renderMyListings() {
+  var el = document.getElementById('mp-my-listings');
+  if (!el) return;
+  var listings = getMarketplace().slice(0,3);
+  el.innerHTML = listings.map(renderListingCard).join('');
+}
+
+function renderAllListings() {
+  var el = document.getElementById('mp-all-listings');
+  if (!el) return;
+  el.innerHTML = getMarketplace().map(renderListingCard).join('');
+}
+
+function renderListingCard(l) {
+  return '<div class="mp-listing-card">'+
+    '<div class="avail-tag '+(l.available?'yes':'no')+'">'+(l.available?'Available':'Sold')+'</div>'+
+    '<div class="mp-crop-ico">'+l.cropIcon+'</div>'+
+    '<div class="mp-crop-nm">'+l.cropName+'</div>'+
+    '<div class="mp-farmer-lbl">👤 '+l.farmerName+' · '+l.village+'</div>'+
+    '<div class="mp-price-big">₹'+l.askPrice+'/qtl</div>'+
+    '<div class="mp-tags"><span>📦 '+l.qty+' '+l.unit+'</span><span>🏅 '+l.quality+'</span><span>📅 '+l.listedAt+'</span></div>'+
+    '<button class="contact-btn" onclick="openContactModal({name:'+JSON.stringify(l.farmerName)+',type:\'Farmer\',location:'+JSON.stringify(l.village)+',phone:'+JSON.stringify(l.contact)+',rating:5})" style="width:100%;justify-content:center">📞 Contact Seller</button>'+
+    '</div>';
+}
+
+function renderBuyerTable() {
+  var tbody = document.getElementById('buyers-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = getBuyers().map(function(b){
+    return '<tr>'+
+      '<td><strong>'+b.name+'</strong></td>'+
+      '<td><span class="badge bg-blue">'+b.type+'</span></td>'+
+      '<td style="font-size:.78rem">'+b.crops.join(', ')+'</td>'+
+      '<td>'+b.distance+' km</td>'+
+      '<td>⭐'+b.rating+'</td>'+
+      '<td>'+(b.verified?'<span class="badge bg-green">✅ Verified</span>':'<span class="badge bg-grey">Pending</span>')+'</td>'+
+      '<td><button class="contact-btn" onclick="openContactModal('+JSON.stringify(b)+')" style="font-size:.76rem;padding:6px 11px">Contact</button></td>'+
+      '</tr>';
+  }).join('');
+}
+
+function filterBuyers(query) {
+  var q = query.toLowerCase();
+  var rows = document.querySelectorAll('#buyers-tbody tr');
+  rows.forEach(function(r){ r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none'; });
+}
+
+function submitSellForm(e) {
+  e.preventDefault();
+  var f = e.target;
+  var cu = _cu || { name:'Geetha Devi', phone:'9111111111', village:'Devapur' };
+  var icons = {Rice:'🌾',Wheat:'🌾',Maize:'🌽',Cotton:'🌿',Sugarcane:'🎋',Onion:'🧅',Tomato:'🍅',Chilli:'🌶️'};
+  var cName = f.cropName.value;
+  var listing = {
+    id:'MP'+Date.now(), farmerId:1, farmerName:cu.name, village:cu.village||'Devapur',
+    cropName:cName, cropIcon:icons[cName.split('/')[0].trim()]||'🌾',
+    qty:parseInt(f.qty.value)||0, unit:'qtl',
+    askPrice:parseInt(f.askPrice.value)||0,
+    quality:f.quality.value, available:true,
+    listedAt:new Date().toLocaleDateString('en-IN'), contact:cu.phone||'9111111111'
+  };
+  _store.marketplace.unshift(listing);
+  f.reset();
+  showToast('✅ Crop listed! Buyers can now see and contact you.');
+  renderAllListings(); renderMyListings();
+}
+
+/* ── AGRI STORE ─────────────────────────────────── */
+function renderStore(cat, btnEl) {
+  _storeCat = cat;
+  document.querySelectorAll('#store-cat-tabs .cat-tab').forEach(function(t){ t.classList.remove('active'); });
+  if (btnEl) btnEl.classList.add('active');
+  else { var def=document.querySelector('#store-cat-tabs .cat-tab[data-cat="'+cat+'"]'); if(def) def.classList.add('active'); }
+
+  var products = getStoreProducts();
+  if (cat !== 'all') products = products.filter(function(p){ return p.cat===cat; });
+
+  var el = document.getElementById('store-product-grid');
+  if (!el) return;
+  el.innerHTML = products.map(function(p){
+    var stars = '★'.repeat(Math.floor(p.rating));
+    var inCart = _cart.some(function(c){ return c.id===p.id; });
+    return '<div class="product-card">'+
+      '<div class="p-icon">'+p.icon+'</div>'+
+      '<div class="p-name">'+p.name+'</div>'+
+      '<div class="p-brand">'+p.brand+'</div>'+
+      '<div class="p-stars">'+stars+' <span style="font-size:.72rem;color:#888">'+p.rating+'</span></div>'+
+      '<div class="stock-badge">Stock: '+p.stock+' '+p.unit+'s</div>'+
+      '<div class="p-desc">'+p.desc+'</div>'+
+      '<div class="p-footer">'+
+        '<div><div class="p-price">₹'+p.price.toLocaleString('en-IN')+'</div><span class="p-unit">per '+p.unit+'</span></div>'+
+        '<button class="add-cart-btn" onclick="addToCart(\''+p.id+'\')" '+(p.stock===0?'disabled style="opacity:.5"':'')+'>'+(p.stock===0?'Out of Stock':'Add to Cart')+'</button>'+
+      '</div></div>';
+  }).join('');
+}
+
+function addToCart(productId) {
+  var product = getStoreProducts().find(function(p){ return p.id===productId; });
+  if (!product) return;
+  var existing = _cart.find(function(c){ return c.id===productId; });
+  if (existing) { existing.qty++; } else { _cart.push({id:productId, name:product.name, price:product.price, unit:product.unit, qty:1}); }
+  updateCartUI();
+  showToast('🛒 '+product.name+' added to cart!');
+}
+
+function removeFromCart(productId) {
+  _cart = _cart.filter(function(c){ return c.id!==productId; });
+  updateCartUI();
+}
+
+function updateCartUI() {
+  var total = _cart.reduce(function(s,c){ return s+c.qty; }, 0);
+  var amt   = _cart.reduce(function(s,c){ return s+c.price*c.qty; }, 0);
+  setText('cart-count-badge', total);
+  setText('cart-total-amt', '₹'+amt.toLocaleString('en-IN'));
+  var body = document.getElementById('cart-body');
+  if (!body) return;
+  if (_cart.length===0) {
+    body.innerHTML = '<div style="text-align:center;padding:40px;color:#888">🛒<br>Your cart is empty</div>';
+  } else {
+    body.innerHTML = _cart.map(function(c){
+      return '<div class="cart-item">'+
+        '<div><div class="cart-item-name">'+c.name+'</div><div class="cart-item-qty">'+c.qty+' × ₹'+c.price.toLocaleString('en-IN')+'</div></div>'+
+        '<div class="cart-item-price">₹'+(c.price*c.qty).toLocaleString('en-IN')+'</div>'+
+        '<button class="remove-btn" onclick="removeFromCart(\''+c.id+'\')">✕</button>'+
+        '</div>';
+    }).join('');
+  }
+}
+
+function openCart()  { document.getElementById('cart-sidebar').classList.add('open'); document.getElementById('cart-overlay').style.display='block'; }
+function closeCart() { document.getElementById('cart-sidebar').classList.remove('open'); document.getElementById('cart-overlay').style.display='none'; }
+
+function checkout() {
+  if (_cart.length===0) { showToast('Your cart is empty!','error'); return; }
+  var amt = _cart.reduce(function(s,c){ return s+c.price*c.qty; }, 0);
+  var oid = 'ORD-'+Date.now().toString().slice(-6);
+  _cart = [];
+  updateCartUI();
+  closeCart();
+  showToast('🎉 Order '+oid+' placed! ₹'+amt.toLocaleString('en-IN')+' to be collected on delivery.');
+}
+
+/* ── SCHEMES ────────────────────────────────────── */
+function renderSchemes(filter, btnEl) {
+  document.querySelectorAll('#schemes .cat-tab').forEach(function(t){ t.classList.remove('active'); });
+  if (btnEl) btnEl.classList.add('active');
+  else { var def=document.querySelector('#schemes .cat-tab[data-filter="'+filter+'"]'); if(def) def.classList.add('active'); }
+
+  var schemes = getSchemes();
+  if (filter!=='all') schemes = schemes.filter(function(s){ return s.category===filter; });
+
+  var el = document.getElementById('scheme-grid');
+  if (!el) return;
+  el.innerHTML = schemes.map(function(s,i){
+    return '<div class="scheme-card'+(s.applied?' applied':'')+'" id="scheme-card-'+s.id+'">'+
+      (s.applied ? '<div class="applied-tag">✅ Applied</div>' : '')+
+      '<div class="s-icon">'+s.icon+'</div>'+
+      '<div class="s-name">'+s.name+'</div>'+
+      '<div class="s-ministry">'+s.ministry+'</div>'+
+      '<div class="s-benefit">💰 '+s.benefit+'</div>'+
+      '<div class="s-deadline'+(s.deadline==='Open'?' open':'')+'">⏰ Deadline: '+s.deadline+'</div>'+
+      '<button class="apply-btn'+(s.applied?' applied-btn':'')+'" id="apply-btn-'+s.id+'" onclick="applyScheme(\''+s.id+'\')" '+(s.applied?'disabled':'')+'>'+
+        (s.applied ? '✅ Already Applied' : 'Apply Now →')+
+      '</button>'+
+      '</div>';
+  }).join('');
+  renderSchemeTracker();
+}
+
+function applyScheme(id) {
+  var scheme = _store.schemes.find(function(s){ return s.id===id; });
+  if (!scheme || scheme.applied) return;
+  scheme.applied = true;
+  var btn = document.getElementById('apply-btn-'+id);
+  if (btn) { btn.textContent='✅ Already Applied'; btn.disabled=true; btn.classList.add('applied-btn'); }
+  var card = document.getElementById('scheme-card-'+id);
+  if (card) { card.classList.add('applied'); card.insertAdjacentHTML('afterbegin','<div class="applied-tag">✅ Applied</div>'); }
+  showToast('✅ Applied for '+scheme.name+'! You will receive confirmation within 7 days.');
+  renderSchemeTracker();
+  setText('kpi-schemes', getSchemes().filter(function(s){return s.applied;}).length);
+}
+
+function renderSchemeTracker() {
+  var applied = getSchemes().filter(function(s){ return s.applied; });
+  var emptyEl = document.getElementById('scheme-tracker-empty');
+  var tableEl = document.getElementById('scheme-tracker-table');
+  var tbody   = document.getElementById('scheme-tracker-tbody');
+  if (!tbody) return;
+  if (applied.length===0) {
+    if (emptyEl) emptyEl.style.display='block';
+    if (tableEl) tableEl.style.display='none';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display='none';
+  if (tableEl) tableEl.style.display='table';
+  tbody.innerHTML = applied.map(function(s){
+    return '<tr><td style="font-weight:700">'+s.icon+' '+s.name+'</td>'+
+      '<td><span class="badge bg-blue">'+s.category+'</span></td>'+
+      '<td style="font-size:.8rem">'+s.benefit+'</td>'+
+      '<td>'+(s.deadline==='Open'?'<span class="badge bg-green">Open</span>':'<span class="badge bg-orange">'+s.deadline+'</span>')+'</td>'+
+      '<td><span class="badge bg-green">✅ Applied</span></td></tr>';
+  }).join('');
+}
+
+/* ── WEATHER ────────────────────────────────────── */
+function renderWeather() {
+  var w = getWeather();
+  var hero = document.getElementById('weather-hero');
+  if (hero) {
+    hero.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">'+
+      '<div>'+
+        '<div class="w-city">'+w.city+'</div>'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-top:8px">'+
+          '<div class="w-temp">'+w.temp+'°C</div><div style="font-size:2.8rem">'+w.icon+'</div>'+
+        '</div>'+
+        '<div class="w-cond">'+w.condition+' · Feels like '+w.feels+'°C</div>'+
+        '<div class="w-stats">'+
+          '<div><div class="w-stat-val">'+w.humidity+'%</div><div class="w-stat-lbl">Humidity</div></div>'+
+          '<div><div class="w-stat-val">'+w.wind+' km/h</div><div class="w-stat-lbl">Wind</div></div>'+
+          '<div><div class="w-stat-val">UV '+w.uv+'</div><div class="w-stat-lbl">UV Index</div></div>'+
+        '</div>'+
+      '</div></div>';
+  }
+
+  var fg = document.getElementById('forecast-grid');
+  if (fg) {
+    fg.innerHTML = w.forecast.map(function(d){
+      return '<div class="forecast-card">'+
+        '<div class="fc-day">'+d.day+'</div>'+
+        '<div class="fc-icon">'+d.icon+'</div>'+
+        '<div class="fc-temp">'+d.high+'° / '+d.low+'°</div>'+
+        '<div class="fc-rain">💧'+d.rain+'%</div>'+
+        '</div>';
+    }).join('');
+  }
+
+  var advEl = document.getElementById('weather-advisory');
+  if (advEl) advEl.textContent = w.advisory;
+
+  // Dynamic recommendations
+  var maxRain = Math.max.apply(Math, w.forecast.map(function(d){ return d.rain; }));
+  var recs = [
+    { title:'🌾 Sowing Advisory', body: maxRain > 50 ? 'High rain forecast this week. Delay dry-land sowing by 4–5 days. Prepare nursery beds now.' : 'Good sowing window. Low rain probability. Prepare seedbeds and apply basal fertilizer.' },
+    { title:'💧 Irrigation Advisory', body: w.humidity > 60 ? 'High humidity detected. Reduce irrigation frequency to prevent waterlogging and fungal disease.' : 'Moderate humidity. Maintain regular irrigation. Check drip system emitters and filters.' },
+    { title:'🐛 Pest Risk Alert', body: w.humidity > 65 && w.temp > 30 ? '⚠️ HIGH RISK: Hot & humid conditions favor pest outbreak. Scout fields and apply preventive spray.' : 'Pest risk is LOW this week. Continue routine scouting. Yellow sticky traps recommended.' },
+    { title:'🌿 Fertilizer Advisory', body: maxRain > 60 ? 'Rain expected soon. Delay top-dressing urea — heavy rain causes nutrient leaching.' : 'Dry spell ahead. Ideal time for urea top-dressing and foliar nutrient spray. Apply in morning.' }
+  ];
+  var recEl = document.getElementById('rec-grid');
+  if (recEl) recEl.innerHTML = recs.map(function(r){ return '<div class="rec-card"><h4>'+r.title+'</h4><p>'+r.body+'</p></div>'; }).join('');
+}
+
+/* ── PROFILE ────────────────────────────────────── */
+function renderProfile(cu) {
+  setText('profile-farmer-name', cu.name || 'Farmer');
+  setText('profile-village-phone', (cu.village||'Devapur')+' · '+(cu.phone||'9111111111'));
+  var kycEl = document.getElementById('profile-kyc-chip');
+  if (kycEl) kycEl.textContent = cu.kycDone ? '✅ KYC Verified' : '⏳ KYC Pending';
+
+  var finance = getFinance();
+  var income  = finance.filter(function(r){return r.type==='income';}).reduce(function(s,r){return s+r.amount;},0);
+  var expense = finance.filter(function(r){return r.type==='expense';}).reduce(function(s,r){return s+r.amount;},0);
+  setText('pr-income', 'Rs. '+income.toLocaleString('en-IN'));
+  setText('pr-expense', 'Rs. '+expense.toLocaleString('en-IN'));
+  setText('pr-profit', 'Rs. '+(income-expense).toLocaleString('en-IN'));
+
+  var cropsList = document.getElementById('profile-crops-list');
+  if (cropsList) {
+    var crops = getCrops();
+    if (crops.length===0) { cropsList.innerHTML='<p style="color:#888;font-size:.82rem">No crops recorded.</p>'; }
+    else {
+      cropsList.innerHTML = crops.map(function(c){
+        return '<div class="profile-row">'+
+          '<span class="profile-row-label">'+c.cropName+'</span>'+
+          '<span class="profile-row-val badge bg-green">'+c.season+'</span></div>';
+      }).join('');
+    }
+  }
+
+  // Pre-fill edit form
+  var enEl = document.getElementById('edit-name'); if(enEl) enEl.value = cu.name||'';
+  var epEl = document.getElementById('edit-phone'); if(epEl) epEl.value = cu.phone||'';
+  var evEl = document.getElementById('edit-village'); if(evEl) evEl.value = cu.village||'';
+}
+
+/* ── CONTACT MODAL ──────────────────────────────── */
+function openContactModal(buyer) {
+  if (typeof buyer==='string') { try{buyer=JSON.parse(buyer);}catch(e){return;} }
+  setText('modal-name', buyer.name||'Unknown');
+  setText('modal-meta', (buyer.type||'')+(buyer.location?' · '+buyer.location:buyer.village?' · '+buyer.village:''));
+  setText('modal-phone', buyer.phone||'Contact via Agent');
+  document.getElementById('contact-modal').classList.add('open');
+}
+function closeContactModal() {
+  document.getElementById('contact-modal').classList.remove('open');
+}
+document.getElementById('contact-modal').addEventListener('click', function(e){
+  if (e.target===this) closeContactModal();
+});
+
+/* ── PAYMENTS ────────────────────────────────────── */
+var _payMethod = 'upi';
+var _upiApp    = 'gpay';
+
+// Generate decorative QR grid
+setTimeout(function(){
+  var grid = document.getElementById('qr-grid');
+  if (!grid) return;
+  for (var i=0;i<64;i++){
+    var d=document.createElement('div');
+    d.style.cssText='width:14px;height:14px;border-radius:2px;background:'+(Math.random()>0.5?'var(--primary)':'var(--bg)');
+    grid.appendChild(d);
+  }
+}, 600);
+
+function selectPayMethod(method, btn) {
+  _payMethod = method;
+  document.querySelectorAll('.pay-method-card').forEach(function(b){
+    b.style.borderColor='var(--border)';
+    b.classList.remove('selected');
+  });
+  if (btn) { btn.style.borderColor='var(--primary)'; btn.classList.add('selected'); }
+  document.getElementById('upi-area').style.display  = (method==='upi')                    ?'block':'none';
+  document.getElementById('card-area').style.display  = (method==='debit'||method==='credit')?'block':'none';
+  document.getElementById('netb-area').style.display  = (method==='netb')                   ?'block':'none';
+  document.getElementById('cod-area').style.display   = (method==='cod')                    ?'block':'none';
+}
+
+function selectUpiApp(app, btn) {
+  _upiApp = app;
+  document.querySelectorAll('.upi-btn').forEach(function(b){ b.style.borderColor='var(--border)'; });
+  if (btn) btn.style.borderColor='var(--primary)';
+  var ids={gpay:'agrinode@sbi',phonepe:'agrinode@ybl',paytm:'agrinode@paytm'};
+  var el=document.getElementById('upi-id-display');
+  if (el) el.textContent = ids[app]||'agrinode@sbi';
+}
+
+function updatePayAmount(val) {
+  var el=document.getElementById('pay-amount-words');
+  if (!el) return;
+  var n=parseInt(val);
+  if (!n||n<=0){el.textContent='';return;}
+  if (n>=10000000)     el.textContent='₹'+(n/10000000).toFixed(2)+' Crore';
+  else if (n>=100000)  el.textContent='₹'+(n/100000).toFixed(2)+' Lakh';
+  else if (n>=1000)    el.textContent='₹'+(n/1000).toFixed(1)+' Thousand';
+  else                 el.textContent='₹'+n.toLocaleString('en-IN');
+}
+
+function processHubPayment() {
+  var amt=parseInt(document.getElementById('pay-amount').value);
+  if (!amt||amt<=0){showToast(t('enterAmount')||'Please enter an amount','error');return;}
+  var desc=document.getElementById('pay-desc').value||'Payment';
+  var mMap={upi:'UPI',debit:'Debit Card',credit:'Credit Card',netb:'Net Banking',cod:'COD'};
+  showToast('⏳ Processing…','warning');
+  setTimeout(function(){
+    showToast('✅ '+(t('paymentSuccess')||'Payment successful!'));
+    if (!_store.payments) _store.payments=[];
+    _store.payments.unshift({
+      id:'PAY'+Date.now().toString().slice(-6),
+      type:'debit', amount:amt,
+      label:desc, date:new Date().toLocaleDateString('en-IN'),
+      method:mMap[_payMethod]||'UPI', status:'success'
+    });
+    document.getElementById('pay-amount').value='';
+    document.getElementById('pay-desc').value='';
+    document.getElementById('pay-amount-words').textContent='';
+    renderPayHistory();
+  }, 1800);
+}
+
+function renderPayHistory() {
+  var el=document.getElementById('hub-pay-history');
+  if (!el) return;
+  var payments=(_store.payments||[]).slice(0,10);
+  if (payments.length===0) {
+    payments=[
+      {id:'PAY001',type:'credit',amount:88000,label:'Rice Sale – APMC Hubli',   date:'10/03/2026',method:'UPI', status:'success'},
+      {id:'PAY002',type:'debit', amount:22000,label:'Fertilizer Purchase',       date:'05/03/2026',method:'UPI', status:'success'},
+      {id:'PAY003',type:'credit',amount:6000, label:'PM-KISAN Instalment 16',   date:'28/02/2026',method:'DBT', status:'success'},
+      {id:'PAY004',type:'debit', amount:5000, label:'Loan EMI – SBI KCC',       date:'01/03/2026',method:'NACH',status:'success'}
+    ];
+  }
+  el.innerHTML=payments.map(function(p){
+    var isCr=p.type==='credit';
+    return '<div class="pay-hist-row" style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="width:38px;height:38px;border-radius:10px;background:'+(isCr?'#e8f5e9':'#ffebee')+';display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">'+(isCr?'⬆️':'⬇️')+'</div>'+
+      '<div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+p.label+'</div>'+
+      '<div style="font-size:.72rem;color:var(--text-muted)">'+p.date+' · '+p.method+'</div></div>'+
+      '<div style="font-weight:800;font-size:.95rem;color:'+(isCr?'var(--primary)':'var(--danger)')+'">'+
+        (isCr?'+':'-')+'₹'+p.amount.toLocaleString('en-IN')+'</div></div>';
+  }).join('');
+}
+</script>
+</body>
+</html>

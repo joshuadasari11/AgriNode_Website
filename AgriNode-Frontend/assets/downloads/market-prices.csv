@@ -1,0 +1,14 @@
+﻿Date,APMC,District,Commodity,Variety,Min Price RsQtl,Max Price RsQtl,Modal Price RsQtl,Arrivals Qtl,Trend,MSP RsQtl,Above MSP,Grade
+2026-05-24,Hubli APMC,Dharwad,Paddy,BPT 5204,2080,2480,2280,4200,Up,2300,No,A
+2026-05-24,Hubli APMC,Dharwad,Wheat,HD 2967,1980,2180,2080,3100,Stable,2275,No,A
+2026-05-24,Hubli APMC,Dharwad,Maize,DHM 117,1580,1860,1720,2800,Down,2090,No,B
+2026-05-24,Hubli APMC,Dharwad,Cotton,Bt Hybrid,6200,6700,6450,1850,Up,7121,No,A
+2026-05-24,Gadag APMC,Gadag,Sunflower,KBSH 44,6820,7560,7200,1420,Stable,7280,No,A
+2026-05-24,Gadag APMC,Gadag,Groundnut,TMV 2,4820,5280,5060,720,Up,6377,No,A
+2026-05-24,Belagavi APMC,Belagavi,Sugarcane,CO 86032,290,410,350,22000,Stable,,NA,A
+2026-05-24,Belagavi APMC,Belagavi,Soybean,JS 335,4400,5000,4720,1200,Up,4892,No,A
+2026-05-24,Vijayapura APMC,Vijayapura,Pomegranate,Bhagwa,10000,13000,11800,340,Up,,NA,A
+2026-05-24,Vijayapura APMC,Vijayapura,Tur Dal,LRG 41,6700,7200,6980,480,Stable,7000,No,B
+2026-05-23,Hubli APMC,Dharwad,Paddy,BPT 5204,2020,2460,2210,3900,Stable,2300,No,A
+2026-05-23,Hubli APMC,Dharwad,Cotton,Bt Hybrid,6120,6680,6400,1720,Stable,7121,No,A
+2026-05-22,Hubli APMC,Dharwad,Paddy,BPT 5204,1980,2420,2160,3600,Down,2300,No,A

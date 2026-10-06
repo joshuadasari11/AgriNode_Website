@@ -1,0 +1,14 @@
+[
+  { "id": "PAY001", "type": "credit", "amount": 88000,  "label": "Rice Sale – APMC Hubli",   "date": "10/03/2026", "method": "UPI",  "status": "success", "farmer": "Geetha Devi",  "upiId": "geetha@sbi" },
+  { "id": "PAY002", "type": "debit",  "amount": 22000,  "label": "Fertilizer Store – Hubli",  "date": "05/03/2026", "method": "UPI",  "status": "success", "farmer": "Geetha Devi",  "upiId": "iffco@upi" },
+  { "id": "PAY003", "type": "credit", "amount": 6000,   "label": "PM-KISAN Instalment 16",    "date": "28/02/2026", "method": "DBT",  "status": "success", "farmer": "Geetha Devi",  "upiId": "gov@india" },
+  { "id": "PAY004", "type": "debit",  "amount": 5000,   "label": "Loan EMI – SBI KCC",        "date": "01/03/2026", "method": "NACH", "status": "success", "farmer": "Geetha Devi",  "upiId": "sbi@nach" },
+  { "id": "PAY005", "type": "credit", "amount": 126000, "label": "Wheat Sale – PNB APMC",     "date": "20/03/2026", "method": "NEFT", "status": "success", "farmer": "Prakash Nair", "upiId": "prakash@pnb" },
+  { "id": "PAY006", "type": "debit",  "amount": 41000,  "label": "Labour Payment – Harvest",  "date": "18/03/2026", "method": "NEFT", "status": "success", "farmer": "Prakash Nair", "upiId": "labour@upi" },
+  { "id": "PAY007", "type": "credit", "amount": 64000,  "label": "Cotton Sale – Deccan Corp",  "date": "12/04/2026", "method": "UPI",  "status": "success", "farmer": "Priya Singh",  "upiId": "priya@hdfc" },
+  { "id": "PAY008", "type": "debit",  "amount": 18000,  "label": "Pesticides – Agro Store",   "date": "08/04/2026", "method": "Card", "status": "success", "farmer": "Priya Singh",  "upiId": "" },
+  { "id": "PAY009", "type": "credit", "amount": 210000, "label": "Sugarcane Sale – Nandini",  "date": "20/04/2026", "method": "RTGS", "status": "success", "farmer": "Venkat Reddy", "upiId": "venkat@sbi" },
+  { "id": "PAY010", "type": "debit",  "amount": 55000,  "label": "Irrigation Equipment",      "date": "15/04/2026", "method": "NetB", "status": "success", "farmer": "Venkat Reddy", "upiId": "" },
+  { "id": "PAY011", "type": "credit", "amount": 2000,   "label": "PM-KISAN Instalment 17",    "date": "22/05/2026", "method": "DBT",  "status": "success", "farmer": "Laxmi Bai",   "upiId": "gov@india" },
+  { "id": "PAY012", "type": "debit",  "amount": 12000,  "label": "Seed Purchase – Agro Hub",  "date": "19/05/2026", "method": "COD",  "status": "pending", "farmer": "Laxmi Bai",   "upiId": "" }
+]

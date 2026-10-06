@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Agent Dashboard – AgriNode Ecosystem</title>
+  <meta name="description" content="AgriNode Agent Ecosystem – Marketplace, Weather, Schemes, Loans, APMC, Buyers and more."/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="css/styles.css" rel="stylesheet"/>
+  <style>
+    .eco-panel-wrap{display:none}.eco-panel-wrap.active{display:block}
+    .stat-mini{background:var(--card-bg);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px}
+    .stat-mini:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+    .forecast-card{background:rgba(255,255,255,.15);border-radius:14px;padding:14px 12px;text-align:center;flex:1;min-width:80px;backdrop-filter:blur(8px)}
+    .forecast-day{font-size:.7rem;font-weight:700;opacity:.8;text-transform:uppercase}
+    .forecast-icon{font-size:1.6rem;margin:6px 0}
+    .forecast-hi{font-size:.95rem;font-weight:800}.forecast-lo{font-size:.75rem;opacity:.7}
+    .forecast-rain{font-size:.68rem;background:rgba(255,255,255,.2);border-radius:20px;padding:2px 8px;margin-top:4px}
+    .pay-step-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+    .amount-input-wrap{background:var(--bg);border-radius:var(--radius);padding:20px;text-align:center;border:2px dashed var(--border)}
+    .big-amount{font-size:2.5rem;font-weight:900;color:var(--primary)}
+    .upi-btn{display:flex;align-items:center;gap:10px;padding:14px 18px;border:2px solid var(--border);border-radius:12px;background:var(--card-bg);cursor:pointer;font-weight:700;font-size:.9rem;transition:all .2s;width:100%;text-align:left;color:var(--text)}
+    .upi-btn:hover{border-color:var(--primary);background:var(--bg)}
+    .upi-btn i{font-size:1.4rem;width:28px}
+  </style>
+</head>
+<body>
+<div id="offline-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#B71C1C;color:#fff;text-align:center;padding:8px;font-size:.85rem;z-index:9998;font-weight:600"><i class="fa fa-wifi me-2"></i>No Internet Connection</div>
+<div id="toast-container"></div>
+<div id="print-report"></div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a class="sidebar-logo" href="dashboard.html">
+      <div class="logo-icon-sm">🌾</div>
+      <div><span>AgriNode</span><small>Agent Ecosystem</small></div>
+    </a>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Main</div>
+    <a class="sidebar-link active" id="navOverview" onclick="showEcoPanel('panelOverview',this);return false"><i class="fa fa-home"></i> <span data-i18n="dashboard">Dashboard</span></a>
+    <a href="farmer.html" class="sidebar-link"><i class="fa fa-users"></i> <span data-i18n="farmers">Farmers</span></a>
+    <a class="sidebar-link" id="navMarketplace" onclick="showEcoPanel('panelMarketplace',this);return false"><i class="fa fa-store"></i> <span data-i18n="marketplace">Marketplace</span></a>
+    <a class="sidebar-link" id="navBroadcast" onclick="showEcoPanel('panelBroadcast',this);return false"><i class="fa fa-broadcast-tower"></i> <span data-i18n="broadcast">Broadcast</span></a>
+
+    <div class="nav-section-title" style="margin-top:8px">Market & Trade</div>
+    <a class="sidebar-link" id="navBuyers" onclick="showEcoPanel('panelBuyers',this);return false"><i class="fa fa-handshake"></i> <span data-i18n="nearbyBuyers">Nearby Buyers</span></a>
+    <a class="sidebar-link" id="navApmc" onclick="showEcoPanel('panelApmc',this);return false"><i class="fa fa-map-marker-alt"></i> APMC Locator</a>
+    <a class="sidebar-link" id="navPayments" onclick="showEcoPanel('panelPayments',this);return false"><i class="fa fa-wallet"></i> <span data-i18n="payments">Payments</span></a>
+
+    <div class="nav-section-title" style="margin-top:8px">Information</div>
+    <a class="sidebar-link" id="navWeather" onclick="showEcoPanel('panelWeather',this);return false"><i class="fa fa-cloud-sun"></i> <span data-i18n="weatherForecast">Live Weather</span></a>
+    <a class="sidebar-link" id="navNews" onclick="showEcoPanel('panelNews',this);return false"><i class="fa fa-newspaper"></i> Agri News</a>
+    <a href="crop.html" class="sidebar-link"><i class="fa fa-leaf"></i> <span data-i18n="crops">Crops</span></a>
+    <a href="finance.html" class="sidebar-link"><i class="fa fa-rupee-sign"></i> <span data-i18n="finance">Finance</span></a>
+
+    <div class="nav-section-title" style="margin-top:8px">Government</div>
+    <a class="sidebar-link" id="navSchemes" onclick="showEcoPanel('panelSchemes',this);return false"><i class="fa fa-landmark"></i> <span data-i18n="schemes">Govt Schemes</span></a>
+    <a class="sidebar-link" id="navLoans" onclick="showEcoPanel('panelLoans',this);return false"><i class="fa fa-university"></i> <span data-i18n="loans">Loan Center</span></a>
+    <a class="sidebar-link" id="navSupport" onclick="showEcoPanel('panelSupport',this);return false"><i class="fa fa-headset"></i> Support Desk</a>
+
+    <div class="nav-section-title" style="margin-top:8px"><span data-i18n="admin">Admin</span></div>
+    <a class="sidebar-link" id="adminLink" href="admin.html"><i class="fa fa-shield-alt"></i> <span data-i18n="controlCenter">Command Center</span></a>
+    <a href="market.html" class="sidebar-link"><i class="fa fa-chart-line"></i> <span data-i18n="marketPrices">Market Prices</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar" id="sidebarInitial">R</div>
+      <div><div class="name" id="sidebarName">Agent</div><div class="role-label" id="sidebarRole">Agent</div></div>
+    </div>
+    <button onclick="doLogout()" style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-weight:700;cursor:pointer;font-size:.82rem"><i class="fa fa-sign-out-alt me-1"></i>Logout</button>
+  </div>
+</div>
+
+<!-- ══════════ MAIN CONTENT ══════════ -->
+<div class="main-content">
+  <div class="topbar">
+    <button class="icon-btn hamburger" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+    <div class="topbar-title" id="topbarTitle">Agent Ecosystem</div>
+    <div class="topbar-actions">
+      <select class="lang-select" id="langSelectDash" onchange="changeLang(this.value)"><option value="en">EN</option><option value="hi">HI</option><option value="kn">KN</option></select>
+      <button class="icon-btn" onclick="toggleDark()"><i class="fa fa-moon" id="themeIcon"></i></button>
+      <button class="icon-btn" onclick="generateReport(null)" title="Report"><i class="fa fa-file-pdf"></i></button>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <!-- ══ PANEL: OVERVIEW ══ -->
+    <div class="eco-panel-wrap active" id="panelOverview">
+      <div id="alertBox" class="mb-3"></div>
+      <div class="row g-3 mb-3" id="overviewStats"></div>
+      <div class="row g-3">
+        <div class="col-lg-8">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-microphone me-2" style="color:var(--primary)"></i>Voice Command</h5></div>
+            <div style="display:flex;gap:12px;align-items:center">
+              <button class="voice-btn" id="voiceBtn" onclick="startVoice('voiceInput','voiceResult')"><i class="fa fa-microphone"></i></button>
+              <div style="flex:1"><input id="voiceInput" class="form-control" placeholder="Or type a command…"/><div id="voiceResult" style="font-size:.8rem;color:var(--text-muted);margin-top:4px"></div></div>
+            </div>
+          </div>
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-users me-2" style="color:var(--primary)"></i>Farmers Overview</h5><a href="farmer.html" style="font-size:.82rem;color:var(--primary);font-weight:600">Manage All →</a></div>
+            <div id="farmersPreview"></div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <!-- Quick weather -->
+          <div class="card-panel" style="background:linear-gradient(135deg,#0277BD,#0288D1,#29B6F6);color:#fff;cursor:pointer" onclick="showEcoPanel('panelWeather',document.getElementById('navWeather'))">
+            <div style="font-size:.78rem;opacity:.8;font-weight:700">LIVE WEATHER</div>
+            <div id="quickWeather" style="margin-top:8px"></div>
+          </div>
+          <!-- Quick News -->
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-newspaper me-2" style="color:#1565C0"></i>Latest News</h5><a onclick="showEcoPanel('panelNews',document.getElementById('navNews'));return false" style="font-size:.82rem;color:var(--primary);cursor:pointer;font-weight:600">All →</a></div>
+            <div id="newsPreview"></div>
+          </div>
+          <!-- Quick Actions -->
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>⚡ Quick Links</h5></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button onclick="showEcoPanel('panelSchemes',document.getElementById('navSchemes'))" style="padding:10px;border-radius:10px;border:none;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);color:var(--primary);font-weight:700;font-size:.78rem;cursor:pointer">🏛️ Schemes</button>
+              <button onclick="showEcoPanel('panelLoans',document.getElementById('navLoans'))" style="padding:10px;border-radius:10px;border:none;background:linear-gradient(135deg,#E3F2FD,#BBDEFB);color:#1565C0;font-weight:700;font-size:.78rem;cursor:pointer">🏦 Loans</button>
+              <button onclick="showEcoPanel('panelApmc',document.getElementById('navApmc'))" style="padding:10px;border-radius:10px;border:none;background:linear-gradient(135deg,#E8EAF6,#C5CAE9);color:#3949AB;font-weight:700;font-size:.78rem;cursor:pointer">📍 APMC</button>
+              <button onclick="showEcoPanel('panelBuyers',document.getElementById('navBuyers'))" style="padding:10px;border-radius:10px;border:none;background:linear-gradient(135deg,#FFF8E1,#FFE082);color:#E65100;font-weight:700;font-size:.78rem;cursor:pointer">🤝 Buyers</button>
+            </div>
+          </div>
+          <div class="card-panel downloads-center compact">
+            <div class="downloads-center-head" style="margin-bottom:10px">
+              <h4><i class="fa fa-cloud-download-alt"></i> Downloads Center</h4>
+              <span>Offline demo assets</span>
+            </div>
+            <a class="download-item" href="assets/downloads/brochure.pdf" data-download-file="assets/downloads/brochure.pdf" data-download-name="AgriNode-Platform-Brochure-2026.pdf">
+              <div class="download-meta">
+                <i class="fa fa-book-open"></i>
+                <div><strong>Download Brochure</strong><small>PDF | 3.3 KB</small></div>
+              </div>
+              <i class="fa fa-download"></i>
+            </a>
+            <a class="download-item" href="assets/downloads/user-guide.pdf" data-download-file="assets/downloads/user-guide.pdf" data-download-name="AgriNode-User-Guide-v2.pdf">
+              <div class="download-meta">
+                <i class="fa fa-circle-question"></i>
+                <div><strong>Download User Guide</strong><small>PDF | 3.0 KB</small></div>
+              </div>
+              <i class="fa fa-download"></i>
+            </a>
+            <a class="download-item" href="assets/downloads/annual-report.pdf" data-download-file="assets/downloads/annual-report.pdf" data-download-name="AgriNode-Annual-Report-FY2025-26.pdf">
+              <div class="download-meta">
+                <i class="fa fa-file-lines"></i>
+                <div><strong>Download Annual Report</strong><small>PDF | 2.9 KB</small></div>
+              </div>
+              <i class="fa fa-download"></i>
+            </a>
+            <a class="download-item" href="assets/downloads/crop-data.csv" data-download-file="assets/downloads/crop-data.csv" data-download-name="AgriNode-Crop-Data.csv">
+              <div class="download-meta">
+                <i class="fa fa-table"></i>
+                <div><strong>Download Sample Crop Data</strong><small>CSV | 1.9 KB</small></div>
+              </div>
+              <i class="fa fa-download"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: MARKETPLACE ══ -->
+    <div class="eco-panel-wrap" id="panelMarketplace">
+      <h2 class="section-title"><i class="fa fa-store"></i> Crop Marketplace</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <div style="background:linear-gradient(135deg,#1B5E20,#4CAF50);border-radius:var(--radius);padding:18px;color:#fff">
+            <div style="font-size:.72rem;opacity:.7;font-weight:700;text-transform:uppercase">Total Listings</div>
+            <div style="font-size:2rem;font-weight:900" id="mpListingCount">0</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div style="background:linear-gradient(135deg,#1565C0,#1976D2);border-radius:var(--radius);padding:18px;color:#fff">
+            <div style="font-size:.72rem;opacity:.7;font-weight:700;text-transform:uppercase">Active Listings</div>
+            <div style="font-size:2rem;font-weight:900" id="mpActiveCount">0</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div style="background:linear-gradient(135deg,#E65100,#FF6D00);border-radius:var(--radius);padding:18px;color:#fff">
+            <div style="font-size:.72rem;opacity:.7;font-weight:700;text-transform:uppercase">Verified Buyers</div>
+            <div style="font-size:2rem;font-weight:900" id="mpBuyerCount">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>Available Listings</h5></div>
+            <div id="marketplaceList"></div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-plus me-2" style="color:var(--primary)"></i>Add New Listing</h5></div>
+            <div class="mb-3">
+              <label class="form-label">Farmer</label>
+              <select class="form-select" id="mpFarmer"></select>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6"><label class="form-label">Crop</label><input class="form-control" id="mpCrop" placeholder="e.g. Rice"/></div>
+              <div class="col-6"><label class="form-label">Quantity</label><input class="form-control" id="mpQty" placeholder="e.g. 30 qtl"/></div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6"><label class="form-label">Ask Price (₹/qtl)</label><input class="form-control" type="number" id="mpPrice" placeholder="e.g. 2200"/></div>
+              <div class="col-6"><label class="form-label">Quality</label><select class="form-select" id="mpQuality"><option>Grade A</option><option>Grade B</option><option>Grade C</option></select></div>
+            </div>
+            <button class="btn-primary-custom" onclick="addListing()"><i class="fa fa-plus me-1"></i> List for Sale</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: BUYERS ══ -->
+    <div class="eco-panel-wrap" id="panelBuyers">
+      <h2 class="section-title"><i class="fa fa-handshake"></i> Nearby Buyer Locator</h2>
+      <div class="filter-row mb-3" style="display:flex;gap:10px;flex-wrap:wrap">
+        <div class="search-bar" style="flex:1;max-width:280px"><i class="fa fa-search"></i><input type="text" id="buyerSearch" placeholder="Search buyers…" oninput="renderBuyers()"/></div>
+        <select class="filter-sel" id="buyerTypeFilter" onchange="renderBuyers()"><option value="">All Types</option><option>Trader</option><option>Miller</option><option>Exporter</option><option>Factory</option><option>Retailer</option></select>
+        <select class="filter-sel" id="buyerVerified" onchange="renderBuyers()"><option value="">All</option><option value="true">Verified Only</option></select>
+      </div>
+      <div id="buyersList"></div>
+    </div>
+
+    <!-- ══ PANEL: APMC ══ -->
+    <div class="eco-panel-wrap" id="panelApmc">
+      <h2 class="section-title"><i class="fa fa-map-marker-alt"></i> APMC Mandi Locator</h2>
+      <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:18px">Nearest APMC market yards with live commodity prices. Sorted by distance from Hubli.</p>
+      <div id="apmcList"></div>
+    </div>
+
+    <!-- ══ PANEL: WEATHER ══ -->
+    <div class="eco-panel-wrap" id="panelWeather">
+      <h2 class="section-title"><i class="fa fa-cloud-sun"></i> Live Weather Dashboard</h2>
+      <div id="weatherMain"></div>
+    </div>
+
+    <!-- ══ PANEL: NEWS ══ -->
+    <div class="eco-panel-wrap" id="panelNews">
+      <h2 class="section-title"><i class="fa fa-newspaper"></i> Agriculture News Feed</h2>
+      <div class="filter-row mb-3" style="display:flex;gap:8px;flex-wrap:wrap" id="newsFilters">
+        <button class="complaint-filter-btn active" onclick="filterNews('all',this)">All</button>
+        <button class="complaint-filter-btn" onclick="filterNews('gov',this)">Government</button>
+        <button class="complaint-filter-btn" onclick="filterNews('market',this)">Market</button>
+        <button class="complaint-filter-btn" onclick="filterNews('weather',this)">Weather</button>
+        <button class="complaint-filter-btn" onclick="filterNews('alert',this)">Alerts</button>
+      </div>
+      <div id="newsList"></div>
+    </div>
+
+    <!-- ══ PANEL: SCHEMES ══ -->
+    <div class="eco-panel-wrap" id="panelSchemes">
+      <h2 class="section-title"><i class="fa fa-landmark"></i> Government Schemes Portal</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4"><div style="background:linear-gradient(135deg,#FF6F00,#FFA000);border-radius:var(--radius);padding:16px;color:#fff"><div style="font-size:.7rem;opacity:.7;font-weight:700">TOTAL SCHEMES</div><div style="font-size:2rem;font-weight:900" id="schemeTotalCount">0</div></div></div>
+        <div class="col-md-4"><div style="background:linear-gradient(135deg,#1B5E20,#4CAF50);border-radius:var(--radius);padding:16px;color:#fff"><div style="font-size:.7rem;opacity:.7;font-weight:700">APPLIED</div><div style="font-size:2rem;font-weight:900" id="schemeAppliedCount">0</div></div></div>
+        <div class="col-md-4"><div style="background:linear-gradient(135deg,#1565C0,#1976D2);border-radius:var(--radius);padding:16px;color:#fff"><div style="font-size:.7rem;opacity:.7;font-weight:700">OPEN TO APPLY</div><div style="font-size:2rem;font-weight:900" id="schemeOpenCount">0</div></div></div>
+      </div>
+      <div id="schemesList"></div>
+    </div>
+
+    <!-- ══ PANEL: LOANS ══ -->
+    <div class="eco-panel-wrap" id="panelLoans">
+      <h2 class="section-title"><i class="fa fa-university"></i> Loan Center</h2>
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>Active Loan Applications</h5></div>
+            <div id="loansList"></div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-plus me-2" style="color:var(--primary)"></i>Apply for Loan</h5></div>
+            <div class="mb-3">
+              <label class="form-label">Loan Type</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div id="lTypKCC" class="role-opt selected" onclick="selectLoanType('KCC',this)" style="text-align:center;padding:12px;border:2px solid var(--primary);border-radius:10px;cursor:pointer;background:#E8F5E9;color:var(--primary);font-weight:700;font-size:.82rem">💳 KCC<div style="font-size:.68rem;font-weight:500">4% p.a.</div></div>
+                <div id="lTypAgri" class="role-opt" onclick="selectLoanType('Agri',this)" style="text-align:center;padding:12px;border:2px solid var(--border);border-radius:10px;cursor:pointer;font-weight:700;font-size:.82rem;color:var(--text)">🌾 Agri Loan<div style="font-size:.68rem;font-weight:500">7% p.a.</div></div>
+                <div id="lTypEquip" class="role-opt" onclick="selectLoanType('Equipment',this)" style="text-align:center;padding:12px;border:2px solid var(--border);border-radius:10px;cursor:pointer;font-weight:700;font-size:.82rem;color:var(--text)">🚜 Equipment<div style="font-size:.68rem;font-weight:500">8.5% p.a.</div></div>
+                <div id="lTypSHG" class="role-opt" onclick="selectLoanType('SHG',this)" style="text-align:center;padding:12px;border:2px solid var(--border);border-radius:10px;cursor:pointer;font-weight:700;font-size:.82rem;color:var(--text)">👥 SHG Loan<div style="font-size:.68rem;font-weight:500">6% p.a.</div></div>
+              </div>
+            </div>
+            <div class="mb-3"><label class="form-label">Farmer Name</label><select class="form-select" id="loanFarmer"></select></div>
+            <div class="row g-2 mb-3">
+              <div class="col-6"><label class="form-label">Amount (₹)</label><input class="form-control" type="number" id="loanAmount" placeholder="e.g. 150000"/></div>
+              <div class="col-6"><label class="form-label">Bank</label><select class="form-select" id="loanBank"><option>SBI</option><option>PNB</option><option>BOI</option><option>Canara</option><option>NABARD</option></select></div>
+            </div>
+            <div class="mb-3"><label class="form-label">Tenure</label>
+              <select class="form-select" id="loanTenure"><option>6 months</option><option>12 months</option><option>18 months</option><option>24 months</option><option>36 months</option></select>
+            </div>
+            <button class="btn-primary-custom" onclick="applyLoan()"><i class="fa fa-paper-plane me-1"></i> Submit Application</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: PAYMENTS ══ -->
+    <div class="eco-panel-wrap" id="panelPayments">
+      <h2 class="section-title"><i class="fa fa-wallet"></i> Payment Gateway</h2>
+      <div class="row g-3">
+        <div class="col-lg-5">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>Send / Receive Payment</h5></div>
+            <!-- Steps -->
+            <div class="pay-step-wrap">
+              <div class="pay-step active" id="pStep1"><div class="pay-step-num">1</div><div>Select Method</div></div>
+              <div class="pay-step" id="pStep2"><div class="pay-step-num">2</div><div>Enter Amount</div></div>
+              <div class="pay-step" id="pStep3"><div class="pay-step-num">3</div><div>Confirm &amp; Pay</div></div>
+            </div>
+            <div id="payStep1Content">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button class="upi-btn" onclick="selectPayMethod('UPI')"><i class="fa fa-qrcode" style="color:#5C4033"></i>UPI / QR Code<span style="margin-left:auto;font-size:.72rem;background:#E8F5E9;color:var(--primary);border-radius:10px;padding:2px 8px;font-weight:700">Instant</span></button>
+                <button class="upi-btn" onclick="selectPayMethod('NEFT')"><i class="fa fa-university" style="color:#1565C0"></i>NEFT Transfer<span style="margin-left:auto;font-size:.72rem;background:#E3F2FD;color:#1565C0;border-radius:10px;padding:2px 8px;font-weight:700">2-4 hrs</span></button>
+                <button class="upi-btn" onclick="selectPayMethod('RTGS')"><i class="fa fa-bolt" style="color:#E65100"></i>RTGS Transfer<span style="margin-left:auto;font-size:.72rem;background:#FFF3E0;color:#E65100;border-radius:10px;padding:2px 8px;font-weight:700">Same Day</span></button>
+              </div>
+            </div>
+            <div id="payStep2Content" style="display:none">
+              <div class="amount-input-wrap mb-3">
+                <div style="font-size:.78rem;color:var(--text-muted);font-weight:600;margin-bottom:8px">Enter Amount</div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px">
+                  <span style="font-size:2rem;color:var(--primary);font-weight:800">₹</span>
+                  <input type="number" id="payAmount" style="border:none;background:transparent;font-size:2.5rem;font-weight:900;color:var(--primary);width:160px;text-align:center;outline:none" placeholder="0"/>
+                </div>
+              </div>
+              <div class="mb-3"><label class="form-label">To (Farmer / Account)</label><select class="form-select" id="payTo"></select></div>
+              <div class="mb-3"><label class="form-label">Remarks</label><input class="form-control" id="payRemark" placeholder="e.g. Rice sale payment"/></div>
+              <button class="btn-primary-custom" onclick="goPayStep3()">Continue →</button>
+            </div>
+            <div id="payStep3Content" style="display:none">
+              <div style="background:var(--bg);border-radius:12px;padding:18px;margin-bottom:16px">
+                <div style="font-size:.75rem;color:var(--text-muted);font-weight:700;margin-bottom:12px;text-transform:uppercase">Confirm Payment</div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Method</span><strong id="confMethod">—</strong></div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Amount</span><strong id="confAmount" style="color:var(--primary)">—</strong></div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0"><span>Remarks</span><span id="confRemark" style="font-size:.85rem">—</span></div>
+              </div>
+              <div class="qr-placeholder" id="qrDisplay"><i class="fa fa-qrcode"></i><span>QR Code</span></div>
+              <button class="btn-primary-custom" onclick="confirmPayment()" style="background:linear-gradient(135deg,#1B5E20,#4CAF50)"><i class="fa fa-check me-1"></i> Confirm &amp; Pay</button>
+              <button onclick="resetPayment()" style="width:100%;margin-top:8px;border:none;background:transparent;color:var(--text-muted);font-size:.82rem;cursor:pointer">← Change Details</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="card-panel">
+            <div class="upi-input-wrap mb-3">
+              <div style="font-size:.78rem;font-weight:700;color:var(--primary);margin-bottom:4px">Your UPI ID</div>
+              <div class="upi-id-display" id="agentUPI">agent@agrinode</div>
+              <div style="font-size:.72rem;color:var(--text-muted);margin-top:8px">Share this ID to receive payments instantly</div>
+            </div>
+            <div class="card-panel-header"><h5><i class="fa fa-history me-2"></i>Transaction History</h5></div>
+            <div id="paymentHistory"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PANEL: SUPPORT ══ -->
+    <div class="eco-panel-wrap" id="panelSupport">
+      <h2 class="section-title"><i class="fa fa-headset"></i> Support Desk</h2>
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>My Support Tickets</h5></div>
+            <div id="ticketsList"></div>
+          </div>
+          <!-- Helplines -->
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-phone me-2" style="color:var(--primary)"></i>Government Helplines</h5></div>
+            <div class="helpline-chip"><div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#FF6F00,#FFA000);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;flex-shrink:0">🌾</div><div style="flex:1"><div class="helpline-num">1800-180-1551</div><div style="font-size:.75rem;color:var(--text-muted)">Kisan Call Centre – Mon-Sat 6AM–10PM</div></div><a href="tel:18001801551" class="contact-quick-btn" style="color:var(--primary);background:#E8F5E9;border-color:#C8E6C9"><i class="fa fa-phone"></i></a></div>
+            <div class="helpline-chip"><div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#1565C0,#1976D2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;flex-shrink:0">🏦</div><div style="flex:1"><div class="helpline-num">1800-11-0001</div><div style="font-size:.75rem;color:var(--text-muted)">NABARD Toll-Free – Loan grievances</div></div><a href="tel:18001100001" class="contact-quick-btn" style="color:#1565C0;background:#E3F2FD;border-color:#BBDEFB"><i class="fa fa-phone"></i></a></div>
+            <div class="helpline-chip"><div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#1B5E20,#4CAF50);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;flex-shrink:0">📋</div><div style="flex:1"><div class="helpline-num">155261</div><div style="font-size:.75rem;color:var(--text-muted)">PM-KISAN Helpline – Beneficiary issues</div></div><a href="tel:155261" class="contact-quick-btn" style="color:var(--primary);background:#E8F5E9;border-color:#C8E6C9"><i class="fa fa-phone"></i></a></div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-plus me-2" style="color:var(--primary)"></i>Raise New Ticket</h5></div>
+            <div class="mb-3"><label class="form-label">Category</label>
+              <select class="form-select" id="ticketCat"><option>KYC Issue</option><option>Loan Issue</option><option>Payment Issue</option><option>Scheme Issue</option><option>Technical Issue</option><option>Other</option></select>
+            </div>
+            <div class="mb-3"><label class="form-label">Subject</label><input class="form-control" id="ticketSubject" placeholder="Brief description of your issue"/></div>
+            <div class="mb-3"><label class="form-label">Priority</label>
+              <select class="form-select" id="ticketPriority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
+            </div>
+            <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" id="ticketDesc" rows="3" placeholder="Provide more details…"></textarea></div>
+            <button class="btn-primary-custom" onclick="raiseTicket()"><i class="fa fa-paper-plane me-1"></i> Submit Ticket</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+</div><!-- /main-content -->
+
+<!-- Mobile Bottom Nav -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="bn-item active" onclick="showEcoPanel('panelOverview',document.getElementById('navOverview'))"><i class="fa fa-home"></i><span>Home</span></button>
+    <button class="bn-item" onclick="showEcoPanel('panelMarketplace',document.getElementById('navMarketplace'))"><i class="fa fa-store"></i><span>Market</span></button>
+    <button class="bn-item" onclick="showEcoPanel('panelWeather',document.getElementById('navWeather'))"><i class="fa fa-cloud-sun"></i><span>Weather</span></button>
+    <button class="bn-item" onclick="showEcoPanel('panelSchemes',document.getElementById('navSchemes'))"><i class="fa fa-landmark"></i><span>Schemes</span></button>
+    <button class="bn-item" onclick="showEcoPanel('panelSupport',document.getElementById('navSupport'))"><i class="fa fa-headset"></i><span>Support</span></button>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ── AUTH CHECK ── */
+var cu = getCurrentUser();
+if(!cu){
+  var agentUser = getUsers().find(function(u){return u.role==='Agent'&&u.status==='approved';});
+  if(agentUser) setCurrentUser(agentUser);
+  else { window.location.href='login.html'; }
+}
+cu = getCurrentUser();
+
+/* ── Panel Switcher ── */
+function showEcoPanel(id, el){
+  document.querySelectorAll('.eco-panel-wrap').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active');});
+  document.querySelectorAll('.bottom-nav .bn-item').forEach(function(b){b.classList.remove('active');});
+  var panel=document.getElementById(id);
+  if(panel) panel.classList.add('active');
+  if(el) el.classList.add('active');
+  var titles={panelOverview:'Agent Ecosystem',panelMarketplace:'Crop Marketplace',panelBuyers:'Nearby Buyers',panelApmc:'APMC Locator',panelWeather:'Live Weather',panelNews:'Agri News',panelSchemes:'Govt Schemes',panelLoans:'Loan Center',panelPayments:'Payment Gateway',panelSupport:'Support Desk'};
+  document.getElementById('topbarTitle').textContent=titles[id]||id;
+  if(id==='panelOverview')    renderOverview();
+  if(id==='panelMarketplace') renderMarketplace();
+  if(id==='panelBuyers')      renderBuyers();
+  if(id==='panelApmc')        renderAPMC();
+  if(id==='panelWeather')     renderWeather();
+  if(id==='panelNews')        renderNews('all');
+  if(id==='panelSchemes')     renderSchemes();
+  if(id==='panelLoans')       renderLoans();
+  if(id==='panelPayments')    renderPayments();
+  if(id==='panelSupport')     renderSupport();
+  if(window.innerWidth<=768)  toggleSidebar();
+}
+
+/* ── OVERVIEW ── */
+function renderOverview(){
+  renderAlerts('alertBox');
+  var farmers=getFarmers(),crops=getCrops(),finance=getFinance();
+  var income=finance.filter(function(r){return r.type==='income';}).reduce(function(s,r){return s+r.amount;},0);
+  var expense=finance.filter(function(r){return r.type==='expense';}).reduce(function(s,r){return s+r.amount;},0);
+  var stats=[
+    {icon:'fa-users',color:'green',val:farmers.length,label:'Farmers'},
+    {icon:'fa-leaf',color:'green',val:crops.length,label:'Crops'},
+    {icon:'fa-arrow-up',color:'green',val:'₹'+Math.floor(income/1000)+'K',label:'Total Income'},
+    {icon:'fa-arrow-down',color:'red',val:'₹'+Math.floor(expense/1000)+'K',label:'Total Expense'}
+  ];
+  var cmap={green:'var(--primary)',blue:'#1565C0',red:'var(--danger)',orange:'#E65100'};
+  document.getElementById('overviewStats').innerHTML=stats.map(function(s){
+    return '<div class="col-6 col-md-3"><div class="stat-mini transition-all" style="cursor:default">'
+      +'<div class="stat-icon '+(s.color)+'" style="background:'+(s.color==='green'?'#E8F5E9':s.color==='red'?'#FFEBEE':'#E3F2FD')+';color:'+cmap[s.color]+'"><i class="fa '+s.icon+'"></i></div>'
+      +'<div><div style="font-size:1.4rem;font-weight:900">'+s.val+'</div><div style="font-size:.76rem;color:var(--text-muted)">'+s.label+'</div></div>'
+      +'</div></div>';
+  }).join('');
+  // Farmers preview
+  document.getElementById('farmersPreview').innerHTML=farmers.slice(0,3).map(function(f){
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">'
+      +'<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0">'+f.name.charAt(0)+'</div>'
+      +'<div style="flex:1"><div style="font-weight:700;font-size:.9rem">'+f.name+'</div><div style="font-size:.75rem;color:var(--text-muted)">'+f.village+' &bull; '+f.crop+' &bull; '+f.land+' acres</div></div>'
+      +'<a href="farmer.html" style="background:#E8F5E9;color:var(--primary);border-radius:8px;padding:5px 10px;font-size:.75rem;font-weight:700">View</a>'
+      +'</div>';
+  }).join('');
+  // Quick weather
+  var w=getWeather();
+  document.getElementById('quickWeather').innerHTML='<div style="font-size:2.8rem;font-weight:900;line-height:1">'+w.temp+'°C <span style="font-size:1.5rem">'+w.icon+'</span></div><div style="opacity:.8;font-size:.85rem">'+w.city+'</div><div style="opacity:.7;font-size:.78rem;margin-top:4px">'+w.condition+' &bull; Humidity '+w.humidity+'%</div><div style="margin-top:10px;font-size:.72rem;opacity:.75">Tap for full forecast →</div>';
+  // News preview
+  var news=getNews().slice(0,3);
+  document.getElementById('newsPreview').innerHTML=news.map(function(n){
+    var catColors={gov:'gov',market:'market',weather:'weather',alert:'alert'};
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--border)">'
+      +'<span class="news-cat '+(catColors[n.cat]||'gov')+'">'+n.cat+'</span>'
+      +'<div style="font-size:.84rem;font-weight:600;margin-top:4px;line-height:1.3">'+n.title+'</div>'
+      +'<div class="news-time">'+n.time+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── MARKETPLACE ── */
+function renderMarketplace(){
+  var mp=getMarketplace();
+  document.getElementById('mpListingCount').textContent=mp.length;
+  document.getElementById('mpActiveCount').textContent=mp.filter(function(m){return m.available;}).length;
+  document.getElementById('mpBuyerCount').textContent=getBuyers().filter(function(b){return b.verified;}).length;
+  // Farmer dropdown
+  var farmerOpts=getFarmers().map(function(f){return '<option value="'+f.id+'">'+f.name+' ('+f.village+')</option>';}).join('');
+  document.getElementById('mpFarmer').innerHTML=farmerOpts;
+  document.getElementById('marketplaceList').innerHTML=mp.map(function(m){
+    return '<div class="marketplace-card">'
+      +'<div style="display:flex;gap:14px;align-items:flex-start">'
+      +'<div class="mp-crop-icon">'+m.cropIcon+'</div>'
+      +'<div style="flex:1">'
+      +'<div style="font-weight:800;font-size:1rem">'+m.cropName+'</div>'
+      +'<div style="font-size:.78rem;color:var(--text-muted)">'+m.farmerName+' &bull; '+m.village+'</div>'
+      +'<div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+      +'<span class="mp-price">₹'+m.askPrice+'</span><span class="mp-unit">/'+m.unit+'</span>'
+      +'<span class="mp-qty-badge">'+m.qty+' '+m.unit+'</span>'
+      +'<span style="font-size:.72rem;font-weight:700;color:var(--text-muted)">'+m.quality+'</span>'
+      +'</div>'
+      +'</div>'
+      +'<div style="text-align:right">'
+      +'<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;'+(m.available?'background:#E8F5E9;color:var(--primary)':'background:#FFEBEE;color:var(--danger)')+'">'+(m.available?'Available':'Sold')+'</span>'
+      +(m.available?'<button class="contact-seller-btn d-block mt-2" onclick="showToast(\'Calling '+m.contact+'\')"><i class="fa fa-phone me-1"></i>Contact</button>':'')
+      +'</div></div>'
+      +'<div style="font-size:.72rem;color:var(--text-muted);margin-top:8px">Listed: '+m.listedAt+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function addListing(){
+  var farmerId=document.getElementById('mpFarmer').value;
+  var farmer=getFarmers().find(function(f){return f.id==farmerId;});
+  var crop=document.getElementById('mpCrop').value.trim();
+  var qty=document.getElementById('mpQty').value.trim();
+  var price=parseInt(document.getElementById('mpPrice').value)||0;
+  var quality=document.getElementById('mpQuality').value;
+  if(!crop||!qty||!price){showToast('Fill all fields','error');return;}
+  var icons={'Rice':'🌾','Wheat':'🌾','Maize':'🌽','Cotton':'🌿','Sugarcane':'🎋','Tomato':'🍅'};
+  var item={id:'MP'+Date.now(),farmerId:parseInt(farmerId),farmerName:farmer?farmer.name:'Unknown',village:farmer?farmer.village:'—',cropName:crop,cropIcon:icons[crop]||'🌱',qty:parseInt(qty)||0,unit:'qtl',askPrice:price,quality:quality,available:true,listedAt:new Date().toLocaleDateString('en-IN'),contact:farmer?farmer.phone:'—'};
+  getMarketplace().push(item);
+  renderMarketplace();
+  showToast(crop+' listing added to marketplace ✓');
+  document.getElementById('mpCrop').value='';
+  document.getElementById('mpQty').value='';
+  document.getElementById('mpPrice').value='';
+}
+
+/* ── BUYERS ── */
+function renderBuyers(){
+  var search=(document.getElementById('buyerSearch').value||'').toLowerCase();
+  var typeF=document.getElementById('buyerTypeFilter').value;
+  var verF=document.getElementById('buyerVerified').value;
+  var buyers=getBuyers().filter(function(b){
+    var ms=!search||b.name.toLowerCase().indexOf(search)>=0||b.location.toLowerCase().indexOf(search)>=0;
+    var mt=!typeF||b.type===typeF;
+    var mv=!verF||String(b.verified)===verF;
+    return ms&&mt&&mv;
+  }).sort(function(a,b){return a.distance-b.distance;});
+  document.getElementById('buyersList').innerHTML=buyers.map(function(b){
+    var stars='★'.repeat(Math.floor(b.rating))+'☆'.repeat(5-Math.floor(b.rating));
+    return '<div class="buyer-card">'
+      +'<div class="buyer-avatar">'+b.name.charAt(0)+'</div>'
+      +'<div style="flex:1">'
+      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+      +'<span style="font-weight:800;font-size:.98rem">'+b.name+'</span>'
+      +(b.verified?'<span style="background:#E8F5E9;color:var(--primary);border-radius:20px;padding:1px 8px;font-size:.68rem;font-weight:800"><i class="fa fa-check-circle me-1"></i>Verified</span>':'')
+      +'</div>'
+      +'<div style="font-size:.78rem;color:var(--text-muted);margin:3px 0"><i class="fa fa-map-marker-alt me-1"></i>'+b.location+' <span class="dist-chip" style="margin-left:6px"><i class="fa fa-route me-1"></i>'+b.distance+' km</span></div>'
+      +'<div class="buyer-rating">'+stars+' '+b.rating+' &bull; <span style="font-size:.72rem;color:var(--text-muted)">Since '+b.since+'</span></div>'
+      +'<div style="margin-top:6px">'+b.crops.map(function(c){return '<span class="crop-tag">'+c+'</span>';}).join('')+'</div>'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px">'
+      +'<a href="tel:'+b.phone+'" class="btn-sm-custom btn-call"><i class="fa fa-phone"></i></a>'
+      +'<button class="btn-sm-custom btn-view" onclick="showToast(\'Connecting with '+b.name+'\')"><i class="fa fa-comment"></i></button>'
+      +'</div></div>';
+  }).join('')||'<div class="empty-state"><i class="fa fa-search"></i><p>No buyers found</p></div>';
+}
+
+/* ── APMC ── */
+function renderAPMC(){
+  var apmc=getAPMC();
+  document.getElementById('apmcList').innerHTML=apmc.map(function(a){
+    return '<div class="apmc-card">'
+      +'<div class="apmc-icon">🏛️</div>'
+      +'<div style="flex:1">'
+      +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">'
+      +'<span style="font-weight:800;font-size:1rem">'+a.name+'</span>'
+      +'<span class="dist-chip"><i class="fa fa-route me-1"></i>'+a.distance+' km</span>'
+      +'<span style="padding:2px 10px;border-radius:20px;font-size:.7rem;font-weight:700;'+(a.status==='open'?'background:#E8F5E9;color:var(--primary)':'background:#FFEBEE;color:var(--danger)')+'">'+a.status+'</span>'
+      +'</div>'
+      +'<div class="apmc-dist"><i class="fa fa-map-pin me-1"></i>'+a.dist+' District</div>'
+      +'<div class="apmc-price-row">'+a.commodities.map(function(c){
+        var trendIcon=c.trend==='up'?'<i class="fa fa-caret-up" style="color:var(--primary)"></i>':c.trend==='down'?'<i class="fa fa-caret-down" style="color:var(--danger)"></i>':'<i class="fa fa-minus" style="color:var(--text-muted)"></i>';
+        return '<span class="apmc-price-chip">'+c.name+' <span class="price-val">₹'+c.modal+'</span> '+trendIcon+'</span>';
+      }).join('')+'</div>'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px">'
+      +'<button class="btn-sm-custom btn-call" onclick="showToast(\'Navigating to '+a.name+'\')"><i class="fa fa-directions"></i></button>'
+      +'</div></div>'
+      // Price table
+      +'<div style="margin-top:10px;overflow-x:auto"><table class="mandi-table"><thead><tr><th>Commodity</th><th>Min ₹</th><th>Max ₹</th><th>Modal ₹</th><th>Trend</th></tr></thead><tbody>'
+      +a.commodities.map(function(c){
+        var tr=c.trend==='up'?'<span class="price-up">↑ Rising</span>':c.trend==='down'?'<span class="price-down">↓ Falling</span>':'<span class="price-flat">→ Stable</span>';
+        return '<tr><td><strong>'+c.name+'</strong></td><td>'+c.min+'</td><td>'+c.max+'</td><td><strong>'+c.modal+'</strong></td><td>'+tr+'</td></tr>';
+      }).join('')
+      +'</tbody></table></div>';
+  }).join('');
+}
+
+/* ── WEATHER ── */
+function renderWeather(){
+  var w=getWeather();
+  document.getElementById('weatherMain').innerHTML=
+    '<div class="weather-hero">'
+    +'<div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">'
+    +'<div><div class="weather-temp">'+w.temp+'° <span style="font-size:2.5rem">'+w.icon+'</span></div>'
+    +'<div class="weather-city"><i class="fa fa-map-marker-alt me-1"></i>'+w.city+'</div>'
+    +'<div class="weather-desc">'+w.condition+'</div></div>'
+    +'<div style="flex:1"><div class="weather-row">'
+    +'<div class="weather-chip"><i class="fa fa-tint"></i>Humidity<br/><strong>'+w.humidity+'%</strong></div>'
+    +'<div class="weather-chip"><i class="fa fa-wind"></i>Wind<br/><strong>'+w.wind+' km/h</strong></div>'
+    +'<div class="weather-chip"><i class="fa fa-sun"></i>UV Index<br/><strong>'+w.uv+'/10</strong></div>'
+    +'<div class="weather-chip"><i class="fa fa-thermometer-half"></i>Feels Like<br/><strong>'+w.feels+'°C</strong></div>'
+    +'</div></div></div>'
+    +'<div style="display:flex;gap:10px;margin-top:20px;overflow-x:auto;padding-bottom:4px">'
+    +w.forecast.map(function(f){
+      return '<div class="forecast-card"><div class="forecast-day">'+f.day+'</div>'
+        +'<div class="forecast-icon">'+f.icon+'</div>'
+        +'<div class="forecast-hi">'+f.high+'°</div>'
+        +'<div class="forecast-lo">'+f.low+'°</div>'
+        +'<div class="forecast-rain">💧'+f.rain+'%</div></div>';
+    }).join('')
+    +'</div></div>'
+    +'<div class="farm-advice"><h6><i class="fa fa-lightbulb me-2"></i>Farm Advisory</h6><p style="font-size:.86rem;margin:0;line-height:1.6">'+w.advisory+'</p></div>';
+}
+
+/* ── NEWS ── */
+function renderNews(filter){
+  var news=filter==='all'?getNews():getNews().filter(function(n){return n.cat===filter;});
+  var catColors={gov:'gov',market:'market',weather:'weather',alert:'alert'};
+  document.getElementById('newsList').innerHTML=news.map(function(n){
+    return '<div class="news-card">'
+      +'<div class="news-thumb">'+(n.cat==='gov'?'🏛️':n.cat==='market'?'📈':n.cat==='weather'?'🌧️':'⚠️')+'</div>'
+      +'<div style="flex:1">'
+      +'<span class="news-cat '+(catColors[n.cat]||'gov')+'">'+n.cat+'</span>'
+      +'<div style="font-weight:700;font-size:.9rem;line-height:1.35;margin:4px 0">'+n.title+'</div>'
+      +'<div style="font-size:.8rem;color:var(--text-muted);line-height:1.4">'+n.summary+'</div>'
+      +'<div class="news-time"><i class="fa fa-clock me-1"></i>'+n.time+'</div>'
+      +'</div></div>';
+  }).join('')||'<div class="empty-state"><i class="fa fa-newspaper"></i><p>No news in this category</p></div>';
+}
+
+function filterNews(f,el){
+  document.querySelectorAll('#newsFilters .complaint-filter-btn').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  renderNews(f);
+}
+
+/* ── SCHEMES ── */
+function renderSchemes(){
+  var schemes=getSchemes();
+  var applied=schemes.filter(function(s){return s.applied;}).length;
+  document.getElementById('schemeTotalCount').textContent=schemes.length;
+  document.getElementById('schemeAppliedCount').textContent=applied;
+  document.getElementById('schemeOpenCount').textContent=schemes.length-applied;
+  document.getElementById('schemesList').innerHTML=schemes.map(function(s){
+    return '<div class="scheme-card">'
+      +'<div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap">'
+      +'<div style="font-size:2rem">'+s.icon+'</div>'
+      +'<div style="flex:1">'
+      +'<span class="scheme-tag">'+s.tag+'</span>'
+      +'<div style="font-weight:800;font-size:1rem;margin-top:4px">'+s.name+'</div>'
+      +'<div style="font-size:.78rem;color:var(--text-muted);margin-top:2px"><i class="fa fa-landmark me-1"></i>'+s.ministry+'</div>'
+      +'<div class="scheme-benefit"><i class="fa fa-gift me-1"></i>'+s.benefit+'</div>'
+      +'<div style="font-size:.78rem;color:var(--text-muted);margin-top:6px"><i class="fa fa-users me-1"></i>'+s.eligibility+'</div>'
+      +(s.deadline!=='Open'?'<div class="scheme-deadline"><i class="fa fa-calendar me-1"></i>Deadline: '+s.deadline+'</div>':'')
+      +'</div>'
+      +'<div>'
+      +(s.applied?'<span style="background:#E8F5E9;color:var(--primary);border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:700"><i class="fa fa-check me-1"></i>Applied</span>'
+        :'<button class="btn-primary-custom" style="padding:8px 16px;font-size:.8rem;width:auto" onclick="applyScheme(\''+s.id+'\')"><i class="fa fa-paper-plane me-1"></i>Apply Now</button>')
+      +'</div></div></div>';
+  }).join('');
+}
+
+function applyScheme(id){
+  var s=getSchemes().find(function(x){return x.id===id;});
+  if(s){s.applied=true;renderSchemes();showToast(s.name+' – Application submitted ✓');}
+}
+
+/* ── LOANS ── */
+var selectedLoanType='KCC';
+function selectLoanType(type,el){
+  selectedLoanType=type;
+  ['KCC','Agri','Equipment','SHG'].forEach(function(t){
+    var el2=document.getElementById('lTyp'+t);
+    if(el2){el2.style.borderColor='var(--border)';el2.style.background='var(--card-bg)';el2.style.color='var(--text)';}
+  });
+  el.style.borderColor='var(--primary)';el.style.background='#E8F5E9';el.style.color='var(--primary)';
+}
+
+function renderLoans(){
+  var farmerOpts=getFarmers().map(function(f){return '<option value="'+f.id+'">'+f.name+'</option>';}).join('');
+  var lf=document.getElementById('loanFarmer');
+  if(lf) lf.innerHTML=farmerOpts;
+  document.getElementById('loansList').innerHTML=getLoans().map(function(l){
+    var typeClass=l.type;
+    var stClass=l.status;
+    return '<div class="loan-card '+typeClass+'">'
+      +'<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px">'
+      +'<div>'
+      +'<span class="loan-tag '+typeClass+'">'+l.type.toUpperCase()+'</span>'
+      +'<div style="font-weight:800;font-size:1rem;margin-top:6px">'+l.farmerName+'</div>'
+      +'<div style="font-size:.78rem;color:var(--text-muted)">'+l.bank+' &bull; '+l.rate+' &bull; '+l.tenure+'</div>'
+      +'</div>'
+      +'<div style="text-align:right">'
+      +'<div class="loan-amount">₹'+l.amount.toLocaleString('en-IN')+'</div>'
+      +'<span class="loan-status-chip '+stClass+'">'+l.status+'</span>'
+      +'</div></div>'
+      +'<div style="margin-top:12px"><div style="font-size:.72rem;color:var(--text-muted);font-weight:600;margin-bottom:4px">Processing Progress</div>'
+      +'<div class="loan-progress"><div class="loan-progress-fill" style="width:'+l.progress+'%"></div></div>'
+      +'<div style="font-size:.7rem;color:var(--text-muted);margin-top:3px;text-align:right">'+l.progress+'% complete</div></div>'
+      +'<div style="font-size:.72rem;color:var(--text-muted);margin-top:8px">Applied: '+l.appliedAt+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function applyLoan(){
+  var farmerId=document.getElementById('loanFarmer').value;
+  var farmer=getFarmers().find(function(f){return f.id==farmerId;});
+  var amount=parseInt(document.getElementById('loanAmount').value)||0;
+  var bank=document.getElementById('loanBank').value;
+  var tenure=document.getElementById('loanTenure').value;
+  if(!amount){showToast('Enter a valid amount','error');return;}
+  var newLoan={id:'L'+Date.now(),farmerId:parseInt(farmerId),farmerName:farmer?farmer.name:'Unknown',type:selectedLoanType.toLowerCase(),amount:amount,bank:bank,status:'pending',appliedAt:new Date().toLocaleDateString('en-IN'),rate:selectedLoanType==='KCC'?'4%':selectedLoanType==='SHG'?'6%':selectedLoanType==='Agri'?'7%':'8.5%',tenure:tenure,progress:15};
+  getLoans().push(newLoan);
+  renderLoans();
+  showToast('Loan application submitted to '+bank+' ✓');
+  document.getElementById('loanAmount').value='';
+}
+
+/* ── PAYMENTS ── */
+var selectedPayMethod='UPI';
+function selectPayMethod(method){
+  selectedPayMethod=method;
+  document.getElementById('payStep1Content').style.display='none';
+  document.getElementById('payStep2Content').style.display='block';
+  document.getElementById('pStep1').classList.remove('active');
+  document.getElementById('pStep2').classList.add('active');
+}
+function goPayStep3(){
+  var amt=document.getElementById('payAmount').value;
+  if(!amt||amt<=0){showToast('Enter a valid amount','error');return;}
+  document.getElementById('confMethod').textContent=selectedPayMethod;
+  document.getElementById('confAmount').textContent='₹'+parseInt(amt).toLocaleString('en-IN');
+  document.getElementById('confRemark').textContent=document.getElementById('payRemark').value||'—';
+  document.getElementById('qrDisplay').style.display=selectedPayMethod==='UPI'?'flex':'none';
+  document.getElementById('payStep2Content').style.display='none';
+  document.getElementById('payStep3Content').style.display='block';
+  document.getElementById('pStep2').classList.remove('active');
+  document.getElementById('pStep3').classList.add('active');
+}
+function confirmPayment(){
+  var amt=parseInt(document.getElementById('payAmount').value)||0;
+  var remark=document.getElementById('payRemark').value||'Payment';
+  getPayments().unshift({id:'PAY'+Date.now(),type:'debit',amount:amt,label:remark,date:new Date().toLocaleDateString('en-IN'),method:selectedPayMethod,status:'success'});
+  showToast('Payment of ₹'+amt.toLocaleString('en-IN')+' sent via '+selectedPayMethod+' ✓');
+  resetPayment();
+  renderPayments();
+}
+function resetPayment(){
+  document.getElementById('payStep1Content').style.display='block';
+  document.getElementById('payStep2Content').style.display='none';
+  document.getElementById('payStep3Content').style.display='none';
+  document.getElementById('payAmount').value='';
+  document.getElementById('payRemark').value='';
+  ['pStep1','pStep2','pStep3'].forEach(function(id){document.getElementById(id).classList.remove('active');});
+  document.getElementById('pStep1').classList.add('active');
+}
+
+function renderPayments(){
+  if(cu) document.getElementById('agentUPI').textContent=cu.phone+'@agrinode';
+  var farmerOpts=getFarmers().map(function(f){return '<option>'+f.name+'</option>';}).join('');
+  var pt=document.getElementById('payTo');
+  if(pt) pt.innerHTML=farmerOpts;
+  document.getElementById('paymentHistory').innerHTML=getPayments().map(function(p){
+    return '<div class="payment-hist-row">'
+      +'<div class="pay-icon '+(p.type==='credit'?'credit':'debit')+'"><i class="fa '+(p.type==='credit'?'fa-arrow-down':'fa-arrow-up')+'"></i></div>'
+      +'<div style="flex:1"><div style="font-weight:600;font-size:.88rem">'+p.label+'</div>'
+      +'<div style="font-size:.72rem;color:var(--text-muted)">'+p.date+' &bull; '+p.method+'</div></div>'
+      +'<div class="pay-amount '+(p.type)+'">'+( p.type==='credit'?'+':'-')+'₹'+p.amount.toLocaleString('en-IN')+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── SUPPORT ── */
+function renderSupport(){
+  document.getElementById('ticketsList').innerHTML=getTickets().map(function(tk){
+    return '<div class="ticket-card '+tk.status+'">'
+      +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
+      +'<span class="ticket-id">'+tk.id+'</span>'
+      +'<span class="complaint-priority '+tk.priority+'">'+tk.priority+'</span>'
+      +'<span class="complaint-status '+tk.status+'"><i class="fa fa-circle" style="font-size:.5rem"></i> '+tk.status+'</span>'
+      +'</div>'
+      +'<div style="font-weight:700;margin-top:6px">'+tk.subject+'</div>'
+      +'<div style="font-size:.75rem;color:var(--text-muted);margin-top:3px">'+tk.category+' &bull; Created: '+tk.createdAt+'</div>'
+      +'<div style="font-size:.75rem;color:var(--text-muted)">Last updated: '+tk.lastUpdate+'</div>'
+      +'</div>';
+  }).join('')||'<div class="empty-state"><i class="fa fa-ticket-alt"></i><p>No tickets raised yet</p></div>';
+}
+
+function raiseTicket(){
+  var cat=document.getElementById('ticketCat').value;
+  var subj=document.getElementById('ticketSubject').value.trim();
+  var pri=document.getElementById('ticketPriority').value;
+  if(!subj){showToast('Enter a subject','error');return;}
+  var newTkt={id:'TKT'+Date.now(),subject:subj,status:'open',priority:pri,category:cat,createdAt:new Date().toLocaleDateString('en-IN'),lastUpdate:new Date().toLocaleDateString('en-IN')};
+  getTickets().unshift(newTkt);
+  renderSupport();
+  showToast('Support ticket raised – '+newTkt.id+' ✓');
+  document.getElementById('ticketSubject').value='';
+  document.getElementById('ticketDesc').value='';
+}
+
+/* ── THEME ── */
+function syncThemeIcon(){var dark=document.documentElement.getAttribute('data-theme')==='dark';var icon=document.getElementById('themeIcon');if(icon)icon.className=dark?'fa fa-sun':'fa fa-moon';}
+var _ot=toggleDark;toggleDark=function(){_ot();syncThemeIcon();};syncThemeIcon();
+
+/* ── INIT ── */
+initLang();
+renderOverview();
+</script>
+</body>
+</html>

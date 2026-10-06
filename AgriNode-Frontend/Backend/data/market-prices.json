@@ -1,0 +1,6 @@
+[
+  { "id": "MKT-1", "crop": "Rice", "price": 2450, "unit": "Qtl", "trend": "up", "market": "APMC Bangalore", "state": "Karnataka" },
+  { "id": "MKT-2", "crop": "Wheat", "price": 2200, "unit": "Qtl", "trend": "flat", "market": "APMC Pune", "state": "Maharashtra" },
+  { "id": "MKT-3", "crop": "Maize", "price": 1850, "unit": "Qtl", "trend": "down", "market": "APMC Mysore", "state": "Karnataka" },
+  { "id": "MKT-4", "crop": "Cotton", "price": 6800, "unit": "Qtl", "trend": "up", "market": "APMC Nagpur", "state": "Maharashtra" }
+]

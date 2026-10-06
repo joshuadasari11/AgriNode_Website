@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market Prices – AgriNode</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="css/styles.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="offline-banner"><i class="fa fa-wifi me-2"></i>No Internet</div>
+  <div id="toast-container"></div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="sidebar-logo">
+        <div class="logo-icon-sm">🌾</div>
+        <div><span>AgriNode</span><small>Village Intel</small></div>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="sidebar-link"><i class="fa fa-home"></i> Dashboard</a>
+      <a href="farmer.html" class="sidebar-link"><i class="fa fa-users"></i> Farmers</a>
+      <a href="crop.html" class="sidebar-link"><i class="fa fa-seedling"></i> Crops</a>
+      <a href="finance.html" class="sidebar-link"><i class="fa fa-rupee-sign"></i> Finance</a>
+      <a href="market.html" class="sidebar-link active"><i class="fa fa-store"></i> Market</a>
+      <a href="admin.html" class="sidebar-link"><i class="fa fa-shield-alt"></i> Admin</a>
+      <a href="#" class="sidebar-link" onclick="doLogout()"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar" id="sidebarInitial">A</div>
+        <div>
+          <div class="name" id="sidebarName">Agent</div>
+          <div class="role-label" id="sidebarRole">Agent</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <button class="icon-btn hamburger" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+      <span class="topbar-title">🏪 Market Prices</span>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="toggleDark()"><i class="fa fa-moon"></i></button>
+        <button class="icon-btn" onclick="refreshPrices()" title="Refresh prices"><i
+            class="fa fa-sync-alt"></i></button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <!-- Last Updated -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <div class="section-title"><i class="fa fa-store"></i> Today's Mandi Prices</div>
+          <div style="font-size:.8rem;color:var(--text-muted);" id="lastUpdated">Last updated: just now</div>
+        </div>
+        <span class="status-badge approved"><i class="fa fa-circle me-1" style="font-size:.5rem;"></i> Live</span>
+      </div>
+
+      <!-- Price Cards -->
+      <div class="row g-3 mb-4" id="priceGrid"></div>
+
+      <!-- Price Alert -->
+      <div class="card-panel"
+        style="background:linear-gradient(135deg,#FFF8E1,#FFF3CD);border-left:4px solid var(--accent);">
+        <div class="d-flex gap-3 align-items-start">
+          <span style="font-size:2rem;">💡</span>
+          <div>
+            <div style="font-weight:700;margin-bottom:4px;">Market Tip of the Day</div>
+            <div id="marketTip" style="font-size:.88rem;color:var(--text-muted);">Rice prices are expected to rise next
+              week due to reduced supply. Consider holding stock if possible.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <p style="font-size:.75rem;color:var(--text-muted);margin-top:16px;text-align:center;">
+        * Prices are indicative and sourced from regional mandis. Always verify before selling.
+      </p>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="dashboard.html" class="bn-item"><i class="fa fa-home"></i><span>Home</span></a>
+      <a href="farmer.html" class="bn-item"><i class="fa fa-users"></i><span>Farmers</span></a>
+      <a href="crop.html" class="bn-item"><i class="fa fa-seedling"></i><span>Crops</span></a>
+      <a href="finance.html" class="bn-item"><i class="fa fa-rupee-sign"></i><span>Finance</span></a>
+      <a href="market.html" class="bn-item active"><i class="fa fa-store"></i><span>Market</span></a>
+    </div>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const cu = getCurrentUser(); // from script.js _currentUser (in-memory, no localStorage)
+    if (!cu) window.location.href = 'login.html';
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('open'); }
+    function toggleDark() { const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', t); localStorage.setItem('agri_theme', t); } // ✅ keep: UI preference
+    function doLogout() { _currentUser = null; window.location.href = 'login.html'; }
+
+    const BASE_PRICES = [
+      { name: 'Rice', emoji: '🌾', base: 2200, unit: 'quintal', trend: 'up', change: '+₹80' },
+      { name: 'Wheat', emoji: '🌿', base: 2100, unit: 'quintal', trend: 'down', change: '-₹40' },
+      { name: 'Maize', emoji: '🌽', base: 1800, unit: 'quintal', trend: 'up', change: '+₹60' },
+      { name: 'Cotton', emoji: '☁️', base: 6500, unit: 'quintal', trend: 'flat', change: '±0' },
+      { name: 'Sugarcane', emoji: '🎋', base: 320, unit: 'quintal', trend: 'up', change: '+₹15' },
+      { name: 'Soybean', emoji: '🫘', base: 4200, unit: 'quintal', trend: 'down', change: '-₹90' },
+      { name: 'Tomato', emoji: '🍅', base: 1200, unit: 'quintal', trend: 'up', change: '+₹200' },
+      { name: 'Onion', emoji: '🧅', base: 900, unit: 'quintal', trend: 'down', change: '-₹50' },
+      { name: 'Potato', emoji: '🥔', base: 700, unit: 'quintal', trend: 'flat', change: '±0' },
+      { name: 'Groundnut', emoji: '🥜', base: 5500, unit: 'quintal', trend: 'up', change: '+₹120' },
+      { name: 'Turmeric', emoji: '🌿', base: 9000, unit: 'quintal', trend: 'up', change: '+₹300' },
+      { name: 'Chilli', emoji: '🌶️', base: 7500, unit: 'quintal', trend: 'down', change: '-₹200' }
+    ];
+    const TIPS = [
+      'Rice prices are expected to rise next week. Consider holding stock if possible.',
+      'Onion supply is high this month. Sell early to avoid price drops.',
+      'Groundnut exports are rising – good time to approach wholesale buyers.',
+      'Turmeric prices have hit a seasonal high. Lock in contracts now.',
+      'Cotton prices are stable – good for planning next season crop.',
+      'Maize demand is increasing for poultry feed. Ideal time to sell.'
+    ];
+
+    function renderPrices() {
+      const grid = document.getElementById('priceGrid');
+      grid.innerHTML = BASE_PRICES.map(p => {
+        const variance = (Math.random() - .5) * 100 | 0;
+        const price = p.base + variance;
+        return `
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="market-card">
+              <span class="market-crop-icon">${p.emoji}</span>
+              <div class="market-crop-name">${p.name}</div>
+              <div class="market-price">₹${price.toLocaleString('en-IN')}</div>
+              <div class="market-unit">per ${p.unit}</div>
+              <div class="mt-2">
+                <span class="trend-${p.trend}">
+                  ${p.trend === 'up' ? '↑' : p.trend === 'down' ? '↓' : '→'} ${p.change}
+                </span>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+      document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString('en-IN');
+      document.getElementById('marketTip').textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
+    }
+
+    function refreshPrices() {
+      renderPrices();
+      const c = document.createElement('div'); c.className = 'toast-msg';
+      c.innerHTML = '<i class="fa fa-sync-alt me-2"></i> Prices refreshed!';
+      document.getElementById('toast-container').appendChild(c); setTimeout(() => c.remove(), 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (cu) { document.getElementById('sidebarName').textContent = cu.name; document.getElementById('sidebarRole').textContent = cu.role; document.getElementById('sidebarInitial').textContent = cu.name.charAt(0); }
+      document.documentElement.setAttribute('data-theme', localStorage.getItem('agri_theme') || 'light'); // ✅ keep: UI preference
+      renderPrices();
+      window.addEventListener('offline', () => document.getElementById('offline-banner').style.display = 'block');
+      window.addEventListener('online', () => document.getElementById('offline-banner').style.display = 'none');
+    });
+  </script>
+</body>
+
+</html>

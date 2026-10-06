@@ -1,0 +1,64 @@
+{
+  "loans": [
+    {
+      "id": "lon-001",
+      "farmerId": "usr-001",
+      "farmerName": "Ramesh Kumar",
+      "type": "Kisan Credit Card",
+      "amountRequested": 150000,
+      "purpose": "Purchasing seeds and fertilizers for Rabi season",
+      "landAcres": 5.5,
+      "bankPreference": "SBI",
+      "status": "approved",
+      "adminNotes": "Documents verified. Forwarded to SBI Nanded branch.",
+      "approvedBy": "adm-001",
+      "createdAt": "2025-09-10T08:00:00Z",
+      "processedAt": "2025-09-20T10:00:00Z"
+    },
+    {
+      "id": "lon-002",
+      "farmerId": "usr-002",
+      "farmerName": "Sunita Devi",
+      "type": "Agricultural Term Loan",
+      "amountRequested": 250000,
+      "purpose": "Drip irrigation system installation",
+      "landAcres": 3.0,
+      "bankPreference": "Bank of Maharashtra",
+      "status": "pending",
+      "adminNotes": "",
+      "approvedBy": null,
+      "createdAt": "2025-11-15T12:00:00Z",
+      "processedAt": null
+    },
+    {
+      "id": "lon-003",
+      "farmerId": "usr-003",
+      "farmerName": "Mohan Singh",
+      "type": "Crop Loan",
+      "amountRequested": 80000,
+      "purpose": "Cotton cultivation expenses",
+      "landAcres": 8.0,
+      "bankPreference": "UCO Bank",
+      "status": "pending",
+      "adminNotes": "",
+      "approvedBy": null,
+      "createdAt": "2025-12-01T09:30:00Z",
+      "processedAt": null
+    },
+    {
+      "id": "lon-004",
+      "farmerId": "usr-004",
+      "farmerName": "Priya Patil",
+      "type": "Kisan Credit Card",
+      "amountRequested": 300000,
+      "purpose": "Farm machinery upgrade and input costs",
+      "landAcres": 12.0,
+      "bankPreference": "SBI",
+      "status": "rejected",
+      "adminNotes": "Insufficient land documentation. Asked to resubmit with updated 7/12.",
+      "approvedBy": "adm-001",
+      "createdAt": "2025-10-05T11:00:00Z",
+      "processedAt": "2025-10-18T15:00:00Z"
+    }
+  ]
+}

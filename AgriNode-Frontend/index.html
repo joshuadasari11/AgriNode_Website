@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriNode – Village Agriculture Intelligence System</title>
+  <meta name="description"
+    content="AgriNode helps farmers and agents manage agricultural data easily across rural India." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link href="css/styles.css" rel="stylesheet" />
+
+  <style>
+    /* ===== LANDING PAGE OVERRIDES ===== */
+    body.auth-page {
+      background: none;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: block;
+      padding: 0;
+    }
+
+    /* ---- Full-screen split layout ---- */
+    .landing-wrapper {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ---- LEFT: Photo Panel ---- */
+    .photo-panel {
+      flex: 1.1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-panel img.bg-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transform: scale(1.06);
+      animation: slowZoom 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes slowZoom {
+      from {
+        transform: scale(1.06);
+      }
+
+      to {
+        transform: scale(1.14);
+      }
+    }
+
+    /* Dark overlay gradient */
+    .photo-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+          rgba(27, 94, 32, 0.62) 0%,
+          rgba(0, 0, 0, 0.28) 60%,
+          rgba(0, 0, 0, 0.05) 100%);
+    }
+
+    /* Diagonal right-side fade to blend with card panel */
+    .photo-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 60%, #0d3d12 100%);
+      z-index: 1;
+    }
+
+    /* ---- LEFT panel content ---- */
+    .photo-content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 48px 52px;
+      color: #fff;
+    }
+
+    .photo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 40px;
+      padding: 7px 18px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+
+    .photo-headline {
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .photo-headline span {
+      color: #A5D6A7;
+    }
+
+    .photo-subtext {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.82);
+      max-width: 380px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    /* Floating stat chips on photo */
+    .stat-chips {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 16px;
+      padding: 12px 18px;
+      animation: floatChip 4s ease-in-out infinite;
+    }
+
+    .stat-chip:nth-child(2) {
+      animation-delay: 1.2s;
+    }
+
+    .stat-chip:nth-child(3) {
+      animation-delay: 2.4s;
+    }
+
+    @keyframes floatChip {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    .stat-chip-icon {
+      font-size: 1.5rem;
+    }
+
+    .stat-chip-val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-chip-lbl {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.72);
+      font-weight: 500;
+    }
+
+    /* ---- RIGHT: Card Panel ---- */
+    .card-panel {
+      width: 480px;
+      flex-shrink: 0;
+      background: linear-gradient(160deg, #0d3d12 0%, #1B5E20 45%, #2E7D32 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative circles behind card */
+    .card-panel::before {
+      content: '';
+      position: absolute;
+      width: 480px;
+      height: 480px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      top: -160px;
+      right: -160px;
+    }
+
+    .card-panel::after {
+      content: '';
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: rgba(76, 175, 80, 0.12);
+      bottom: -100px;
+      left: -80px;
+    }
+
+    /* SVG decorative leaf in card panel */
+    .panel-leaf-svg {
+      position: absolute;
+      bottom: 28px;
+      right: 24px;
+      opacity: 0.08;
+      width: 200px;
+      pointer-events: none;
+    }
+
+    /* ---- Glass Card ---- */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 28px;
+      padding: 44px 38px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow:
+        0 32px 80px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.18);
+      position: relative;
+      z-index: 2;
+      animation: cardEntrance 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes cardEntrance {
+      from {
+        opacity: 0;
+        transform: translateY(32px) scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Logo */
+    .logo-ring {
+      width: 76px;
+      height: 76px;
+      background: linear-gradient(135deg, #1B5E20, #4CAF50);
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin: 0 auto 14px;
+      box-shadow: 0 10px 30px rgba(46, 125, 50, 0.45);
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.45);
+      }
+
+      50% {
+        box-shadow: 0 14px 40px rgba(46, 125, 50, 0.70);
+      }
+    }
+
+    .app-name {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #1B5E20;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .app-tagline {
+      font-size: 0.8rem;
+      color: #5f6368;
+      letter-spacing: 0.4px;
+      margin-bottom: 28px;
+    }
+
+    /* Welcome text */
+    .welcome-heading {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+
+    .welcome-sub {
+      font-size: 0.85rem;
+      color: #5f6368;
+      margin-bottom: 28px;
+    }
+
+    /* Feature tiles */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .feat-tile {
+      background: #F1F8E9;
+      border-radius: 14px;
+      padding: 14px 8px;
+      text-align: center;
+      transition: all 0.22s ease;
+      cursor: default;
+    }
+
+    .feat-tile:hover {
+      background: #C8E6C9;
+      transform: translateY(-3px);
+    }
+
+    .feat-tile .ico {
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+    }
+
+    .feat-tile .lbl {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #2E7D32;
+    }
+
+    /* CTA button */
+    .cta-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #1B5E20, #4CAF50);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: all 0.22s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 24px rgba(46, 125, 50, 0.38);
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(46, 125, 50, 0.55);
+    }
+
+    .cta-btn i {
+      font-size: 1rem;
+    }
+
+    .bottom-tagline {
+      margin-top: 18px;
+      font-size: 0.78rem;
+      color: #5f6368;
+      text-align: center;
+    }
+
+    /* Lang selector */
+    .lang-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 22px;
+    }
+
+    .lang-sel {
+      background: #F1F8E9;
+      border: 1.5px solid #C8E6C9;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #2E7D32;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* ---- Floating particles canvas ---- */
+    #particles-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ---- Scrolling crop strip ---- */
+    .crop-strip {
+      position: absolute;
+      top: 28px;
+      left: 0;
+      right: 0;
+      z-index: 3;
+      display: flex;
+      gap: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .crop-strip-inner {
+      display: flex;
+      gap: 32px;
+      animation: scrollStrip 18s linear infinite;
+      white-space: nowrap;
+    }
+
+    .crop-strip-inner span {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @keyframes scrollStrip {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* ---- Offline Banner ---- */
+    #offline-banner {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #B71C1C;
+      color: #fff;
+      text-align: center;
+      padding: 8px;
+      font-size: 0.85rem;
+      z-index: 9999;
+      font-weight: 600;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 900px) {
+      .photo-panel {
+        display: none;
+      }
+
+      body.auth-page {
+        overflow-y: auto;
+        height: auto;
+      }
+
+      .landing-wrapper {
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .card-panel {
+        width: 100%;
+        min-height: 100vh;
+        padding: 40px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body class="auth-page">
+
+  <div id="offline-banner">
+    <i class="fa fa-wifi-slash me-2"></i> No Internet Connection
+  </div>
+
+  <div class="landing-wrapper">
+
+    <!-- ===== LEFT: Photo Panel ===== -->
+    <div class="photo-panel">
+
+      <!-- Scrolling crop ticker -->
+      <div class="crop-strip">
+        <div class="crop-strip-inner" id="cropTicker"></div>
+      </div>
+
+      <!-- Particle canvas -->
+      <canvas id="particles-canvas"></canvas>
+
+      <!-- Background photo -->
+      <img class="bg-photo" src="assets/farm_bg.png" alt="Indian farmland aerial view" />
+
+      <!-- Overlay content -->
+      <div class="photo-content">
+        <div class="photo-badge">
+          <i class="fa fa-leaf"></i> Smart Agriculture Platform
+        </div>
+        <h2 class="photo-headline">
+          Empowering India's<br /><span>Farmers & Villages</span><br />with Smart Data
+        </h2>
+        <p class="photo-subtext">
+          Real-time crop analytics, financial tracking, and village intelligence — all in one platform built for rural
+          India.
+        </p>
+
+        <!-- Floating stat chips -->
+        <div class="stat-chips">
+          <div class="stat-chip">
+            <div class="stat-chip-icon">🌾</div>
+            <div>
+              <div class="stat-chip-val">12,000+</div>
+              <div class="stat-chip-lbl">Farmers Enrolled</div>
+            </div>
+          </div>
+          <div class="stat-chip">
+            <div class="stat-chip-icon">🏘️</div>
+            <div>
+              <div class="stat-chip-val">340+</div>
+              <div class="stat-chip-lbl">Villages Covered</div>
+            </div>
+          </div>
+          <div class="stat-chip">
+            <div class="stat-chip-icon">📈</div>
+            <div>
+              <div class="stat-chip-val">₹4.2 Cr</div>
+              <div class="stat-chip-lbl">Transactions Tracked</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== RIGHT: Card Panel ===== -->
+    <div class="card-panel">
+
+      <!-- Decorative SVG leaf -->
+      <svg class="panel-leaf-svg" viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 10 C160 40 190 120 100 250 C10 120 40 40 100 10Z" fill="white" />
+        <line x1="100" y1="10" x2="100" y2="250" stroke="white" stroke-width="3" />
+        <line x1="100" y1="80" x2="60" y2="110" stroke="white" stroke-width="2" />
+        <line x1="100" y1="110" x2="148" y2="138" stroke="white" stroke-width="2" />
+        <line x1="100" y1="145" x2="58" y2="170" stroke="white" stroke-width="2" />
+        <line x1="100" y1="175" x2="142" y2="196" stroke="white" stroke-width="2" />
+      </svg>
+
+      <!-- Glass card -->
+      <div class="glass-card">
+
+        <!-- Lang selector -->
+        <div class="lang-wrap">
+          <select class="lang-sel" id="langSelect" onchange="setLang(this.value)">
+            <option value="en">🌐 English</option>
+            <option value="hi">🇮🇳 हिंदी</option>
+            <option value="kn">🌿 ಕನ್ನಡ</option>
+          </select>
+        </div>
+
+        <!-- Logo -->
+        <div class="text-center">
+          <div class="logo-ring">🌾</div>
+          <div class="app-name" data-i18n="appName">AgriNode</div>
+          <div class="app-tagline" data-i18n="appTagline">Village Agriculture Intelligence System</div>
+        </div>
+
+        <!-- Welcome -->
+        <h2 class="welcome-heading" data-i18n="welcomeTitle">Welcome to AgriNode</h2>
+        <p class="welcome-sub" data-i18n="welcomeSubtitle">Empowering farmers with smart agriculture tools</p>
+
+        <!-- Feature tiles -->
+        <div class="feat-grid">
+          <div class="feat-tile">
+            <div class="ico">📊</div>
+            <div class="lbl" data-i18n="feat1">Analytics</div>
+          </div>
+          <div class="feat-tile">
+            <div class="ico">💰</div>
+            <div class="lbl" data-i18n="feat2">Finance</div>
+          </div>
+          <div class="feat-tile">
+            <div class="ico">🌾</div>
+            <div class="lbl" data-i18n="feat3">Crops</div>
+          </div>
+          <div class="feat-tile">
+            <div class="ico">🏘️</div>
+            <div class="lbl" data-i18n="feat4">Villages</div>
+          </div>
+          <div class="feat-tile">
+            <div class="ico">🌦️</div>
+            <div class="lbl" data-i18n="feat5">Weather</div>
+          </div>
+          <div class="feat-tile">
+            <div class="ico">📱</div>
+            <div class="lbl" data-i18n="feat6">Mobile</div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <button class="cta-btn" onclick="goToLogin()" id="getStartedBtn">
+          <i class="fa fa-arrow-right"></i>
+          <span data-i18n="getStarted">Get Started</span>
+        </button>
+
+        <p class="bottom-tagline" data-i18n="tagline2">🌱 Growing together, one village at a time</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== i18n ===== */
+    const translations = {
+      en: {
+        appName: "AgriNode", appTagline: "Village Agriculture Intelligence System",
+        welcomeTitle: "Welcome to AgriNode", welcomeSubtitle: "Empowering farmers with smart agriculture tools",
+        feat1: "Analytics", feat2: "Finance", feat3: "Crops", feat4: "Villages", feat5: "Weather", feat6: "Mobile",
+        getStarted: "Get Started", tagline2: "🌱 Growing together, one village at a time"
+      },
+      hi: {
+        appName: "एग्रीनोड", appTagline: "ग्राम कृषि बुद्धिमत्ता प्रणाली",
+        welcomeTitle: "एग्रीनोड में आपका स्वागत है", welcomeSubtitle: "किसानों को स्मार्ट कृषि उपकरणों से सशक्त बनाना",
+        feat1: "विश्लेषण", feat2: "वित्त", feat3: "फसलें", feat4: "गांव", feat5: "मौसम", feat6: "मोबाइल",
+        getStarted: "शुरू करें", tagline2: "🌱 मिलकर बढ़ते हैं, एक गांव एक कदम"
+      },
+      kn: {
+        appName: "ಅಗ್ರಿನೋಡ್", appTagline: "ಗ್ರಾಮ ಕೃಷಿ ಬುದ್ಧಿಮತ್ತೆ ವ್ಯವಸ್ಥೆ",
+        welcomeTitle: "ಅಗ್ರಿನೋಡ್‌ಗೆ ಸ್ವಾಗತ", welcomeSubtitle: "ರೈತರನ್ನು ಸ್ಮಾರ್ಟ್ ಕೃಷಿ ಸಾಧನಗಳೊಂದಿಗೆ ಸಬಲಗೊಳಿಸುವುದು",
+        feat1: "ವಿಶ್ಲೇಷಣೆ", feat2: "ಹಣಕಾಸು", feat3: "ಬೆಳೆಗಳು", feat4: "ಹಳ್ಳಿಗಳು", feat5: "ಹವಾಮಾನ", feat6: "ಮೊಬೈಲ್",
+        getStarted: "ಪ್ರಾರಂಭಿಸಿ", tagline2: "🌱 ಒಟ್ಟಾಗಿ ಬೆಳೆಯೋಣ, ಒಂದು ಹಳ್ಳಿ ಒಂದು ಹೆಜ್ಜೆ"
+      }
+    };
+
+    function setLang(lang) {
+      localStorage.setItem('agri_lang', lang);
+      const t = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
+    }
+
+    function goToLogin() {
+      window.location.href = 'login.html';
+    }
+
+    /* ===== Scrolling crop ticker ===== */
+    function buildTicker() {
+      const crops = ['🌾 Wheat', '🌽 Maize', '🍅 Tomato', '🌿 Rice', '🥜 Groundnut', '☘️ Sugarcane', '🫘 Lentils', '🌻 Sunflower', '🍋 Citrus', '🫑 Chilli'];
+      const ticker = document.getElementById('cropTicker');
+      if (!ticker) return;
+      const doubled = [...crops, ...crops];
+      ticker.innerHTML = doubled.map(c => `<span>${c} &nbsp;•</span>`).join('');
+    }
+
+    /* ===== Particle system ===== */
+    function initParticles() {
+      const canvas = document.getElementById('particles-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let W, H, particles = [];
+
+      function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const icons = ['🌿', '🌱', '🍀', '✨', '⭐', '🌾'];
+
+      for (let i = 0; i < 28; i++) {
+        particles.push({
+          x: Math.random() * 1000,
+          y: Math.random() * 700,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: -Math.random() * 0.5 - 0.2,
+          size: Math.random() * 14 + 10,
+          alpha: Math.random() * 0.5 + 0.2,
+          icon: icons[Math.floor(Math.random() * icons.length)]
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => {
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.font = `${p.size}px serif`;
+          ctx.fillText(p.icon, p.x, p.y);
+          ctx.restore();
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.y < -30) { p.y = H + 10; p.x = Math.random() * W; }
+          if (p.x < -30) p.x = W + 10;
+          if (p.x > W + 30) p.x = -10;
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    /* ===== Init ===== */
+    window.addEventListener('DOMContentLoaded', () => {
+      const lang = localStorage.getItem('agri_lang') || 'en';
+      document.getElementById('langSelect').value = lang;
+      setLang(lang);
+      buildTicker();
+      initParticles();
+
+      window.addEventListener('online', () => document.getElementById('offline-banner').style.display = 'none');
+      window.addEventListener('offline', () => document.getElementById('offline-banner').style.display = 'block');
+      if (!navigator.onLine) document.getElementById('offline-banner').style.display = 'block';
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+{
+  "broadcasts": [
+    {
+      "id": "brd-001",
+      "agentId": "agt-001",
+      "agentName": "Vijay Sharma",
+      "type": "weather",
+      "title": "Heavy Rain Alert – Nanded District",
+      "message": "IMD has issued a heavy rain warning for Nanded district from Oct 18-20. Farmers are advised to harvest ready crops and cover stored produce.",
+      "targetVillages": ["Nanded", "Ardhapur", "Mukhed"],
+      "targetDistrict": "Nanded",
+      "sentAt": "2025-10-17T06:00:00Z",
+      "readBy": ["usr-001", "usr-002"],
+      "status": "delivered"
+    },
+    {
+      "id": "brd-002",
+      "agentId": "agt-001",
+      "agentName": "Vijay Sharma",
+      "type": "scheme",
+      "title": "PM-KISAN 18th Installment – Apply Now",
+      "message": "The 18th installment of PM-KISAN has been released. Farmers who have not updated their eKYC must do so before Oct 31 to receive ₹2000.",
+      "targetVillages": ["Nanded", "Ardhapur"],
+      "targetDistrict": "Nanded",
+      "sentAt": "2025-10-12T09:00:00Z",
+      "readBy": ["usr-001"],
+      "status": "delivered"
+    }
+  ]
+}

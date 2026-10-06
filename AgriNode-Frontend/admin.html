@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Admin Control Center – AgriNode</title>
+  <meta name="description" content="AgriNode Government Admin Control Center – Manage users, complaints, verification, security, schemes, loans and audit logs."/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="css/styles.css" rel="stylesheet"/>
+  <style>
+    /* ── PANEL VISIBILITY ── */
+    .admin-panel{display:none}.admin-panel.active{display:block}
+
+    /* ── CMD BANNER ── */
+    .cmd-banner{background:linear-gradient(135deg,#0D1F0F,#1B5E20,#2E7D32);border-radius:20px;padding:28px 32px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden}
+    .cmd-banner::after{content:'';position:absolute;width:340px;height:340px;border-radius:50%;background:rgba(255,255,255,.04);top:-130px;right:-80px}
+    .cmd-banner::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.03);bottom:-80px;left:-40px}
+    .cmd-banner-meta{font-size:.7rem;opacity:.65;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:4px}
+    .cmd-banner-title{font-size:1.75rem;font-weight:900;margin:4px 0}
+    .cmd-banner-sub{font-size:.88rem;opacity:.78;margin-bottom:16px}
+    .cmd-banner-chips{display:flex;gap:10px;flex-wrap:wrap}
+    .cmd-chip{background:rgba(255,255,255,.14);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:.78rem;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+
+    /* ── KPI GRID ── */
+    .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+    @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.kpi-grid{grid-template-columns:1fr 1fr}}
+
+    /* ── TABLES ── */
+    .sys-table{width:100%;border-collapse:collapse;font-size:.84rem}
+    .sys-table td,.sys-table th{padding:12px 14px;border-bottom:1px solid var(--border)}
+    .sys-table th{background:var(--bg);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+    .sys-table tr:hover td{background:var(--bg)}
+
+    /* ── QUICK ACTIONS ── */
+    .quick-action-row{display:flex;gap:10px;flex-wrap:wrap}
+    .qa-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;border:none;font-weight:700;font-size:.84rem;cursor:pointer;transition:all .25s;text-decoration:none}
+    .qa-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+
+    /* ── FILTERS ── */
+    .filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+    .filter-sel{border:2px solid var(--border);background:var(--bg);color:var(--text);border-radius:10px;padding:8px 12px;font-size:.83rem;font-weight:600;cursor:pointer;outline:none;transition:border-color .2s}
+    .filter-sel:focus{border-color:var(--primary)}
+    .complaint-filter-btn{padding:7px 16px;border-radius:20px;border:2px solid var(--border);background:transparent;color:var(--text-muted);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s}
+    .complaint-filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .admin-quick-nav{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}
+    .admin-quick-nav::-webkit-scrollbar{display:none}
+    .admin-qn-btn{flex-shrink:0;border:2px solid var(--border);background:var(--card-bg);color:var(--text-muted);border-radius:999px;padding:7px 14px;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .2s}
+    .admin-qn-btn:hover{border-color:var(--primary);color:var(--primary)}
+    .admin-qn-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(46,125,50,.24)}
+
+    /* ── SECURITY ── */
+    .security-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+    .sec-label{font-weight:700;font-size:.9rem}.sec-desc{font-size:.75rem;color:var(--text-muted);margin-top:2px}
+    .toggle-wrap{position:relative;display:inline-block;width:48px;height:26px}
+    .toggle-wrap input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:13px;transition:.3s}
+    .toggle-slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .toggle-wrap input:checked+.toggle-slider{background:var(--primary)}
+    .toggle-wrap input:checked+.toggle-slider::before{transform:translateX(22px)}
+
+    /* ── ACTION BTNS ── */
+    .action-btn{border:none;border-radius:8px;padding:5px 12px;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s}
+    .action-btn:hover{opacity:.85;transform:translateY(-1px)}
+    .action-btn.approve{background:#E8F5E9;color:var(--primary)}
+    .action-btn.reject{background:#FFEBEE;color:var(--danger)}
+    .action-btn.view{background:#E3F2FD;color:#1565C0}
+    .action-btn.warn{background:#FFF8E1;color:#E65100}
+    .action-btn.resolve{background:#E8F5E9;color:#1B5E20}
+
+    /* ── SYS INFO ── */
+    .sys-info-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:.88rem}
+    .sys-info-key{color:var(--text-muted);font-weight:600}.sys-info-val{font-weight:700}
+
+    /* ── DANGER ZONE ── */
+    .danger-zone{background:linear-gradient(135deg,#FFEBEE,#FFCDD2);border-radius:var(--radius);padding:20px;border-left:4px solid var(--danger)}
+    [data-theme="dark"] .danger-zone{background:rgba(198,40,40,.12);border-left-color:#EF9A9A}
+
+    /* ── DATETIME ── */
+    .datetime-display{font-size:.78rem;color:var(--text-muted);font-weight:600;white-space:nowrap}
+
+    /* ── COMMAND CENTER (Premium) ── */
+    .agri-command-banner{background:linear-gradient(135deg,#050D0A 0%,#0D1F14 30%,#1B3A21 70%,#243D2B 100%);border-radius:20px;padding:32px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden;border:1px solid rgba(76,175,80,.15)}
+    .agri-command-banner::after{content:'🌾';position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:8rem;opacity:.06}
+    .acc-label{font-size:.68rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#81C784;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .acc-label::before{content:'';width:8px;height:8px;border-radius:50%;background:#4CAF50;box-shadow:0 0 8px rgba(76,175,80,.6);display:block}
+    .acc-title{font-size:2rem;font-weight:900;line-height:1.2;margin-bottom:8px}
+    .acc-sub{font-size:.85rem;opacity:.7;margin-bottom:20px;max-width:600px;line-height:1.6}
+    .acc-metrics{display:flex;gap:12px;flex-wrap:wrap}
+    .acc-metric{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 20px;text-align:center;flex:1;min-width:100px}
+    .acc-metric-val{font-size:1.6rem;font-weight:900;color:#A5D6A7;line-height:1}
+    .acc-metric-lbl{font-size:.65rem;color:rgba(255,255,255,.55);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+
+    /* Live status */
+    .live-status-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+    .live-status-card{background:var(--card-bg);border-radius:14px;padding:16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;border:1px solid var(--border)}
+    .ls-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .ls-status-row{display:flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;margin-top:2px}
+    .ls-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .ls-dot.ok{background:#4CAF50;box-shadow:0 0 6px rgba(76,175,80,.5);animation:livePulse 2s infinite}
+    .ls-dot.warn{background:#FF9800;box-shadow:0 0 6px rgba(255,152,0,.5)}
+    .ls-dot.err{background:#E53935;box-shadow:0 0 6px rgba(229,57,53,.5);animation:livePulse 1s infinite}
+    @keyframes livePulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+    /* Alert cards */
+    .alert-card{border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;display:flex;align-items:flex-start;gap:14px;border-left:4px solid}
+    .alert-card.critical{background:linear-gradient(90deg,#FFEBEE,transparent);border-left-color:#C62828}
+    .alert-card.warning{background:linear-gradient(90deg,#FFF8E1,transparent);border-left-color:#E65100}
+    .alert-card.info{background:linear-gradient(90deg,#E8F5E9,transparent);border-left-color:var(--primary)}
+    [data-theme="dark"] .alert-card.critical{background:rgba(198,40,40,.1)}
+    [data-theme="dark"] .alert-card.warning{background:rgba(230,81,0,.1)}
+    [data-theme="dark"] .alert-card.info{background:rgba(46,125,50,.1)}
+    .alert-icon-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+
+    /* Scheme admin */
+    .scheme-admin-card{background:var(--card-bg);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:12px;border-left:4px solid #FF8F00;transition:transform .2s}
+    .scheme-admin-card:hover{transform:translateY(-2px)}
+
+    /* Loan admin */
+    .loan-admin-row{display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:12px;margin-bottom:8px;flex-wrap:wrap}
+    .loan-progress-bar{height:5px;background:var(--border);border-radius:3px;flex:1;min-width:80px}
+    .loan-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--primary),var(--primary-light));transition:width .8s ease}
+
+    /* Support ticket admin */
+    .support-ticket-row{background:var(--card-bg);border-radius:14px;padding:16px;box-shadow:var(--shadow);margin-bottom:10px;border-left:4px solid var(--border);transition:all .2s}
+    .support-ticket-row:hover{transform:translateX(3px)}
+    .support-ticket-row.open{border-left-color:#1565C0}
+    .support-ticket-row.replied{border-left-color:#E65100}
+    .support-ticket-row.closed{border-left-color:var(--primary)}
+
+    /* Payment gateway */
+    .pay-gateway-row{display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border-radius:12px;margin-bottom:8px}
+    .pay-gateway-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .pay-method-badge{font-size:.68rem;font-weight:800;border-radius:20px;padding:2px 8px;text-transform:uppercase;letter-spacing:.4px}
+    .pay-method-badge.upi{background:#E8F5E9;color:var(--primary)}
+    .pay-method-badge.neft{background:#E3F2FD;color:#1565C0}
+    .pay-method-badge.dbt{background:#EDE7F6;color:#6A1B9A}
+    .pay-method-badge.nach{background:#FFF8E1;color:#E65100}
+    .pay-status-badge{font-size:.72rem;font-weight:700;border-radius:20px;padding:3px 10px}
+    .pay-status-badge.success{background:#E8F5E9;color:var(--primary)}
+    .pay-status-badge.pending{background:#FFF8E1;color:#E65100}
+    .pay-status-badge.failed{background:#FFEBEE;color:var(--danger)}
+
+    /* Ecosystem intelligence cards */
+    .intel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+    .intel-weather-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px}
+    .intel-weather-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .intel-weather-city{font-size:.8rem;font-weight:700}
+    .intel-weather-temp{font-size:1.05rem;font-weight:800;color:var(--primary)}
+    .intel-weather-meta{font-size:.72rem;color:var(--text-muted)}
+    .intel-weather-rec{font-size:.72rem;font-weight:600;color:#1565C0;margin-top:7px}
+    .intel-feed-item{padding:10px 0;border-bottom:1px solid var(--border)}
+    .intel-feed-item:last-child{border-bottom:none;padding-bottom:0}
+    .intel-feed-title{font-size:.82rem;font-weight:700;line-height:1.35}
+    .intel-feed-meta{font-size:.7rem;color:var(--text-muted);margin-top:4px}
+    .intel-feed-row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .intel-mini-btn{border:none;background:#E8F5E9;color:var(--primary);border-radius:8px;padding:5px 10px;font-size:.7rem;font-weight:700;cursor:pointer;white-space:nowrap}
+    .intel-mini-btn:hover{opacity:.9}
+    .intel-locator-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)}
+    .intel-locator-row:last-child{border-bottom:none;padding-bottom:0}
+    .intel-pill{font-size:.66rem;border-radius:20px;padding:3px 8px;font-weight:700;letter-spacing:.2px;text-transform:uppercase}
+    .intel-pill.good{background:#E8F5E9;color:var(--primary)}
+    .intel-pill.warn{background:#FFF8E1;color:#E65100}
+    .intel-pill.hot{background:#FFEBEE;color:var(--danger)}
+
+    /* Dark mode overrides */
+    [data-theme="dark"] .sys-table th{background:#1A1A2E}
+    [data-theme="dark"] .sys-table tr:hover td{background:#1A1A2E}
+    [data-theme="dark"] .action-btn.approve{background:rgba(46,125,50,.2);color:#81C784}
+    [data-theme="dark"] .action-btn.reject{background:rgba(198,40,40,.2);color:#EF9A9A}
+    [data-theme="dark"] .action-btn.view{background:rgba(21,101,192,.2);color:#64B5F6}
+    [data-theme="dark"] .action-btn.warn{background:rgba(230,81,0,.2);color:#FFB74D}
+    [data-theme="dark"] .action-btn.resolve{background:rgba(46,125,50,.2);color:#A5D6A7}
+    [data-theme="dark"] .filter-sel{background:#1A1A2E;border-color:#2A2A3E;color:#E8E8F0}
+    [data-theme="dark"] .loan-admin-row{background:#1A1A2E}
+    [data-theme="dark"] .pay-gateway-row{background:#1A1A2E}
+    [data-theme="dark"] .scheme-admin-card{background:#131320}
+    [data-theme="dark"] .live-status-card{background:#131320;border-color:#2A2A3E}
+    [data-theme="dark"] .support-ticket-row{background:#131320}
+    [data-theme="dark"] .admin-qn-btn{background:#1A1A2E;border-color:#2A2A3E;color:#98A3B7}
+    [data-theme="dark"] .admin-qn-btn:hover{border-color:#4CAF50;color:#A5D6A7}
+    [data-theme="dark"] .admin-qn-btn.active{background:linear-gradient(135deg,#1B5E20,#2E7D32);border-color:#4CAF50;color:#E8FFE8}
+    [data-theme="dark"] .agri-command-banner{background:linear-gradient(135deg,#040D0A 0%,#0A1A14 35%,#123022 75%,#173B28 100%);border-color:rgba(129,199,132,.22)}
+    [data-theme="dark"] .cmd-banner{background:linear-gradient(135deg,#07140E,#123321,#1F4D31)}
+    [data-theme="dark"] .acc-metric{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
+    [data-theme="dark"] .cmd-chip{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.25)}
+    [data-theme="dark"] .intel-weather-card{background:#1A1A2E;border-color:#2A2A3E}
+    [data-theme="dark"] .intel-weather-rec{color:#81C784}
+    [data-theme="dark"] .intel-mini-btn{background:rgba(46,125,50,.22);color:#A5D6A7}
+    [data-theme="dark"] .intel-pill.good{background:rgba(46,125,50,.24);color:#A5D6A7}
+    [data-theme="dark"] .intel-pill.warn{background:rgba(230,81,0,.24);color:#FFB74D}
+    [data-theme="dark"] .intel-pill.hot{background:rgba(198,40,40,.24);color:#EF9A9A}
+  </style>
+</head>
+<body>
+<div id="offline-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#B71C1C;color:#fff;text-align:center;padding:8px;font-size:.85rem;z-index:9998;font-weight:600"><i class="fa fa-wifi me-2"></i>No Internet Connection</div>
+<div id="toast-container"></div>
+<div id="print-report"></div>
+
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a class="sidebar-logo" href="admin.html">
+      <div class="logo-icon-sm">🌾</div>
+      <div><span>AgriNode</span><small>Admin Control Center</small></div>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Command</div>
+    <button class="cmd-sidebar-link active" id="navCommand" onclick="showPanel('panelCommand',this)"><i class="fa fa-satellite-dish"></i> <span data-i18n="controlCenter">Control Center</span></button>
+    <button class="cmd-sidebar-link" id="navOverview" onclick="showPanel('panelOverview',this)"><i class="fa fa-tachometer-alt"></i> <span data-i18n="dashboard">Dashboard</span></button>
+
+    <div class="nav-section-title" style="margin-top:8px"><span data-i18n="users">Users</span></div>
+    <button class="cmd-sidebar-link" id="navUsers" onclick="showPanel('panelUsers',this)"><i class="fa fa-users"></i> <span data-i18n="userManagement">All Users</span></button>
+    <button class="cmd-sidebar-link" id="navApprovals" onclick="showPanel('panelApprovals',this)"><i class="fa fa-user-check"></i> Agent Approvals <span class="notif-badge" id="badgeApprovals">0</span></button>
+
+    <div class="nav-section-title" style="margin-top:8px">Operations</div>
+    <button class="cmd-sidebar-link" id="navSchemes" onclick="showPanel('panelSchemes',this)"><i class="fa fa-landmark"></i> <span data-i18n="schemes">Schemes Portal</span></button>
+    <button class="cmd-sidebar-link" id="navLoans" onclick="showPanel('panelLoans',this)"><i class="fa fa-university"></i> <span data-i18n="loans">Loan Center</span></button>
+    <button class="cmd-sidebar-link" id="navPayments" onclick="showPanel('panelPayments',this)"><i class="fa fa-credit-card"></i> <span data-i18n="payments">Payments</span></button>
+
+    <div class="nav-section-title" style="margin-top:8px"><span data-i18n="verification">Compliance</span></div>
+    <button class="cmd-sidebar-link" id="navVerify" onclick="showPanel('panelVerify',this)"><i class="fa fa-id-card"></i> <span data-i18n="verificationCenter">Verification</span> <span class="notif-badge" id="badgeVerify">0</span></button>
+    <button class="cmd-sidebar-link" id="navComplaints" onclick="showPanel('panelComplaints',this)"><i class="fa fa-exclamation-circle"></i> <span data-i18n="complaints">Complaints</span> <span class="notif-badge" id="badgeComplaints">0</span></button>
+    <button class="cmd-sidebar-link" id="navSupport" onclick="showPanel('panelSupport',this)"><i class="fa fa-headset"></i> Support Desk</button>
+    <button class="cmd-sidebar-link" id="navAudit" onclick="showPanel('panelAudit',this)"><i class="fa fa-list-alt"></i> Audit Logs</button>
+
+    <div class="nav-section-title" style="margin-top:8px">Security</div>
+    <button class="cmd-sidebar-link" id="navSecurity" onclick="showPanel('panelSecurity',this)"><i class="fa fa-shield-alt"></i> Security Center</button>
+    <button class="cmd-sidebar-link" id="navSysData" onclick="showPanel('panelSysData',this)"><i class="fa fa-database"></i> System Data</button>
+
+    <div class="nav-section-title" style="margin-top:8px"><span data-i18n="reports">Analytics</span></div>
+    <button class="cmd-sidebar-link" id="navLoanApproval" onclick="showPanel('panelLoanApproval',this)"><i class="fa fa-hand-holding-usd"></i> <span data-i18n="loanApproval">Loan Approvals</span> <span class="notif-badge" id="badgeLoanPending">0</span></button>
+    <button class="cmd-sidebar-link" id="navMonitoring" onclick="showPanel('panelMonitoring',this)"><i class="fa fa-chart-line"></i> <span data-i18n="monitoringDashboard">Monitoring Dashboard</span></button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar" id="sidebarInitial">A</div>
+      <div><div class="name" id="sidebarName">Admin User</div><div class="role-label" id="sidebarRole">Admin</div></div>
+    </div>
+    <button onclick="doLogout()" style="width:100%;margin-top:10px;padding:9px;border-radius:10px;border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-weight:700;cursor:pointer;font-size:.85rem;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'"><i class="fa fa-sign-out-alt me-1"></i>Logout</button>
+  </div>
+</div>
+
+<!-- ══════════ MAIN CONTENT ══════════ -->
+<div class="main-content">
+  <!-- Topbar -->
+  <div class="topbar">
+    <button class="icon-btn hamburger" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+    <div class="topbar-title" id="topbarTitle">Agriculture Command Center</div>
+    <div class="topbar-actions">
+      <div class="datetime-display" id="datetimeDisplay"></div>
+      <select class="lang-select" id="langSelectAdmin" style="font-size:.75rem;padding:5px 8px" onchange="changeLang(this.value)">
+        <option value="en">EN</option><option value="hi">HI</option><option value="kn">KN</option>
+      </select>
+      <button class="icon-btn" onclick="toggleDark()" title="Toggle theme"><i class="fa fa-moon" id="themeIcon"></i></button>
+      <div style="position:relative">
+        <button class="icon-btn" onclick="showPanel('panelComplaints',document.getElementById('navComplaints'))"><i class="fa fa-bell"></i></button>
+        <span id="bellBadge" style="position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;border-radius:50%;width:16px;height:16px;font-size:.55rem;font-weight:800;display:flex;align-items:center;justify-content:center">0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="admin-quick-nav">
+      <button class="admin-qn-btn active" id="qnCommand" onclick="showPanel('panelCommand',document.getElementById('navCommand'))">Command</button>
+      <button class="admin-qn-btn" id="qnOverview" onclick="showPanel('panelOverview',document.getElementById('navOverview'))">Overview</button>
+      <button class="admin-qn-btn" id="qnUsers" onclick="showPanel('panelUsers',document.getElementById('navUsers'))">Users</button>
+      <button class="admin-qn-btn" id="qnVerify" onclick="showPanel('panelVerify',document.getElementById('navVerify'))">Verification</button>
+      <button class="admin-qn-btn" id="qnComplaints" onclick="showPanel('panelComplaints',document.getElementById('navComplaints'))">Complaints</button>
+      <button class="admin-qn-btn" id="qnLoans" onclick="showPanel('panelLoans',document.getElementById('navLoans'))">Loans</button>
+      <button class="admin-qn-btn" id="qnSecurity" onclick="showPanel('panelSecurity',document.getElementById('navSecurity'))">Security</button>
+      <button class="admin-qn-btn" id="qnAudit" onclick="showPanel('panelAudit',document.getElementById('navAudit'))">Audit</button>
+    </div>
+
+    <!-- ════════ PANEL 0: AGRICULTURE COMMAND CENTER ════════ -->
+    <div class="admin-panel active" id="panelCommand">
+      
+      <!-- Live Marquee Notification -->
+      <div class="marquee-container">
+        <i class="fa fa-info-circle" style="margin-right: 12px; color: var(--accent-dark);"></i>
+        <div class="marquee-content">
+          <span id="marquee-text-1">System Alert: 24 Agent approvals pending across 5 states. Immediate action required.</span>
+          <span id="marquee-text-2">Notice: Server maintenance scheduled for 02:00 AM IST. Portal will be offline for 15 mins.</span>
+        </div>
+      </div>
+      <div class="agri-command-banner">
+        <div class="acc-label"><span></span> AgriNode Admin Agriculture Command Center</div>
+        <div class="acc-title" id="cmdGreet">Good Morning, Admin</div>
+        <div class="acc-sub">Full situational awareness of India's agricultural intelligence network. Monitor platform health, critical alerts, and take action in real time.</div>
+        <div class="acc-metrics" id="cmdMetrics"></div>
+      </div>
+
+      <!-- Live System Status -->
+      <h2 class="section-title"><i class="fa fa-satellite-dish"></i> Live Platform Status</h2>
+      <div class="live-status-grid" id="liveStatusGrid"></div>
+
+      <!-- Critical Alerts -->
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-exclamation-triangle me-2" style="color:#E65100"></i>Active Alerts</h5><span style="font-size:.72rem;color:var(--text-muted)">Real-time</span></div>
+            <div id="activeAlerts"></div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-bolt me-2" style="color:var(--accent-dark)"></i>Quick Actions</h5></div>
+            <div class="quick-action-row" style="margin-bottom:10px">
+              <button class="qa-btn" style="background:linear-gradient(135deg,#1B5E20,#4CAF50);color:#fff" onclick="showPanel('panelApprovals',document.getElementById('navApprovals'))"><i class="fa fa-user-check"></i> Approve Pending</button>
+              <button class="qa-btn" style="background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff" onclick="generateReport(null)"><i class="fa fa-file-pdf"></i> Export Report</button>
+            </div>
+            <div class="quick-action-row" style="margin-bottom:10px">
+              <button class="qa-btn" style="background:linear-gradient(135deg,#E65100,#FF6D00);color:#fff" onclick="showPanel('panelComplaints',document.getElementById('navComplaints'))"><i class="fa fa-exclamation-circle"></i> View Complaints</button>
+              <button class="qa-btn" style="background:linear-gradient(135deg,#6A1B9A,#8E24AA);color:#fff" onclick="showPanel('panelAudit',document.getElementById('navAudit'))"><i class="fa fa-history"></i> Audit Logs</button>
+            </div>
+            <div class="quick-action-row">
+              <button class="qa-btn" style="background:linear-gradient(135deg,#00695C,#00897B);color:#fff" onclick="showPanel('panelLoans',document.getElementById('navLoans'))"><i class="fa fa-university"></i> Loan Center</button>
+              <button class="qa-btn" style="background:linear-gradient(135deg,#BF360C,#E64A19);color:#fff" onclick="showPanel('panelSupport',document.getElementById('navSupport'))"><i class="fa fa-headset"></i> Support Desk</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- State Coverage Map (Simulated) -->
+      <div class="card-panel">
+        <div class="card-panel-header"><h5><i class="fa fa-map-marked-alt me-2" style="color:#1565C0"></i>State Coverage</h5><span style="font-size:.72rem;color:var(--text-muted)">15 States Active</span></div>
+        <div class="row g-2" id="stateCoverageGrid"></div>
+      </div>
+
+      <!-- National Agriculture Intelligence -->
+      <h2 class="section-title mt-3"><i class="fa fa-globe-asia"></i> National Agriculture Intelligence</h2>
+      <div class="row g-3">
+        <div class="col-lg-6">
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <h5><i class="fa fa-cloud-sun-rain me-2" style="color:#1565C0"></i>Live Weather Dashboard</h5>
+              <span style="font-size:.72rem;color:var(--text-muted)">Regional Forecast</span>
+            </div>
+            <div class="intel-grid" id="weatherIntelCards"></div>
+          </div>
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <h5><i class="fa fa-newspaper me-2" style="color:#E65100"></i>Agriculture News Feed</h5>
+              <button class="qa-btn" style="padding:6px 10px;font-size:.72rem;background:linear-gradient(135deg,#E65100,#FF6D00);color:#fff" onclick="showToast('News feed synced from AgriNode bulletin desk')"><i class="fa fa-sync-alt me-1"></i>Refresh</button>
+            </div>
+            <div id="newsFeedList"></div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <h5><i class="fa fa-map-location-dot me-2" style="color:var(--primary)"></i>APMC Locator Snapshot</h5>
+              <span style="font-size:.72rem;color:var(--text-muted)">Top Mandi Activity</span>
+            </div>
+            <div id="apmcLocatorList"></div>
+          </div>
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <h5><i class="fa fa-store me-2" style="color:#6A1B9A"></i>Nearby Buyer Locator</h5>
+              <span style="font-size:.72rem;color:var(--text-muted)">Demand Heatmap</span>
+            </div>
+            <div id="buyerLocatorList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 1: DASHBOARD OVERVIEW ════════ -->
+    <div class="admin-panel" id="panelOverview">
+      <div class="cmd-banner">
+        <div class="cmd-banner-meta">AgriNode Government Command Center</div>
+        <div class="cmd-banner-title" id="welcomeGreet">Good Morning, Admin</div>
+        <div class="cmd-banner-sub">Platform is fully operational. Review pending items below.</div>
+        <div class="cmd-banner-chips">
+          <span class="cmd-chip">🟢 System Online</span>
+          <span class="cmd-chip" id="chipDate">📡 Loading…</span>
+          <span class="cmd-chip" id="chipPending">⏳ Checking…</span>
+        </div>
+      </div>
+      <div class="kpi-grid" id="kpiGrid"></div>
+      <div class="row g-3">
+        <div class="col-lg-5">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-heartbeat me-2" style="color:var(--primary)"></i>System Health</h5><span style="font-size:.72rem;color:var(--text-muted)">Live</span></div>
+            <div class="health-row"><span class="health-dot ok"></span><span style="flex:1;font-weight:600;font-size:.88rem">Database</span><span style="font-size:.8rem;color:var(--primary);font-weight:700">Operational</span></div>
+            <div class="health-row"><span class="health-dot ok"></span><span style="flex:1;font-weight:600;font-size:.88rem">Authentication</span><span style="font-size:.8rem;color:var(--primary);font-weight:700">Operational</span></div>
+            <div class="health-row"><span class="health-dot warn"></span><span style="flex:1;font-weight:600;font-size:.88rem">SMS Gateway</span><span style="font-size:.8rem;color:#E65100;font-weight:700">Delayed</span></div>
+            <div class="health-row"><span class="health-dot ok"></span><span style="flex:1;font-weight:600;font-size:.88rem">Payment API</span><span style="font-size:.8rem;color:var(--primary);font-weight:700">Operational</span></div>
+            <div class="health-row" style="border:none"><span class="health-dot ok"></span><span style="flex:1;font-weight:600;font-size:.88rem">Weather API</span><span style="font-size:.8rem;color:var(--primary);font-weight:700">Operational</span></div>
+          </div>
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-bolt me-2" style="color:var(--accent-dark)"></i>Quick Actions</h5></div>
+            <div class="quick-action-row">
+              <button class="qa-btn" style="background:linear-gradient(135deg,#1B5E20,#4CAF50);color:#fff" onclick="showPanel('panelApprovals',document.getElementById('navApprovals'))"><i class="fa fa-user-check"></i> Approve Pending</button>
+              <button class="qa-btn" style="background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff" onclick="generateReport(null)"><i class="fa fa-file-pdf"></i> Export Report</button>
+              <button class="qa-btn" style="background:linear-gradient(135deg,#E65100,#FF6D00);color:#fff" onclick="showPanel('panelComplaints',document.getElementById('navComplaints'))"><i class="fa fa-exclamation-circle"></i> Complaints</button>
+              <button class="qa-btn" style="background:linear-gradient(135deg,#6A1B9A,#8E24AA);color:#fff" onclick="showPanel('panelAudit',document.getElementById('navAudit'))"><i class="fa fa-history"></i> Audit</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-history me-2" style="color:#6A1B9A"></i>Recent Activity</h5><span style="font-size:.72rem;color:var(--text-muted)">Last 6 events</span></div>
+            <div id="timelineContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 2: ALL USERS ════════ -->
+    <div class="admin-panel" id="panelUsers">
+      <h2 class="section-title"><i class="fa fa-users"></i> All Users</h2>
+      <div class="filter-row">
+        <div class="search-bar" style="flex:1;max-width:300px">
+          <i class="fa fa-search"></i>
+          <input type="text" id="userSearch" placeholder="Search name or phone…" oninput="renderUsers()"/>
+        </div>
+        <select class="filter-sel" id="userRoleFilter" onchange="renderUsers()">
+          <option value="">All Roles</option><option value="Admin">Admin</option><option value="Agent">Agent</option><option value="Farmer">Farmer</option>
+        </select>
+        <select class="filter-sel" id="userStatusFilter" onchange="renderUsers()">
+          <option value="">All Status</option><option value="approved">Approved</option><option value="pending">Pending</option>
+        </select>
+        <button class="qa-btn" style="background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff" onclick="generateReport(null)"><i class="fa fa-download me-1"></i>Export</button>
+      </div>
+      <div class="card-panel" style="overflow-x:auto">
+        <table class="sys-table" id="usersTable">
+          <thead><tr><th>Name</th><th>Phone</th><th>Role</th><th>Village</th><th>Status</th><th>KYC</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 3: AGENT APPROVALS ════════ -->
+    <div class="admin-panel" id="panelApprovals">
+      <h2 class="section-title"><i class="fa fa-user-check"></i> Agent Approvals <span class="badge-count" id="approvalsCount">0</span></h2>
+      <div id="approvalsContainer"></div>
+    </div>
+
+    <!-- ════════ PANEL 4: GOVERNMENT SCHEMES PORTAL ════════ -->
+    <div class="admin-panel" id="panelSchemes">
+      <h2 class="section-title"><i class="fa fa-landmark"></i> Government Schemes Portal</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4"><div style="background:linear-gradient(135deg,#FF6F00,#FF8F00);border-radius:14px;padding:18px;color:#fff;text-align:center"><div style="font-size:2rem;font-weight:900" id="schemeTotalCount">7</div><div style="font-size:.75rem;opacity:.85">Total Schemes</div></div></div>
+        <div class="col-md-4"><div style="background:linear-gradient(135deg,#1B5E20,#4CAF50);border-radius:14px;padding:18px;color:#fff;text-align:center"><div style="font-size:2rem;font-weight:900" id="schemeAppliedCount">0</div><div style="font-size:.75rem;opacity:.85">Applications Received</div></div></div>
+        <div class="col-md-4"><div style="background:linear-gradient(135deg,#1565C0,#1976D2);border-radius:14px;padding:18px;color:#fff;text-align:center"><div style="font-size:2rem;font-weight:900">₹6000</div><div style="font-size:.75rem;opacity:.85">Avg. Benefit/Farmer</div></div></div>
+      </div>
+      <div class="card-panel">
+        <div class="card-panel-header">
+          <h5><i class="fa fa-list me-2" style="color:#FF8F00"></i>Active Schemes</h5>
+          <button class="qa-btn" style="background:linear-gradient(135deg,#1B5E20,#4CAF50);color:#fff;padding:7px 14px;font-size:.78rem" onclick="showToast('New scheme form opened')"><i class="fa fa-plus me-1"></i>Add Scheme</button>
+        </div>
+        <div id="adminSchemesList"></div>
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 5: LOAN CENTER ════════ -->
+    <div class="admin-panel" id="panelLoans">
+      <h2 class="section-title"><i class="fa fa-university"></i> Loan Center</h2>
+      <div class="row g-3 mb-3" id="loanKPIs"></div>
+      <div class="card-panel">
+        <div class="card-panel-header">
+          <h5><i class="fa fa-list me-2" style="color:#1565C0"></i>All Loan Applications</h5>
+          <div class="filter-row" style="margin:0;gap:8px">
+            <select class="filter-sel" id="loanStatusFilter" onchange="renderLoans()">
+              <option value="">All Status</option>
+              <option value="disbursed">Disbursed</option>
+              <option value="approved">Approved</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div id="loansContainer"></div>
+      </div>
+      <!-- New Loan Application Panel -->
+      <div class="card-panel mt-3">
+        <div class="card-panel-header"><h5><i class="fa fa-plus-circle me-2" style="color:var(--primary)"></i>Empanel New Bank / Scheme</h5></div>
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label">Bank Name</label><input class="form-control" placeholder="e.g. State Bank of India"/></div>
+          <div class="col-md-4"><label class="form-label">Loan Type</label><select class="form-select"><option>KCC – Kisan Credit Card</option><option>Agriculture Term Loan</option><option>Equipment Loan</option><option>SHG Loan</option></select></div>
+          <div class="col-md-4"><label class="form-label">Interest Rate</label><input class="form-control" placeholder="e.g. 4%"/></div>
+          <div class="col-12"><button class="btn-primary-custom" style="width:auto;padding:10px 24px" onclick="showToast('Bank scheme added to loan center ✓')"><i class="fa fa-plus me-1"></i>Add Bank Scheme</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 6: PAYMENT GATEWAY ════════ -->
+    <div class="admin-panel" id="panelPayments">
+      <h2 class="section-title"><i class="fa fa-credit-card"></i> Payment Gateway</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-3"><div style="background:linear-gradient(135deg,#1B5E20,#4CAF50);border-radius:14px;padding:18px;color:#fff"><div style="font-size:.68rem;opacity:.75;font-weight:700">TOTAL RECEIVED</div><div style="font-size:1.6rem;font-weight:900;margin-top:4px">₹5,76,000</div></div></div>
+        <div class="col-md-3"><div style="background:linear-gradient(135deg,#B71C1C,#E53935);border-radius:14px;padding:18px;color:#fff"><div style="font-size:.68rem;opacity:.75;font-weight:700">TOTAL PAID OUT</div><div style="font-size:1.6rem;font-weight:900;margin-top:4px">₹1,36,000</div></div></div>
+        <div class="col-md-3"><div style="background:linear-gradient(135deg,#1565C0,#1976D2);border-radius:14px;padding:18px;color:#fff"><div style="font-size:.68rem;opacity:.75;font-weight:700">DBT TRANSFERS</div><div style="font-size:1.6rem;font-weight:900;margin-top:4px">₹62,000</div></div></div>
+        <div class="col-md-3"><div style="background:linear-gradient(135deg,#4A148C,#7B1FA2);border-radius:14px;padding:18px;color:#fff"><div style="font-size:.68rem;opacity:.75;font-weight:700">TRANSACTIONS</div><div style="font-size:1.6rem;font-weight:900;margin-top:4px">247</div></div></div>
+      </div>
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-history me-2"></i>Transaction Ledger</h5>
+              <div style="display:flex;gap:8px">
+                <select class="filter-sel" style="font-size:.78rem;padding:5px 8px" id="payTypeFilter" onchange="renderPaymentGateway()"><option value="">All Types</option><option value="credit">Credits</option><option value="debit">Debits</option></select>
+                <button class="qa-btn" style="background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff;padding:6px 12px;font-size:.78rem" onclick="downloadFarmerRecords()"><i class="fa fa-download"></i></button>
+              </div>
+            </div>
+            <div id="paymentLedger"></div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>Payment Methods</h5></div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg);border-radius:10px"><span style="font-weight:700"><i class="fa fa-mobile-alt me-2" style="color:var(--primary)"></i>UPI</span><span style="font-weight:800;font-size:1.1rem;color:var(--primary)">₹2,40,000</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg);border-radius:10px"><span style="font-weight:700"><i class="fa fa-exchange-alt me-2" style="color:#1565C0"></i>NEFT/RTGS</span><span style="font-weight:800;font-size:1.1rem;color:#1565C0">₹1,86,000</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg);border-radius:10px"><span style="font-weight:700"><i class="fa fa-university me-2" style="color:#6A1B9A"></i>DBT Direct</span><span style="font-weight:800;font-size:1.1rem;color:#6A1B9A">₹62,000</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg);border-radius:10px"><span style="font-weight:700"><i class="fa fa-repeat me-2" style="color:#E65100"></i>NACH/EMI</span><span style="font-weight:800;font-size:1.1rem;color:#E65100">₹88,000</span></div>
+            </div>
+          </div>
+          <div class="card-panel mt-3">
+            <div class="card-panel-header"><h5>Initiate Transfer</h5></div>
+            <div class="mb-2"><label class="form-label">Beneficiary UPI / Account</label><input class="form-control" placeholder="e.g. 9111111111@agrinode"/></div>
+            <div class="mb-2"><label class="form-label">Amount (₹)</label><input class="form-control" type="number" placeholder="Enter amount"/></div>
+            <div class="mb-3"><label class="form-label">Purpose</label><select class="form-select"><option>PM-KISAN Instalment</option><option>Subsidy Disbursement</option><option>Loan Credit</option><option>Claim Settlement</option></select></div>
+            <button class="btn-primary-custom" onclick="showToast('Transfer initiated securely ✓')"><i class="fa fa-paper-plane me-1"></i>Initiate Secure Transfer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 7: VERIFICATION CENTER ════════ -->
+    <div class="admin-panel" id="panelVerify">
+      <h2 class="section-title"><i class="fa fa-id-card"></i> Verification Center</h2>
+      <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:18px">Review submitted KYC documents and approve or reject each verification request.</p>
+      <div id="verifyContainer"></div>
+    </div>
+
+    <!-- ════════ PANEL 8: COMPLAINTS ════════ -->
+    <div class="admin-panel" id="panelComplaints">
+      <h2 class="section-title"><i class="fa fa-exclamation-circle"></i> Complaint Management</h2>
+      <div class="row g-3 mb-3" id="complaintStats"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+        <button class="complaint-filter-btn active" onclick="filterComplaints('all',this)">All</button>
+        <button class="complaint-filter-btn" onclick="filterComplaints('open',this)">Open</button>
+        <button class="complaint-filter-btn" onclick="filterComplaints('inprogress',this)">In Progress</button>
+        <button class="complaint-filter-btn" onclick="filterComplaints('resolved',this)">Resolved</button>
+      </div>
+      <div id="complaintsContainer"></div>
+    </div>
+
+    <!-- ════════ PANEL 9: SUPPORT DESK ════════ -->
+    <div class="admin-panel" id="panelSupport">
+      <h2 class="section-title"><i class="fa fa-headset"></i> Support Desk</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4"><div style="background:linear-gradient(135deg,#1565C0,#1976D2);border-radius:14px;padding:16px;color:#fff;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="ticketOpenCount">0</div><div style="font-size:.75rem;opacity:.8">Open Tickets</div></div></div>
+        <div class="col-md-4"><div style="background:linear-gradient(135deg,#E65100,#FF6D00);border-radius:14px;padding:16px;color:#fff;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="ticketRepliedCount">0</div><div style="font-size:.75rem;opacity:.8">Awaiting Reply</div></div></div>
+        <div class="col-md-4"><div style="background:linear-gradient(135deg,#1B5E20,#4CAF50);border-radius:14px;padding:16px;color:#fff;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="ticketClosedCount">0</div><div style="font-size:.75rem;opacity:.8">Resolved</div></div></div>
+      </div>
+      <div class="filter-row">
+        <select class="filter-sel" id="ticketStatusFilter" onchange="renderSupport()">
+          <option value="">All Tickets</option><option value="open">Open</option><option value="replied">Replied</option><option value="closed">Closed</option>
+        </select>
+        <select class="filter-sel" id="ticketCatFilter" onchange="renderSupport()">
+          <option value="">All Categories</option><option value="KYC">KYC</option><option value="Schemes">Schemes</option><option value="Finance">Finance</option><option value="Technical">Technical</option>
+        </select>
+        <button class="qa-btn" style="background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff" onclick="downloadSupportReport()"><i class="fa fa-download me-1"></i>Export</button>
+      </div>
+      <div id="supportContainer"></div>
+    </div>
+
+    <!-- ════════ PANEL 10: AUDIT LOGS ════════ -->
+    <div class="admin-panel" id="panelAudit">
+      <h2 class="section-title"><i class="fa fa-list-alt"></i> Audit Logs</h2>
+      <div class="filter-row">
+        <select class="filter-sel" id="auditActionFilter" onchange="renderAudit()">
+          <option value="">All Actions</option>
+          <option value="login">Login</option><option value="create">Create</option><option value="update">Update</option>
+          <option value="delete">Delete</option><option value="approve">Approve</option><option value="reject">Reject</option>
+        </select>
+        <button class="qa-btn" style="background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff" onclick="downloadAuditCsv()"><i class="fa fa-download me-1"></i>Export CSV</button>
+      </div>
+      <div class="card-panel" style="overflow-x:auto">
+        <table class="audit-table" id="auditTable">
+          <thead><tr><th>Log ID</th><th>Action</th><th>User</th><th>Role</th><th>Detail</th><th>IP</th><th>Timestamp</th></tr></thead>
+          <tbody id="auditBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 11: SECURITY CENTER ════════ -->
+    <div class="admin-panel" id="panelSecurity">
+      <h2 class="section-title"><i class="fa fa-shield-alt"></i> Security Center</h2>
+      <div class="row g-3">
+        <div class="col-lg-5">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>Security Controls</h5><span style="background:#E8F5E9;color:var(--primary);border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:700">All Systems Secure</span></div>
+            <div class="security-item"><div><div class="sec-label">Two-Factor Auth (2FA)</div><div class="sec-desc">OTP required for all admin logins</div></div><label class="toggle-wrap"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+            <div class="security-item"><div><div class="sec-label">OTP Login</div><div class="sec-desc">Mobile OTP for farmer and agent login</div></div><label class="toggle-wrap"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+            <div class="security-item"><div><div class="sec-label">Session Timeout (30 min)</div><div class="sec-desc">Auto logout after inactivity</div></div><label class="toggle-wrap"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+            <div class="security-item"><div><div class="sec-label">IP Whitelist</div><div class="sec-desc">Restrict admin access to known IPs</div></div><label class="toggle-wrap"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+            <div class="security-item"><div><div class="sec-label">Data Encryption (AES-256)</div><div class="sec-desc">TLS 1.3 with AES-256 for all data at rest</div></div><label class="toggle-wrap"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+            <div class="security-item" style="border:none"><div><div class="sec-label">Audit Trail</div><div class="sec-desc">Log all admin and agent actions permanently</div></div><label class="toggle-wrap"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-ban me-2" style="color:var(--danger)"></i>Blocked IPs</h5><button class="action-btn view" onclick="downloadAuditCsv()">Export</button></div>
+            <div class="login-hist-row"><div class="device-icon"><i class="fa fa-globe"></i></div><div style="flex:1"><div style="font-weight:700;font-size:.88rem;font-family:monospace">45.33.32.156</div><div style="font-size:.72rem;color:var(--text-muted)">Blocked: 10/05/2026 – Brute force attack</div></div><button class="action-btn approve" onclick="showToast('IP 45.33.32.156 unblocked')">Unblock</button></div>
+            <div class="login-hist-row"><div class="device-icon"><i class="fa fa-globe"></i></div><div style="flex:1"><div style="font-weight:700;font-size:.88rem;font-family:monospace">185.220.101.45</div><div style="font-size:.72rem;color:var(--text-muted)">Blocked: 15/05/2026 – Suspicious login attempts</div></div><button class="action-btn approve" onclick="showToast('IP unblocked')">Unblock</button></div>
+            <div class="login-hist-row" style="border:none"><div class="device-icon"><i class="fa fa-globe"></i></div><div style="flex:1"><div style="font-weight:700;font-size:.88rem;font-family:monospace">103.21.244.0/22</div><div style="font-size:.72rem;color:var(--text-muted)">Blocked: 20/05/2026 – CIDR range block</div></div><button class="action-btn approve" onclick="showToast('CIDR range unblocked')">Unblock</button></div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5><i class="fa fa-history me-2" style="color:#6A1B9A"></i>Recent Login History</h5></div>
+            <div id="loginHistContainer"></div>
+          </div>
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>Active Sessions</h5><button class="action-btn reject" onclick="showToast('All other sessions terminated')">Terminate All Others</button></div>
+            <table class="sys-table">
+              <thead><tr><th>User</th><th>Device</th><th>IP</th><th>Login Time</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Admin User</strong></td><td>Chrome / Windows</td><td>192.168.1.1</td><td>Now</td><td><span style="background:#E8F5E9;color:var(--primary);border-radius:20px;padding:2px 10px;font-size:.72rem;font-weight:700">Current</span></td></tr>
+                <tr><td>Ramesh Kumar</td><td>Chrome / Android</td><td>10.0.0.5</td><td>16:30 Today</td><td><button class="action-btn reject" onclick="showToast('Session revoked')">Revoke</button></td></tr>
+                <tr><td>Geetha Devi</td><td>Firefox / Android</td><td>172.16.0.10</td><td>14:00 Today</td><td><button class="action-btn reject" onclick="showToast('Session revoked')">Revoke</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 12: SYSTEM DATA ════════ -->
+    <div class="admin-panel" id="panelSysData">
+      <h2 class="section-title"><i class="fa fa-database"></i> System Data</h2>
+      <div class="row g-3 mb-3" id="sysDataCards"></div>
+      <div class="row g-3">
+        <div class="col-lg-6">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>Platform Information</h5></div>
+            <div class="sys-info-row"><span class="sys-info-key">Version</span><span class="sys-info-val">AgriNode v3.0.0</span></div>
+            <div class="sys-info-row"><span class="sys-info-key">Environment</span><span class="sys-info-val" style="color:var(--primary)">Production</span></div>
+            <div class="sys-info-row"><span class="sys-info-key">Server</span><span class="sys-info-val">AgriNode-Server-01</span></div>
+            <div class="sys-info-row"><span class="sys-info-key">Database</span><span class="sys-info-val">PostgreSQL 15.2</span></div>
+            <div class="sys-info-row"><span class="sys-info-key">Last Backup</span><span class="sys-info-val">24/05/2026 02:00 AM</span></div>
+            <div class="sys-info-row" style="border:none"><span class="sys-info-key">Uptime</span><span class="sys-info-val" style="color:var(--primary)">99.8% (30 days)</span></div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card-panel">
+            <div class="card-panel-header"><h5>Reports &amp; Exports</h5></div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <button class="qa-btn" style="background:linear-gradient(135deg,#1B5E20,#4CAF50);color:#fff;width:100%" onclick="generateReport(null)"><i class="fa fa-file-pdf me-1"></i>Download Full Platform Report</button>
+              <button class="qa-btn" style="background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff;width:100%" onclick="downloadBrochure()"><i class="fa fa-book me-1"></i>Download Platform Brochure</button>
+              <button class="qa-btn" style="background:linear-gradient(135deg,#E65100,#FF6D00);color:#fff;width:100%" onclick="downloadComplaintReport()"><i class="fa fa-exclamation-triangle me-1"></i>Export Complaint Report</button>
+              <button class="qa-btn" style="background:linear-gradient(135deg,#6A1B9A,#8E24AA);color:#fff;width:100%" onclick="downloadAuditCsv()"><i class="fa fa-history me-1"></i>Export Audit Logs (CSV)</button>
+            </div>
+          </div>
+          <div class="danger-zone mt-3">
+            <div style="font-weight:800;color:var(--danger);margin-bottom:8px"><i class="fa fa-exclamation-triangle me-2"></i>Danger Zone</div>
+            <div style="font-size:.84rem;color:var(--text-muted);margin-bottom:14px">These actions cannot be undone. Proceed with extreme caution.</div>
+            <button class="qa-btn" style="background:var(--danger);color:#fff" onclick="if(confirm('Reset ALL demo data? This cannot be undone.')){seedDemoData();showToast('System data reset to demo defaults');}"><i class="fa fa-redo me-1"></i>Reset System Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+
+  <!-- ===== PANEL: LOAN APPROVAL CENTER ===== -->
+  <div class="admin-panel" id="panelLoanApproval" style="display:none">
+    <h2 class="section-title"><i class="fa fa-hand-holding-usd"></i> Loan Approval Center</h2>
+
+    <!-- Stats Row -->
+    <div class="row g-3 mb-3" id="loanApproval-stats">
+      <div class="col-6 col-md-3"><div style="background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border-radius:14px;padding:18px;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="la-total">-</div><div style="font-size:.78rem;opacity:.85">Total Applications</div></div></div>
+      <div class="col-6 col-md-3"><div style="background:linear-gradient(135deg,#E65100,#F57C00);color:#fff;border-radius:14px;padding:18px;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="la-pending">-</div><div style="font-size:.78rem;opacity:.85">Pending</div></div></div>
+      <div class="col-6 col-md-3"><div style="background:linear-gradient(135deg,#0d47a1,#1565C0);color:#fff;border-radius:14px;padding:18px;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="la-approved">-</div><div style="font-size:.78rem;opacity:.85">Approved</div></div></div>
+      <div class="col-6 col-md-3"><div style="background:linear-gradient(135deg,#1a237e,#283593);color:#fff;border-radius:14px;padding:18px;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="la-amount">-</div><div style="font-size:.78rem;opacity:.85">Total Amount</div></div></div>
+    </div>
+
+    <!-- Loan Table -->
+    <div class="card-panel">
+      <div class="card-panel-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <h5><i class="fa fa-list me-2"></i>All Loan Applications</h5>
+        <div style="display:flex;gap:8px">
+          <button class="qa-btn" style="background:#1B5E20;color:#fff;padding:7px 14px;font-size:.8rem" onclick="bulkApprovePending()"><i class="fa fa-check-double me-1"></i>Approve All Pending</button>
+          <button class="qa-btn" style="background:#1565C0;color:#fff;padding:7px 14px;font-size:.8rem" onclick="showToast('Loan report exported to CSV');"><i class="fa fa-file-csv me-1"></i>Export CSV</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="audit-table" style="width:100%;border-collapse:collapse" id="loan-approval-table">
+          <thead>
+            <tr style="background:var(--sidebar-bg,#1B5E20);color:#fff">
+              <th style="padding:10px 12px">Loan ID</th>
+              <th>Farmer</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Bank</th>
+              <th>Applied</th>
+              <th>Officer</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="loan-approval-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /panelLoanApproval -->
+
+  <!-- ===== PANEL: MONITORING DASHBOARD ===== -->
+  <div class="admin-panel" id="panelMonitoring" style="display:none">
+    <h2 class="section-title"><i class="fa fa-chart-line"></i> Monitoring Dashboard</h2>
+
+    <!-- Top Metrics -->
+    <div class="row g-3 mb-3">
+      <div class="col-6 col-md-3"><div style="background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;border-radius:14px;padding:18px;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="mon-farmers">-</div><div style="font-size:.78rem;opacity:.85">Total Farmers</div></div></div>
+      <div class="col-6 col-md-3"><div style="background:linear-gradient(135deg,#0d47a1,#1565C0);color:#fff;border-radius:14px;padding:18px;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="mon-agents">-</div><div style="font-size:.78rem;opacity:.85">Active Agents</div></div></div>
+      <div class="col-6 col-md-3"><div style="background:linear-gradient(135deg,#4a148c,#6a1b9a);color:#fff;border-radius:14px;padding:18px;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="mon-complaints">-</div><div style="font-size:.78rem;opacity:.85">Open Complaints</div></div></div>
+      <div class="col-6 col-md-3"><div style="background:linear-gradient(135deg,#bf360c,#e64a19);color:#fff;border-radius:14px;padding:18px;text-align:center"><div style="font-size:1.8rem;font-weight:900" id="mon-pending">-</div><div style="font-size:.78rem;opacity:.85">Pending Approvals</div></div></div>
+    </div>
+
+    <div class="row g-3">
+      <!-- District Coverage -->
+      <div class="col-lg-6">
+        <div class="card-panel">
+          <div class="card-panel-header"><h5><i class="fa fa-map-marker-alt me-2"></i>District Coverage</h5></div>
+          <div id="district-coverage-list"></div>
+        </div>
+      </div>
+
+      <!-- Agent Leaderboard -->
+      <div class="col-lg-6">
+        <div class="card-panel">
+          <div class="card-panel-header"><h5><i class="fa fa-trophy me-2"></i>Top Agent Leaderboard</h5></div>
+          <div id="agent-leaderboard"></div>
+        </div>
+      </div>
+
+      <!-- Recent Activity Feed -->
+      <div class="col-12">
+        <div class="card-panel">
+          <div class="card-panel-header"><h5><i class="fa fa-bell me-2"></i>Recent Activity Feed</h5></div>
+          <div id="monitoring-activity"></div>
+        </div>
+      </div>
+
+      <!-- Platform Health -->
+      <div class="col-lg-6">
+        <div class="card-panel">
+          <div class="card-panel-header" style="display:flex;justify-content:space-between;align-items:center">
+            <h5><i class="fa fa-heartbeat me-2"></i>Platform Health</h5>
+            <span style="font-size:.75rem;color:#4CAF50;font-weight:700">● All Systems Operational</span>
+          </div>
+          <div id="platform-health-list"></div>
+        </div>
+      </div>
+
+      <!-- Weekly Stats Simulated Bar -->
+      <div class="col-lg-6">
+        <div class="card-panel">
+          <div class="card-panel-header"><h5><i class="fa fa-chart-bar me-2"></i>Farmers Added (Last 7 Days)</h5></div>
+          <div id="weekly-bar-chart" style="display:flex;align-items:flex-end;gap:8px;height:140px;padding:10px 0"></div>
+          <div id="weekly-bar-labels" style="display:flex;gap:8px;font-size:.72rem;color:#888;text-align:center"></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /panelMonitoring -->
+
+</div><!-- /main-content -->
+
+<!-- Mobile Bottom Nav -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="bn-item active" onclick="showPanel('panelCommand',document.getElementById('navCommand'))"><i class="fa fa-satellite-dish"></i><span>Command</span></button>
+    <button class="bn-item" onclick="showPanel('panelOverview',document.getElementById('navOverview'))"><i class="fa fa-tachometer-alt"></i><span>Overview</span></button>
+    <button class="bn-item" onclick="showPanel('panelUsers',document.getElementById('navUsers'))"><i class="fa fa-users"></i><span>Users</span></button>
+    <button class="bn-item" onclick="showPanel('panelComplaints',document.getElementById('navComplaints'))"><i class="fa fa-exclamation"></i><span>Issues</span></button>
+    <button class="bn-item" onclick="showPanel('panelAudit',document.getElementById('navAudit'))"><i class="fa fa-history"></i><span>Logs</span></button>
+  </div>
+</div>
+
+  <!-- Admin Verify Modal -->
+  <div class="modal fade" id="adminVerifyModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content" style="background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:16px;">
+        <div class="modal-header" style="border-bottom:1px solid var(--border);">
+          <h5 class="modal-title"><i class="fa fa-shield-alt text-primary"></i> Admin Verification Desk</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1) grayscale(1) contrast(9)"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div style="height:300px; background:#e0e0e0; display:flex; align-items:center; justify-content:center; color:#333; margin-bottom:15px; border-radius:8px;">
+            <i class="fa fa-file-image fa-3x text-primary me-2"></i> [Simulated Document Viewer]
+          </div>
+          <div class="d-flex gap-3">
+            <button class="btn-primary-custom bg-success border-0 flex-1" id="adminApproveBtn"><i class="fa fa-check-double"></i> Approve Application</button>
+            <button class="btn-primary-custom bg-danger border-0 flex-1" onclick="bootstrap.Modal.getInstance(document.getElementById('adminVerifyModal')).hide()"><i class="fa fa-times"></i> Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ── AUTH CHECK ── */
+var cu = getCurrentUser();
+if(!cu || cu.role!=='Admin'){
+  var adminUser = getUsers().find(function(u){return u.role==='Admin';});
+  if(adminUser) setCurrentUser(adminUser);
+  else { window.location.href='login.html'; }
+}
+cu = getCurrentUser();
+
+/* ── PANEL SWITCHER ── */
+function showPanel(id, clickedEl){
+  document.querySelectorAll('.admin-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.cmd-sidebar-link').forEach(function(l){l.classList.remove('active');});
+  document.querySelectorAll('.admin-qn-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.bottom-nav .bn-item').forEach(function(b){b.classList.remove('active');});
+  var panel = document.getElementById(id);
+  if(panel) panel.classList.add('active');
+  if(clickedEl) clickedEl.classList.add('active');
+  var qnMap={panelCommand:'qnCommand',panelOverview:'qnOverview',panelUsers:'qnUsers',panelVerify:'qnVerify',panelComplaints:'qnComplaints',panelLoans:'qnLoans',panelSecurity:'qnSecurity',panelAudit:'qnAudit'};
+  if(qnMap[id] && document.getElementById(qnMap[id])) document.getElementById(qnMap[id]).classList.add('active');
+  var bnIndexMap={panelCommand:0,panelOverview:1,panelUsers:2,panelComplaints:3,panelAudit:4};
+  var bnItems=document.querySelectorAll('.bottom-nav .bn-item');
+  if(bnIndexMap[id]!==undefined && bnItems[bnIndexMap[id]]) bnItems[bnIndexMap[id]].classList.add('active');
+  var titles={
+    panelCommand:'Agriculture Command Center',panelOverview:'Dashboard Overview',
+    panelUsers:'All Users',panelApprovals:'Agent Approvals',
+    panelSchemes:'Government Schemes Portal',panelLoans:'Loan Center',
+    panelPayments:'Payment Gateway',panelVerify:'Verification Center',
+    panelComplaints:'Complaint Management',panelSupport:'Support Desk',
+    panelAudit:'Audit Logs',panelSecurity:'Security Center',panelSysData:'System Data',
+    panelLoanApproval:'Loan Approval Center',panelMonitoring:'Monitoring Dashboard'
+  };
+  document.getElementById('topbarTitle').textContent = titles[id]||id;
+  if(id==='panelCommand')       renderCommandCenter();
+  if(id==='panelOverview')      renderOverview();
+  if(id==='panelUsers')         renderUsers();
+  if(id==='panelApprovals')     renderApprovals();
+  if(id==='panelSchemes')       renderAdminSchemes();
+  if(id==='panelLoans')         renderLoans();
+  if(id==='panelPayments')      renderPaymentGateway();
+  if(id==='panelVerify')        renderVerify();
+  if(id==='panelComplaints')    renderComplaints('all');
+  if(id==='panelSupport')       renderSupport();
+  if(id==='panelAudit')         renderAudit();
+  if(id==='panelSecurity')      renderLoginHistory();
+  if(id==='panelSysData')       renderSysData();
+  if(id==='panelLoanApproval')  renderLoanApprovals();
+  if(id==='panelMonitoring')    renderMonitoring();
+  updateBadges();
+  if(window.innerWidth<=768) toggleSidebar();
+}
+
+/* ── BADGES ── */
+function updateBadges(){
+  var pending  = getUsers().filter(function(u){return u.status==='pending';}).length;
+  var verPend  = getVerifications().filter(function(v){return v.status==='pending';}).length;
+  var openComp = getComplaints().filter(function(c){return c.status==='open';}).length;
+  var loanPend = getLoanApprovals().filter(function(l){return l.status==='pending';}).length;
+  document.getElementById('badgeApprovals').textContent = pending;
+  document.getElementById('badgeVerify').textContent = verPend;
+  document.getElementById('badgeComplaints').textContent = openComp;
+  document.getElementById('bellBadge').textContent = pending+openComp;
+  var lpEl = document.getElementById('badgeLoanPending'); if(lpEl) lpEl.textContent = loanPend;
+  if(document.getElementById('chipPending'))
+    document.getElementById('chipPending').textContent = (pending+openComp>0)?'⏳ '+(pending+openComp)+' pending':'✅ All clear';
+  if(document.getElementById('approvalsCount'))
+    document.getElementById('approvalsCount').textContent = pending;
+}
+
+/* ── COMMAND CENTER ── */
+function renderCommandCenter(){
+  var hr = new Date().getHours();
+  var greet = (hr<12?'Good Morning':hr<17?'Good Afternoon':'Good Evening');
+  if(document.getElementById('cmdGreet')) document.getElementById('cmdGreet').textContent = greet+', Admin '+(cu&&cu.name?cu.name.split(' ')[0]:'');
+  var users   = getUsers();
+  var farmers = getFarmers();
+  var pending = users.filter(function(u){return u.status==='pending';}).length;
+  var metrics = [
+    {val:users.length+'+', lbl:'Total Users'},
+    {val:farmers.length+'+', lbl:'Farmers Enrolled'},
+    {val:getComplaints().filter(function(c){return c.status==='open';}).length, lbl:'Open Issues'},
+    {val:getLoans().filter(function(l){return l.status==='pending';}).length, lbl:'Pending Loans'},
+    {val:'₹'+getPayments().reduce(function(s,p){return p.type==='credit'?s+p.amount:s;},0).toLocaleString('en-IN'), lbl:'Total Credits'}
+  ];
+  if(document.getElementById('cmdMetrics'))
+    document.getElementById('cmdMetrics').innerHTML = metrics.map(function(m){
+      return '<div class="acc-metric"><div class="acc-metric-val">'+m.val+'</div><div class="acc-metric-lbl">'+m.lbl+'</div></div>';
+    }).join('');
+
+  // Live Status Grid
+  var services = [
+    {icon:'🗄️',name:'Database',status:'ok',detail:'PostgreSQL 15.2 • 3ms'},
+    {icon:'🔐',name:'Authentication',status:'ok',detail:'OTP + 2FA active'},
+    {icon:'📱',name:'SMS Gateway',status:'warn',detail:'Slightly delayed'},
+    {icon:'💳',name:'Payment API',status:'ok',detail:'UPI + NEFT active'},
+    {icon:'🌦️',name:'Weather API',status:'ok',detail:'IMD feed live'},
+    {icon:'📡',name:'IoT Network',status:'ok',detail:'12,400 sensors active'},
+    {icon:'🚁',name:'Drone Fleet',status:'warn',detail:'3 units grounded'},
+    {icon:'📰',name:'News Feed',status:'ok',detail:'Auto-refreshed'}
+  ];
+  if(document.getElementById('liveStatusGrid'))
+    document.getElementById('liveStatusGrid').innerHTML = services.map(function(s){
+      var sc = s.status==='ok'?'var(--primary)':s.status==='warn'?'#FF9800':'#E53935';
+      return '<div class="live-status-card">'
+        +'<div class="ls-icon" style="background:'+(s.status==='ok'?'#E8F5E9':s.status==='warn'?'#FFF8E1':'#FFEBEE')+'">'+s.icon+'</div>'
+        +'<div><div style="font-weight:700;font-size:.88rem">'+s.name+'</div>'
+        +'<div class="ls-status-row"><span class="ls-dot '+s.status+'"></span>'
+        +'<span style="color:'+sc+';font-size:.72rem">'+(s.status==='ok'?'Operational':s.status==='warn'?'Degraded':'Down')+'</span></div>'
+        +'<div style="font-size:.68rem;color:var(--text-muted);margin-top:2px">'+s.detail+'</div></div>'
+        +'</div>';
+    }).join('');
+
+  // Alerts
+  var alerts = [
+    {type:'critical',icon:'🚨',title:'2 agent approvals pending',detail:'Suresh Patil & Mohan Rao awaiting approval since 3 days',action:'Review',panel:'panelApprovals',nav:'navApprovals'},
+    {type:'warning',icon:'⚠️',title:'SMS Gateway delayed',detail:'Average OTP delivery time: 45 seconds (usually 5s)',action:'Check',panel:'panelSecurity',nav:'navSecurity'},
+    {type:'info',icon:'✅',title:'5 new farmers enrolled',detail:'Ramesh Kumar added 5 new farmers this week',action:'View',panel:'panelUsers',nav:'navUsers'}
+  ];
+  if(document.getElementById('activeAlerts'))
+    document.getElementById('activeAlerts').innerHTML = alerts.map(function(a){
+      var clr = a.type==='critical'?'#C62828':a.type==='warning'?'#E65100':'var(--primary)';
+      var bg  = a.type==='critical'?'#FFEBEE':a.type==='warning'?'#FFF8E1':'#E8F5E9';
+      return '<div class="alert-card '+a.type+'">'
+        +'<div class="alert-icon-circle" style="background:'+bg+';font-size:1.2rem">'+a.icon+'</div>'
+        +'<div style="flex:1"><div style="font-weight:700;font-size:.88rem;margin-bottom:2px">'+a.title+'</div>'
+        +'<div style="font-size:.78rem;color:var(--text-muted)">'+a.detail+'</div></div>'
+        +'<button class="action-btn view" onclick="showPanel(\''+a.panel+'\',document.getElementById(\''+a.nav+'\'))">'+a.action+'</button>'
+        +'</div>';
+    }).join('');
+
+  // State Coverage
+  var states = [
+    {name:'Karnataka',farmers:4200,color:'#1B5E20'},
+    {name:'Maharashtra',farmers:3100,color:'#1565C0'},
+    {name:'Punjab',farmers:2800,color:'#E65100'},
+    {name:'Uttar Pradesh',farmers:2200,color:'#6A1B9A'},
+    {name:'Rajasthan',farmers:890,color:'#00695C'},
+    {name:'Gujarat',farmers:750,color:'#BF360C'},
+    {name:'Madhya Pradesh',farmers:620,color:'#1A237E'},
+    {name:'Andhra Pradesh',farmers:540,color:'#B71C1C'},
+    {name:'Tamil Nadu',farmers:480,color:'#01579B'},
+    {name:'Bihar',farmers:350,color:'#4A148C'},
+  ];
+  if(document.getElementById('stateCoverageGrid'))
+    document.getElementById('stateCoverageGrid').innerHTML = states.map(function(s){
+      var pct = Math.round(s.farmers/4200*100);
+      return '<div class="col-6 col-md-4 col-lg-3">'
+        +'<div style="background:var(--card-bg);border-radius:12px;padding:12px;box-shadow:var(--shadow);border:1px solid var(--border)">'
+        +'<div style="font-weight:700;font-size:.82rem;margin-bottom:6px">'+s.name+'</div>'
+        +'<div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:6px">'
+        +'<div style="width:'+pct+'%;height:100%;background:'+s.color+';border-radius:2px"></div></div>'
+        +'<div style="font-size:.75rem;color:var(--text-muted)">'+s.farmers.toLocaleString('en-IN')+' farmers</div>'
+        +'</div></div>';
+    }).join('');
+  renderNationalIntelligence();
+}
+
+function renderNationalIntelligence(){
+  var weather = [
+    {region:'Nashik', icon:'fa-cloud-sun-rain', temp:31, rain:42, advisory:'Delay pesticide spray by 24h'},
+    {region:'Nagpur', icon:'fa-sun', temp:35, rain:8, advisory:'Irrigate cotton in early morning'},
+    {region:'Mysuru', icon:'fa-cloud-showers-heavy', temp:28, rain:67, advisory:'Use drainage channels in paddy'},
+    {region:'Ludhiana', icon:'fa-wind', temp:33, rain:12, advisory:'Protect wheat storage from dust storms'}
+  ];
+  if(document.getElementById('weatherIntelCards')){
+    document.getElementById('weatherIntelCards').innerHTML = weather.map(function(w){
+      return '<div class="intel-weather-card">'
+        +'<div class="intel-weather-top"><div class="intel-weather-city">'+w.region+'</div><i class="fa '+w.icon+'" style="color:#1565C0"></i></div>'
+        +'<div class="intel-weather-temp">'+w.temp+'&deg;C</div>'
+        +'<div class="intel-weather-meta">Rain chance: '+w.rain+'%</div>'
+        +'<div class="intel-weather-rec">'+w.advisory+'</div>'
+        +'</div>';
+    }).join('');
+  }
+
+  var news = [
+    {title:'MSP procurement for kharif 2026 expanded across 42 districts', source:'Gov Bulletin', time:'25 May 2026'},
+    {title:'Rainfall surplus expected in central belt this week, sowing advisory issued', source:'IMD Desk', time:'24 May 2026'},
+    {title:'National soil health campaign opens 3.2 lakh test slots for village camps', source:'Agri Mission', time:'23 May 2026'},
+    {title:'Cold-chain subsidy window reopened for FPO-led tomato clusters', source:'Rural Infra Cell', time:'22 May 2026'}
+  ];
+  if(document.getElementById('newsFeedList')){
+    document.getElementById('newsFeedList').innerHTML = news.map(function(n){
+      return '<div class="intel-feed-item">'
+        +'<div class="intel-feed-row">'
+        +'<div style="flex:1"><div class="intel-feed-title">'+n.title+'</div><div class="intel-feed-meta">'+n.source+' • '+n.time+'</div></div>'
+        +'<button class="intel-mini-btn" onclick="showToast(\'Bulletin opened in secure reader\')">Open</button>'
+        +'</div></div>';
+    }).join('');
+  }
+
+  var apmc = [
+    {name:'Vashi APMC', state:'Maharashtra', commodity:'Onion', price:'Rs 1,950/qtl', status:'good'},
+    {name:'Yeshwantpur Yard', state:'Karnataka', commodity:'Tomato', price:'Rs 2,280/qtl', status:'warn'},
+    {name:'Azadpur Mandi', state:'Delhi NCR', commodity:'Potato', price:'Rs 1,420/qtl', status:'good'},
+    {name:'Khanna Mandi', state:'Punjab', commodity:'Wheat', price:'Rs 2,175/qtl', status:'hot'}
+  ];
+  if(document.getElementById('apmcLocatorList')){
+    document.getElementById('apmcLocatorList').innerHTML = apmc.map(function(a){
+      var tone = a.status==='hot'?'High Demand':a.status==='warn'?'Price Volatile':'Stable';
+      return '<div class="intel-locator-row">'
+        +'<div><div style="font-size:.82rem;font-weight:700">'+a.name+'</div><div style="font-size:.72rem;color:var(--text-muted)">'+a.state+' • '+a.commodity+' • '+a.price+'</div></div>'
+        +'<span class="intel-pill '+a.status+'">'+tone+'</span>'
+        +'</div>';
+    }).join('');
+  }
+
+  var buyers = [
+    {buyer:'GreenLeaf Foods Pvt. Ltd.', crop:'Maize', demand:'620 qtl', distance:'12 km', status:'good'},
+    {buyer:'FreshCart Aggregator Hub', crop:'Tomato', demand:'410 qtl', distance:'7 km', status:'hot'},
+    {buyer:'Shakti Pulses Traders', crop:'Tur Dal', demand:'255 qtl', distance:'18 km', status:'good'},
+    {buyer:'AgriFresh Cold Chain', crop:'Chilli', demand:'190 qtl', distance:'22 km', status:'warn'}
+  ];
+  if(document.getElementById('buyerLocatorList')){
+    document.getElementById('buyerLocatorList').innerHTML = buyers.map(function(b){
+      var tone = b.status==='hot'?'Urgent Buy':b.status==='warn'?'Medium':'Open';
+      return '<div class="intel-locator-row">'
+        +'<div><div style="font-size:.82rem;font-weight:700">'+b.buyer+'</div><div style="font-size:.72rem;color:var(--text-muted)">'+b.crop+' • Demand '+b.demand+' • '+b.distance+'</div></div>'
+        +'<span class="intel-pill '+b.status+'">'+tone+'</span>'
+        +'</div>';
+    }).join('');
+  }
+}
+
+/* ── OVERVIEW ── */
+function renderOverview(){
+  var users    = getUsers();
+  var farmers  = getFarmers();
+  var pending  = users.filter(function(u){return u.status==='pending';}).length;
+  var agents   = users.filter(function(u){return u.role==='Agent'&&u.status==='approved';}).length;
+  var openComp = getComplaints().filter(function(c){return c.status==='open';}).length;
+  var verPend  = getVerifications().filter(function(v){return v.status==='pending';}).length;
+  var hr = new Date().getHours();
+  var greet = (hr<12?'Good Morning':hr<17?'Good Afternoon':'Good Evening');
+  if(document.getElementById('welcomeGreet')) document.getElementById('welcomeGreet').textContent = greet+', Admin '+(cu&&cu.name?cu.name.split(' ')[0]:'');
+  if(document.getElementById('chipDate')) document.getElementById('chipDate').textContent = '📡 '+new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  var kpis = [
+    {label:'Total Users',    val:users.length,   color:'green',  icon:'fa-users',        change:'+2 this week',  up:true},
+    {label:'Total Farmers',  val:farmers.length, color:'green',  icon:'fa-seedling',     change:'+1 this week',  up:true},
+    {label:'Active Agents',  val:agents,         color:'blue',   icon:'fa-user-tie',     change:'Stable',        up:true},
+    {label:'Pending Approvals',val:pending,       color:'orange', icon:'fa-clock',        change:'Action needed', up:false},
+    {label:'Open Complaints',val:openComp,        color:'red',    icon:'fa-exclamation',  change:'Action needed', up:false},
+    {label:'Pending KYC',    val:verPend,         color:'purple', icon:'fa-id-card',      change:'Review docs',   up:false}
+  ];
+  var colorMap={green:'var(--primary)',blue:'#1565C0',orange:'#E65100',red:'var(--danger)',purple:'#6A1B9A'};
+  if(document.getElementById('kpiGrid'))
+    document.getElementById('kpiGrid').innerHTML = kpis.map(function(k){
+      return '<div class="cmd-kpi '+k.color+'">'
+        +'<div style="font-size:1.4rem;margin-bottom:6px"><i class="fa '+k.icon+'" style="color:'+colorMap[k.color]+'"></i></div>'
+        +'<div class="cmd-kpi-val">'+k.val+'</div>'
+        +'<div class="cmd-kpi-label">'+k.label+'</div>'
+        +'<div class="cmd-kpi-change '+(k.up?'up':'down')+'"><i class="fa '+(k.up?'fa-arrow-up':'fa-arrow-down')+' me-1"></i>'+k.change+'</div>'
+        +'</div>';
+    }).join('');
+  // Timeline
+  var dotColors={login:'purple',create:'green',update:'blue',approve:'green',reject:'red',delete:'red'};
+  var logs = getAuditLogs().slice(0,6);
+  if(document.getElementById('timelineContainer'))
+    document.getElementById('timelineContainer').innerHTML = logs.map(function(l){
+      var dc = dotColors[l.action]||'blue';
+      return '<div class="timeline-item">'
+        +'<div class="tl-dot '+dc+'"><i class="fa '+(l.action==='login'?'fa-sign-in-alt':l.action==='create'?'fa-plus':l.action==='approve'?'fa-check':l.action==='reject'?'fa-times':l.action==='delete'?'fa-trash':'fa-edit')+'" style="font-size:.8rem"></i></div>'
+        +'<div><div class="tl-desc">'+l.detail+'</div><div class="tl-time">'+l.user+' &bull; '+l.ts+'</div></div>'
+        +'</div>';
+    }).join('');
+}
+
+/* ── USERS TABLE ── */
+function renderUsers(){
+  var search = (document.getElementById('userSearch')&&document.getElementById('userSearch').value||'').toLowerCase();
+  var roleF  = document.getElementById('userRoleFilter')&&document.getElementById('userRoleFilter').value||'';
+  var statF  = document.getElementById('userStatusFilter')&&document.getElementById('userStatusFilter').value||'';
+  var users  = getUsers().filter(function(u){
+    var matchS = !search || u.name.toLowerCase().indexOf(search)>=0 || u.phone.indexOf(search)>=0;
+    var matchR = !roleF  || u.role===roleF;
+    var matchSt= !statF  || u.status===statF;
+    return matchS&&matchR&&matchSt;
+  });
+  var roleColors={Admin:'#6A1B9A',Agent:'#1565C0',Farmer:'#1B5E20'};
+  if(document.getElementById('usersBody'))
+    document.getElementById('usersBody').innerHTML = users.map(function(u){
+      var sc = u.status==='approved'?'approved':u.status==='pending'?'pending':'rejected';
+      return '<tr><td><strong>'+u.name+'</strong></td><td style="font-family:monospace;font-size:.82rem">'+u.phone+'</td>'
+        +'<td><span style="background:'+(roleColors[u.role]||'#555')+';color:#fff;border-radius:20px;padding:2px 10px;font-size:.7rem;font-weight:700">'+u.role+'</span></td>'
+        +'<td>'+u.village+'</td>'
+        +'<td><span class="status-badge '+sc+'">'+u.status+'</span></td>'
+        +'<td>'+(u.kycDone?'<i class="fa fa-check-circle" style="color:var(--primary)"></i>':'<i class="fa fa-times-circle" style="color:var(--danger)"></i>')+'</td>'
+        +'<td style="font-size:.8rem">'+(u.joinedAt||'—')+'</td>'
+        +'<td><div style="display:flex;gap:5px">'
+        +(u.status==='pending'?'<button class="action-btn approve" onclick="approveUser(\''+u.phone+'\')">Approve</button><button class="action-btn reject" onclick="rejectUser(\''+u.phone+'\')">Reject</button>':'')
+        +'<button class="action-btn view" onclick="showToast(\'Viewing '+u.name+'\')">View</button>'
+        +'</div></td></tr>';
+    }).join('') || '<tr><td colspan="8" class="text-center py-4 text-muted">No users found</td></tr>';
+}
+
+/* ── APPROVALS ── */
+function renderApprovals(){
+  var pending = getUsers().filter(function(u){return u.status==='pending';});
+  updateBadges();
+  if(!pending.length){
+    if(document.getElementById('approvalsContainer'))
+      document.getElementById('approvalsContainer').innerHTML='<div class="empty-state"><i class="fa fa-check-circle" style="color:var(--primary)"></i><p>All approvals are clear! No pending agents.</p></div>';
+    return;
+  }
+  if(document.getElementById('approvalsContainer'))
+    document.getElementById('approvalsContainer').innerHTML = pending.map(function(u){
+      return '<div class="verify-card">'
+        +'<div style="display:flex;align-items:flex-start;gap:14px">'
+        +'<div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1565C0,#1976D2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;font-weight:800;flex-shrink:0">'+u.name.charAt(0)+'</div>'
+        +'<div style="flex:1">'
+        +'<div style="font-weight:800;font-size:1rem">'+u.name+'</div>'
+        +'<div style="font-size:.8rem;color:var(--text-muted);margin-top:2px">'+u.phone+' &bull; '+u.village+'</div>'
+        +'<div style="margin-top:6px"><span class="doc-type-badge">'+u.role+'</span> <span class="status-badge pending" style="margin-left:6px">Pending</span></div>'
+        +'<div style="font-size:.75rem;color:var(--text-muted);margin-top:4px">Applied: '+(u.joinedAt||'—')+'</div>'
+        +'</div></div>'
+        +'<div class="verify-action-btns">'
+        +'<button class="action-btn approve" style="padding:8px 18px;font-size:.84rem" onclick="approveUser(\''+u.phone+'\')"><i class="fa fa-check me-1"></i>Approve</button>'
+        +'<button class="action-btn reject" style="padding:8px 18px;font-size:.84rem" onclick="rejectUser(\''+u.phone+'\')"><i class="fa fa-times me-1"></i>Reject</button>'
+        +'<button class="action-btn warn" style="padding:8px 18px;font-size:.84rem" onclick="showToast(\'Request sent for more documents\',\'warning\')"><i class="fa fa-question me-1"></i>Request Docs</button>'
+        +'</div></div>';
+    }).join('');
+}
+function approveUser(phone){
+  var u = getUsers().find(function(x){return x.phone===phone;});
+  if(u){ u.status='approved'; showToast(u.name+' approved successfully ✓'); renderApprovals(); updateBadges(); }
+}
+function rejectUser(phone){
+  var u = getUsers().find(function(x){return x.phone===phone;});
+  if(u){ u.status='rejected'; showToast(u.name+' application rejected','warning'); renderApprovals(); updateBadges(); }
+}
+
+/* ── ADMIN SCHEMES ── */
+function renderAdminSchemes(){
+  var applied = getSchemes().filter(function(s){return s.applied && !s.approved;}).length;
+  if(document.getElementById('schemeAppliedCount')) document.getElementById('schemeAppliedCount').textContent = applied;
+  if(document.getElementById('adminSchemesList'))
+    document.getElementById('adminSchemesList').innerHTML = getSchemes().map(function(s){
+      return '<div class="scheme-admin-card">'
+        +'<div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap">'
+        +'<div style="font-size:2rem">'+s.icon+'</div>'
+        +'<div style="flex:1">'
+        +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">'
+        +'<span style="font-weight:800;font-size:.95rem">'+s.name+'</span>'
+        +'<span class="scheme-tag">'+s.tag+'</span>'
+        +(s.applied ? (s.approved ? '<span style="background:#E8F5E9;color:var(--primary);border-radius:20px;padding:2px 10px;font-size:.7rem;font-weight:700"><i class="fa fa-check-double me-1"></i>Approved</span>' : '<span style="background:#FFF8E1;color:#FF8F00;border-radius:20px;padding:2px 10px;font-size:.7rem;font-weight:700"><i class="fa fa-clock me-1"></i>Pending App</span>') : '')
+        +'</div>'
+        +'<div style="font-size:.78rem;color:var(--text-muted)">'+s.ministry+' &bull; '+s.eligibility+'</div>'
+        +'<div style="font-size:.8rem;font-weight:700;color:var(--primary);margin-top:4px"><i class="fa fa-gift me-1"></i>'+s.benefit+'</div>'
+        +'</div>'
+        +'<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">'
+        +'<button class="action-btn view" onclick="showToast(\'Editing '+s.name+'\')" style="padding:6px 14px;font-size:.8rem"><i class="fa fa-edit me-1"></i>Edit</button>'
+        +(s.applied && !s.approved ? '<button class="action-btn approve" onclick="approveSchemeApp(\''+s.id+'\')" style="padding:6px 14px;font-size:.8rem"><i class="fa fa-check me-1"></i>Approve App</button>' : '')
+        +'</div>'
+        +'</div></div>';
+    }).join('');
+}
+
+function approveSchemeApp(id) {
+  var s = getSchemes().find(function(x) { return x.id === id; });
+  if (s) {
+    s.approved = true;
+    syncCollectionToJSON('schemes');
+    showToast('Scheme application approved!');
+    renderAdminSchemes();
+  }
+}
+
+
+/* ── LOANS ── */
+function renderLoans(){
+  var loans = getLoans();
+  var dis = loans.filter(function(l){return l.status==='disbursed';}).length;
+  var app = loans.filter(function(l){return l.status==='approved';}).length;
+  var pend= loans.filter(function(l){return l.status==='pending';}).length;
+  var total= loans.reduce(function(s,l){return s+l.amount;},0);
+  if(document.getElementById('loanKPIs'))
+    document.getElementById('loanKPIs').innerHTML=[
+      {label:'Total Amount',val:'₹'+total.toLocaleString('en-IN'),bg:'linear-gradient(135deg,#1B5E20,#4CAF50)'},
+      {label:'Disbursed',val:dis,bg:'linear-gradient(135deg,#1565C0,#1976D2)'},
+      {label:'Approved',val:app,bg:'linear-gradient(135deg,#E65100,#FF6D00)'},
+      {label:'Pending Review',val:pend,bg:'linear-gradient(135deg,#6A1B9A,#8E24AA)'}
+    ].map(function(k){
+      return '<div class="col-6 col-md-3"><div style="background:'+k.bg+';border-radius:14px;padding:18px;color:#fff">'
+        +'<div style="font-size:.68rem;opacity:.75;font-weight:700;text-transform:uppercase">'+k.label+'</div>'
+        +'<div style="font-size:1.5rem;font-weight:900;margin-top:4px">'+k.val+'</div>'
+        +'</div></div>';
+    }).join('');
+  var filter = document.getElementById('loanStatusFilter')&&document.getElementById('loanStatusFilter').value||'';
+  var list = filter ? loans.filter(function(l){return l.status===filter;}) : loans;
+  if(document.getElementById('loansContainer'))
+    document.getElementById('loansContainer').innerHTML = list.map(function(l){
+      return '<div class="loan-admin-row">'
+        +'<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1B5E20,#4CAF50);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0">'+l.farmerName.charAt(0)+'</div>'
+        +'<div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+l.farmerName+' <span style="font-family:monospace;font-size:.72rem;color:var(--text-muted)">'+l.id+'</span></div>'
+        +'<div style="font-size:.75rem;color:var(--text-muted)">'+l.bank+' &bull; '+l.type.toUpperCase()+' &bull; '+l.rate+' &bull; '+l.tenure+'</div>'
+        +'<div class="loan-progress-bar" style="margin-top:6px"><div class="loan-progress-fill" style="width:'+l.progress+'%"></div></div></div>'
+        +'<div style="text-align:right"><div style="font-weight:900;font-size:1.1rem;color:var(--primary)">₹'+l.amount.toLocaleString('en-IN')+'</div>'
+        +'<span class="loan-status-chip '+l.status+'">'+l.status+'</span></div>'
+        +'<div style="display:flex;gap:6px">'
+        +(l.status==='pending'?'<button class="action-btn approve" onclick="showToast(\'Loan '+l.id+' approved ✓\')">Approve</button><button class="action-btn reject" onclick="showToast(\'Loan rejected\',\'warning\')">Reject</button>':'')
+        +'<button class="action-btn view" onclick="showToast(\'Viewing loan details\')">View</button>'
+        +'</div></div>';
+    }).join('') || '<div class="empty-state"><i class="fa fa-university"></i><p>No loans in this category</p></div>';
+}
+
+/* ── PAYMENT GATEWAY ── */
+function renderPaymentGateway(){
+  var filter = document.getElementById('payTypeFilter')&&document.getElementById('payTypeFilter').value||'';
+  var payments = filter ? getPayments().filter(function(p){return p.type===filter;}) : getPayments();
+  if(document.getElementById('paymentLedger'))
+    document.getElementById('paymentLedger').innerHTML = payments.map(function(p){
+      return '<div class="pay-gateway-row">'
+        +'<div class="pay-gateway-icon" style="background:'+(p.type==='credit'?'#E8F5E9':'#FFEBEE')+';color:'+(p.type==='credit'?'var(--primary)':'var(--danger)')+'"><i class="fa fa-'+(p.type==='credit'?'arrow-down':'arrow-up')+'"></i></div>'
+        +'<div style="flex:1"><div style="font-weight:700;font-size:.85rem">'+p.label+'</div>'
+        +'<div style="font-size:.72rem;color:var(--text-muted);margin-top:2px">'+p.date+' &bull; <span class="pay-method-badge '+p.method.toLowerCase()+'">'+p.method+'</span></div></div>'
+        +'<div style="text-align:right"><div style="font-weight:900;font-size:1rem;color:'+(p.type==='credit'?'var(--primary)':'var(--danger)')+'">'+( p.type==='credit'?'+':'-')+'₹'+p.amount.toLocaleString('en-IN')+'</div>'
+        +'<span class="pay-status-badge '+p.status+'">'+p.status+'</span></div>'
+        +'</div>';
+    }).join('') || '<div class="empty-state"><i class="fa fa-credit-card"></i><p>No transactions found</p></div>';
+}
+
+/* ── VERIFICATION ── */
+function renderVerify(){
+  var items = getVerifications();
+  var pending  = items.filter(function(v){return v.status==='pending';});
+  var verified = items.filter(function(v){return v.status==='verified';});
+  function card(v, isPending){
+    return '<div class="verify-card" style="'+(isPending?'':'opacity:.65')+'">'
+      +'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">'
+      +'<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1B5E20,#4CAF50);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800">'+v.name.charAt(0)+'</div>'
+      +'<div style="flex:1"><div style="font-weight:700">'+v.name+'</div><div style="font-size:.78rem;color:var(--text-muted)">'+v.role+' &bull; '+v.userId+'</div></div>'
+      +'<span class="doc-type-badge">'+v.doc+'</span>'
+      +'<span class="status-badge '+(v.status==='verified'?'approved':'pending')+'">'+v.status+'</span>'
+      +'</div>'
+      +'<div style="font-size:.75rem;color:var(--text-muted);margin-top:8px">Submitted: '+v.submitted+'</div>'
+      +(isPending?'<div class="verify-action-btns">'
+        +'<button class="action-btn view" onclick="openAdminVerifyModal(\''+v.id+'\')"><i class="fa fa-eye me-1"></i>View Doc</button>'
+        +'<button class="action-btn approve" onclick="verifyDoc(\''+v.id+'\')"><i class="fa fa-check me-1"></i>Verify</button>'
+        +'<button class="action-btn reject" onclick="showToast(\'Verification rejected\',\'warning\')"><i class="fa fa-times me-1"></i>Reject</button>'
+        +'<button class="action-btn warn" onclick="showToast(\'More info requested\',\'warning\')"><i class="fa fa-question me-1"></i>More Info</button>'
+        +'</div>':'')+
+      '</div>';
+  }
+  var html='';
+  if(pending.length){ html+='<div class="section-divider">Pending Verification ('+pending.length+')</div>'; html+=pending.map(function(v){return card(v,true);}).join(''); }
+  if(verified.length){ html+='<div class="section-divider">Verified ('+verified.length+')</div>'; html+=verified.map(function(v){return card(v,false);}).join(''); }
+  if(!html) html='<div class="empty-state"><i class="fa fa-check-circle" style="color:var(--primary)"></i><p>No pending verifications</p></div>';
+  if(document.getElementById('verifyContainer')) document.getElementById('verifyContainer').innerHTML=html;
+}
+}
+var _currentVerifyId = null;
+function openAdminVerifyModal(id) {
+  _currentVerifyId = id;
+  var m = new bootstrap.Modal(document.getElementById('adminVerifyModal'));
+  document.getElementById('adminApproveBtn').onclick = function() {
+    verifyDoc(_currentVerifyId);
+    m.hide();
+  };
+  m.show();
+}
+
+function verifyDoc(id){
+  var v=getVerifications().find(function(x){return x.id===id;});
+  if(v){v.status='verified';showToast(v.name+' KYC verified ✓');renderVerify();updateBadges();}
+}
+
+/* ── COMPLAINTS ── */
+var currentComplaintFilter='all';
+function renderComplaints(filter){
+  currentComplaintFilter=filter;
+  var complaints=getComplaints();
+  var open=complaints.filter(function(c){return c.status==='open';}).length;
+  var inp =complaints.filter(function(c){return c.status==='inprogress';}).length;
+  var res =complaints.filter(function(c){return c.status==='resolved';}).length;
+  if(document.getElementById('complaintStats'))
+    document.getElementById('complaintStats').innerHTML=
+      '<div class="col-4"><div class="cmd-kpi red" style="padding:14px"><div class="cmd-kpi-val">'+open+'</div><div class="cmd-kpi-label">Open</div></div></div>'
+      +'<div class="col-4"><div class="cmd-kpi orange" style="padding:14px"><div class="cmd-kpi-val">'+inp+'</div><div class="cmd-kpi-label">In Progress</div></div></div>'
+      +'<div class="col-4"><div class="cmd-kpi green" style="padding:14px"><div class="cmd-kpi-val">'+res+'</div><div class="cmd-kpi-label">Resolved</div></div></div>';
+  var list=filter==='all'?complaints:complaints.filter(function(c){return c.status===filter;});
+  if(!list.length){
+    if(document.getElementById('complaintsContainer')) document.getElementById('complaintsContainer').innerHTML='<div class="empty-state"><i class="fa fa-smile"></i><p>No complaints in this category</p></div>';
+    return;
+  }
+  if(document.getElementById('complaintsContainer'))
+    document.getElementById('complaintsContainer').innerHTML=list.map(function(c){
+      return '<div class="complaint-card '+c.status+'">'
+        +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">'
+        +'<span style="font-family:monospace;font-size:.72rem;color:var(--text-muted);font-weight:700">'+c.id+'</span>'
+        +'<span class="complaint-priority '+c.priority+'">'+c.priority+'</span>'
+        +'<span class="complaint-status '+c.status+'"><i class="fa fa-circle" style="font-size:.5rem"></i>'+c.status+'</span>'
+        +'<span style="margin-left:auto;font-size:.76rem;color:var(--text-muted)">'+c.createdAt+'</span>'
+        +'</div>'
+        +'<div style="font-weight:700;font-size:.95rem;margin-bottom:4px">'+c.subject+'</div>'
+        +'<div style="font-size:.8rem;color:var(--text-muted);margin-bottom:8px">'+c.farmerName+' &bull; '+c.category+' &bull; Assigned to: '+c.assignedTo+'</div>'
+        +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+        +(c.status!=='resolved'?'<button class="action-btn resolve" onclick="resolveComplaint(\''+c.id+'\')"><i class="fa fa-check me-1"></i>Resolve</button>':'')
+        +(c.status==='open'?'<button class="action-btn warn" onclick="assignComplaint(\''+c.id+'\')"><i class="fa fa-user-tag me-1"></i>Assign</button>':'')
+        +'<button class="action-btn view" onclick="showToast(\'Reply sent to '+c.farmerName+'\')"><i class="fa fa-reply me-1"></i>Reply</button>'
+        +'</div></div>';
+    }).join('');
+}
+function filterComplaints(filter,el){
+  document.querySelectorAll('.complaint-filter-btn').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  renderComplaints(filter);
+}
+function resolveComplaint(id){ var c=getComplaints().find(function(x){return x.id===id;}); if(c){c.status='resolved';syncCollectionToJSON('complaints');showToast('Complaint '+id+' resolved ✓');renderComplaints(currentComplaintFilter);updateBadges();} }
+function assignComplaint(id){ var c=getComplaints().find(function(x){return x.id===id;}); if(c){c.status='inprogress';c.assignedTo='Block Officer';syncCollectionToJSON('complaints');showToast('Complaint assigned to Block Officer');renderComplaints(currentComplaintFilter);} }
+
+/* ── SUPPORT DESK ── */
+function renderSupport(){
+  var tickets = getTickets();
+  var statusF = document.getElementById('ticketStatusFilter')&&document.getElementById('ticketStatusFilter').value||'';
+  var catF    = document.getElementById('ticketCatFilter')&&document.getElementById('ticketCatFilter').value||'';
+  var list = tickets.filter(function(t){
+    return (!statusF||t.status===statusF) && (!catF||t.category===catF);
+  });
+  if(document.getElementById('ticketOpenCount'))   document.getElementById('ticketOpenCount').textContent   = tickets.filter(function(t){return t.status==='open';}).length;
+  if(document.getElementById('ticketRepliedCount'))document.getElementById('ticketRepliedCount').textContent= tickets.filter(function(t){return t.status==='replied';}).length;
+  if(document.getElementById('ticketClosedCount')) document.getElementById('ticketClosedCount').textContent = tickets.filter(function(t){return t.status==='closed';}).length;
+  if(document.getElementById('supportContainer'))
+    document.getElementById('supportContainer').innerHTML = list.map(function(t){
+      var priorColor={high:'var(--danger)',medium:'#E65100',low:'var(--primary)'};
+      return '<div class="support-ticket-row '+t.status+'">'
+        +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">'
+        +'<span class="ticket-id">'+t.id+'</span>'
+        +'<span style="background:var(--bg);border-radius:20px;padding:2px 10px;font-size:.7rem;font-weight:700;color:var(--text-muted)">'+t.category+'</span>'
+        +'<span style="font-size:.7rem;font-weight:800;color:'+(priorColor[t.priority]||'var(--text-muted)')+'">'+t.priority.toUpperCase()+'</span>'
+        +'<span style="margin-left:auto;font-size:.72rem;color:var(--text-muted)">'+t.createdAt+'</span>'
+        +'</div>'
+        +'<div style="font-weight:700;font-size:.9rem;margin-bottom:6px">'+t.subject+'</div>'
+        +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+        +'<span class="loan-status-chip '+t.status+'">'+t.status+'</span>'
+        +'<button class="action-btn view" onclick="showToast(\'Replying to ticket '+t.id+'…\')"><i class="fa fa-reply me-1"></i>Reply</button>'
+        +(t.status!=='closed'?'<button class="action-btn approve" onclick="showToast(\'Ticket '+t.id+' closed ✓\')"><i class="fa fa-check me-1"></i>Close</button>':'')
+        +'<button class="action-btn warn" onclick="showToast(\'Ticket escalated\',\'warning\')"><i class="fa fa-arrow-up me-1"></i>Escalate</button>'
+        +'</div></div>';
+    }).join('') || '<div class="empty-state"><i class="fa fa-headset"></i><p>No tickets matching filters</p></div>';
+}
+
+/* ── AUDIT LOGS ── */
+function renderAudit(){
+  var filter=document.getElementById('auditActionFilter')&&document.getElementById('auditActionFilter').value||'';
+  var logs=getAuditLogs().filter(function(l){return !filter||l.action===filter;});
+  if(document.getElementById('auditBody'))
+    document.getElementById('auditBody').innerHTML=logs.map(function(l){
+      return '<tr class="audit-row"><td style="font-family:monospace;font-size:.72rem">'+l.id+'</td>'
+        +'<td><span class="audit-action '+l.action+'">'+l.action+'</span></td>'
+        +'<td><strong>'+l.user+'</strong></td>'
+        +'<td><span style="font-size:.72rem;font-weight:700;color:var(--text-muted)">'+l.role+'</span></td>'
+        +'<td style="max-width:220px">'+l.detail+'</td>'
+        +'<td style="font-family:monospace;font-size:.75rem">'+l.ip+'</td>'
+        +'<td style="font-size:.78rem;white-space:nowrap">'+l.ts+'</td></tr>';
+    }).join('')||'<tr><td colspan="7" class="text-center py-3 text-muted">No logs found</td></tr>';
+}
+
+/* ── LOGIN HISTORY ── */
+function renderLoginHistory(){
+  var logins=getAuditLogs().filter(function(l){return l.action==='login';}).slice(0,5);
+  if(document.getElementById('loginHistContainer'))
+    document.getElementById('loginHistContainer').innerHTML=logins.map(function(l){
+      return '<div class="login-hist-row">'
+        +'<div class="device-icon"><i class="fa fa-'+(l.role==='Admin'?'desktop':l.role==='Agent'?'laptop':'mobile-alt')+'" style="font-size:1rem"></i></div>'
+        +'<div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+l.user+'</div><div style="font-size:.72rem;color:var(--text-muted)">'+l.detail+' &bull; IP: '+l.ip+'</div></div>'
+        +'<div style="font-size:.72rem;color:var(--text-muted);text-align:right">'+l.ts+'</div>'
+        +'</div>';
+    }).join('');
+}
+
+/* ── SYS DATA ── */
+function renderSysData(){
+  var data=[
+    {label:'Users',count:getUsers().length,icon:'fa-users',gradient:'linear-gradient(135deg,#1B5E20,#4CAF50)'},
+    {label:'Farmers',count:getFarmers().length,icon:'fa-seedling',gradient:'linear-gradient(135deg,#1565C0,#1976D2)'},
+    {label:'Crops',count:getCrops().length,icon:'fa-leaf',gradient:'linear-gradient(135deg,#E65100,#FF6D00)'},
+    {label:'Finance Records',count:getFinance().length,icon:'fa-rupee-sign',gradient:'linear-gradient(135deg,#6A1B9A,#8E24AA)'},
+    {label:'Complaints',count:getComplaints().length,icon:'fa-exclamation',gradient:'linear-gradient(135deg,#B71C1C,#E53935)'},
+    {label:'Marketplace Listings',count:getMarketplace().length,icon:'fa-store',gradient:'linear-gradient(135deg,#004D40,#00796B)'}
+  ];
+  if(document.getElementById('sysDataCards'))
+    document.getElementById('sysDataCards').innerHTML=data.map(function(d){
+      return '<div class="col-6 col-lg-4"><div class="gradient-card" style="background:'+d.gradient+';min-height:100px">'
+        +'<div class="gradient-card-label">'+d.label+'</div>'
+        +'<div class="gradient-card-val">'+d.count+'</div>'
+        +'<i class="fa '+d.icon+' gradient-card-icon"></i>'
+        +'</div></div>';
+    }).join('');
+}
+
+/* ── DATETIME ── */
+function updateDatetime(){
+  var now=new Date();
+  if(document.getElementById('datetimeDisplay'))
+    document.getElementById('datetimeDisplay').textContent=now.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateDatetime,1000); updateDatetime();
+
+/* ── THEME ICON SYNC ── */
+function syncThemeIcon(){
+  var dark=document.documentElement.getAttribute('data-theme')==='dark';
+  var icon=document.getElementById('themeIcon');
+  if(icon) icon.className=dark?'fa fa-sun':'fa fa-moon';
+}
+var _origToggle=toggleDark;
+toggleDark=function(){_origToggle();syncThemeIcon();};
+syncThemeIcon();
+
+/* ── INIT ── */
+populateSidebar();
+updateBadges();
+renderCommandCenter();
+
+/* ══════════════════════════════════════════════════════
+   LOAN APPROVAL CENTER
+   ══════════════════════════════════════════════════════ */
+function renderLoanApprovals() {
+  var loans = getLoanApprovals();
+  var total    = loans.length;
+  var pending  = loans.filter(function(l){return l.status==='pending';}).length;
+  var approved = loans.filter(function(l){return l.status==='approved'||l.status==='disbursed';}).length;
+  var amount   = loans.reduce(function(s,l){return s+l.amount;},0);
+
+  var setTxt = function(id,v){ var el=document.getElementById(id); if(el) el.textContent=v; };
+  setTxt('la-total', total);
+  setTxt('la-pending', pending);
+  setTxt('la-approved', approved);
+  setTxt('la-amount', '₹'+Math.round(amount/100000)+'L');
+
+  var statusColor = { pending:'#E65100', approved:'#1B5E20', disbursed:'#1565C0', rejected:'#c62828' };
+  var statusBg    = { pending:'#fff3e0', approved:'#e8f5e9', disbursed:'#e3f2fd', rejected:'#ffebee' };
+
+  var tbody = document.getElementById('loan-approval-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = loans.map(function(l) {
+    var sc = statusColor[l.status]||'#555';
+    var sb = statusBg[l.status]||'#f5f5f5';
+    var actions = l.status==='pending'
+      ? '<button onclick="approveLoan(\''+l.id+'\')" style="background:#1B5E20;color:#fff;border:none;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:.75rem;margin-right:5px;font-weight:700">✅ Approve</button>'+
+        '<button onclick="rejectLoan(\''+l.id+'\')" style="background:#c62828;color:#fff;border:none;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:.75rem;font-weight:700">❌ Reject</button>'
+      : '<span style="font-size:.8rem;color:#888">—</span>';
+    return '<tr id="loan-row-'+l.id+'">'+
+      '<td style="padding:10px 12px;font-family:monospace;font-size:.8rem;font-weight:700">'+l.id+'</td>'+
+      '<td style="padding:10px 12px;font-weight:700;color:#1B5E20">'+l.farmerName+'</td>'+
+      '<td style="padding:10px 12px"><span style="background:#E8F5E9;color:#1B5E20;padding:3px 9px;border-radius:20px;font-size:.72rem;font-weight:800">'+l.type+'</span></td>'+
+      '<td style="padding:10px 12px;font-weight:700">₹'+l.amount.toLocaleString('en-IN')+'</td>'+
+      '<td style="padding:10px 12px">'+l.bank+'</td>'+
+      '<td style="padding:10px 12px;font-size:.8rem">'+l.appliedAt+'</td>'+
+      '<td style="padding:10px 12px;font-size:.8rem">'+l.officer+'</td>'+
+      '<td style="padding:10px 12px"><span style="background:'+sb+';color:'+sc+';padding:4px 10px;border-radius:20px;font-size:.72rem;font-weight:800">'+l.status.charAt(0).toUpperCase()+l.status.slice(1)+'</span></td>'+
+      '<td style="padding:10px 12px">'+actions+'</td>'+
+      '</tr>';
+  }).join('');
+}
+
+function approveLoan(id) {
+  var loan = getLoanApprovals().find(function(l){return l.id===id;});
+  if (!loan) return;
+  loan.status = 'approved'; loan.officer = cu ? cu.name : 'Admin';
+  var fLoan = getLoans().find(function(l){return l.id===id;});
+  if (fLoan) { fLoan.status = 'approved'; fLoan.progress = 100; syncCollectionToJSON('loans'); }
+  syncCollectionToJSON('loanApprovals');
+  showToast('✅ Loan '+id+' approved for '+loan.farmerName+'!');
+  renderLoanApprovals();
+  updateBadges();
+}
+
+function rejectLoan(id) {
+  var loan = getLoanApprovals().find(function(l){return l.id===id;});
+  if (!loan) return;
+  loan.status = 'rejected'; loan.officer = cu ? cu.name : 'Admin';
+  var fLoan = getLoans().find(function(l){return l.id===id;});
+  if (fLoan) { fLoan.status = 'rejected'; syncCollectionToJSON('loans'); }
+  syncCollectionToJSON('loanApprovals');
+  showToast('❌ Loan '+id+' rejected.', 'error');
+  renderLoanApprovals();
+  updateBadges();
+}
+
+function bulkApprovePending() {
+  var count = 0;
+  getLoanApprovals().forEach(function(l){
+    if (l.status==='pending') {
+      l.status='approved'; l.officer=cu?cu.name:'Admin'; count++;
+      var fLoan = getLoans().find(function(x){return x.id===l.id;});
+      if (fLoan) { fLoan.status = 'approved'; fLoan.progress = 100; }
+    }
+  });
+  if (count===0) { showToast('No pending loans to approve.','warning'); return; }
+  syncCollectionToJSON('loans');
+  syncCollectionToJSON('loanApprovals');
+  showToast('✅ '+count+' pending loan(s) approved in bulk!');
+  renderLoanApprovals();
+  updateBadges();
+}
+
+/* ══════════════════════════════════════════════════════
+   MONITORING DASHBOARD
+   ══════════════════════════════════════════════════════ */
+function renderMonitoring() {
+  var farmers    = getFarmers().length;
+  var agents     = getUsers().filter(function(u){return u.role==='Agent'&&u.status==='approved';}).length;
+  var complaints = getComplaints().filter(function(c){return c.status==='open';}).length;
+  var pending    = getUsers().filter(function(u){return u.status==='pending';}).length;
+
+  var setTxt = function(id,v){ var el=document.getElementById(id); if(el) el.textContent=v; };
+  setTxt('mon-farmers', farmers);
+  setTxt('mon-agents', agents);
+  setTxt('mon-complaints', complaints);
+  setTxt('mon-pending', pending);
+
+  // District coverage (simulated)
+  var districts = [
+    { name:'Dharwad',  farmers:142, agents:8,  coverage:88 },
+    { name:'Bellary',  farmers:98,  agents:5,  coverage:72 },
+    { name:'Raichur',  farmers:76,  agents:4,  coverage:65 },
+    { name:'Mysuru',   farmers:64,  agents:3,  coverage:58 },
+    { name:'Gadag',    farmers:51,  agents:3,  coverage:48 },
+    { name:'Haveri',   farmers:39,  agents:2,  coverage:36 }
+  ];
+  var dcEl = document.getElementById('district-coverage-list');
+  if (dcEl) {
+    dcEl.innerHTML = districts.map(function(d){
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-color,#e8f5e9)">'+
+        '<div><div style="font-weight:700;color:var(--primary,#1B5E20)">'+d.name+'</div>'+
+        '<div style="font-size:.76rem;color:#888">'+d.farmers+' farmers · '+d.agents+' agents</div></div>'+
+        '<div style="text-align:right">'+
+          '<div style="font-size:.8rem;font-weight:800;color:var(--primary,#1B5E20)">'+d.coverage+'%</div>'+
+          '<div style="width:80px;height:6px;background:#e8f5e9;border-radius:4px;margin-top:4px">'+
+            '<div style="width:'+d.coverage+'%;height:6px;background:linear-gradient(90deg,#1B5E20,#4CAF50);border-radius:4px"></div>'+
+          '</div>'+
+        '</div>'+
+        '</div>';
+    }).join('');
+  }
+
+  // Agent leaderboard (simulated)
+  var leaderboard = [
+    { name:'Ramesh Kumar', village:'Kodalipura', farmers:48, score:98 },
+    { name:'Priya Singh',  village:'Bellary',    farmers:34, score:91 },
+    { name:'Suresh Patil', village:'Hubli',      farmers:29, score:85 },
+    { name:'Mohan Rao',    village:'Mysuru',     farmers:21, score:78 }
+  ];
+  var lbEl = document.getElementById('agent-leaderboard');
+  if (lbEl) {
+    lbEl.innerHTML = leaderboard.map(function(a, i){
+      var medals = ['🥇','🥈','🥉','🏅'];
+      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-color,#e8f5e9)">'+
+        '<div style="font-size:1.3rem;flex-shrink:0">'+medals[i]+'</div>'+
+        '<div style="flex:1"><div style="font-weight:700;color:var(--primary,#1B5E20)">'+a.name+'</div>'+
+        '<div style="font-size:.76rem;color:#888">'+a.village+' · '+a.farmers+' farmers</div></div>'+
+        '<div style="font-size:1rem;font-weight:900;color:var(--primary,#1B5E20)">'+a.score+'pts</div>'+
+        '</div>';
+    }).join('');
+  }
+
+  // Activity feed (from audit logs)
+  var actEl = document.getElementById('monitoring-activity');
+  if (actEl) {
+    var logs = getAuditLogs().slice(0,6);
+    var dotColor = {login:'#9C27B0',create:'#4CAF50',update:'#2196F3',approve:'#4CAF50',reject:'#f44336',delete:'#f44336'};
+    actEl.innerHTML = logs.map(function(l){
+      var dc = dotColor[l.action]||'#888';
+      return '<div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border-color,#e8f5e9)">'+
+        '<div style="width:10px;height:10px;border-radius:50%;background:'+dc+';margin-top:5px;flex-shrink:0"></div>'+
+        '<div style="flex:1"><div style="font-size:.84rem;font-weight:600">'+l.detail+'</div>'+
+        '<div style="font-size:.75rem;color:#888">'+l.user+' · '+l.ts+'</div></div>'+
+        '</div>';
+    }).join('');
+  }
+
+  // Platform health
+  var health = [
+    { name:'API Gateway',      status:'ok'   },
+    { name:'Authentication',   status:'ok'   },
+    { name:'Database',         status:'ok'   },
+    { name:'SMS Service',      status:'warn' },
+    { name:'Payment Gateway',  status:'ok'   },
+    { name:'Weather API',      status:'ok'   }
+  ];
+  var phEl = document.getElementById('platform-health-list');
+  if (phEl) {
+    phEl.innerHTML = health.map(function(h){
+      var isOk = h.status==='ok';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border-color,#e8f5e9)">'+
+        '<span style="font-size:.85rem;font-weight:600">'+h.name+'</span>'+
+        '<span style="background:'+(isOk?'#e8f5e9':'#fff8e1')+';color:'+(isOk?'#2E7D32':'#E65100')+';padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:800">'+
+          (isOk?'✅ Operational':'⚠️ Degraded')+
+        '</span>'+
+        '</div>';
+    }).join('');
+  }
+
+  // Weekly bar chart (simulated data)
+  var weekData = [
+    {day:'Mon',val:8},{day:'Tue',val:12},{day:'Wed',val:6},{day:'Thu',val:15},
+    {day:'Fri',val:11},{day:'Sat',val:4},{day:'Sun',val:9}
+  ];
+  var maxVal = Math.max.apply(Math, weekData.map(function(d){return d.val;}));
+  var barEl = document.getElementById('weekly-bar-chart');
+  var lblEl = document.getElementById('weekly-bar-labels');
+  if (barEl) {
+    barEl.innerHTML = weekData.map(function(d){
+      var h = Math.round((d.val/maxVal)*120);
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">'+
+        '<div style="font-size:.75rem;font-weight:700;color:var(--primary,#1B5E20)">'+d.val+'</div>'+
+        '<div style="width:100%;height:'+h+'px;background:linear-gradient(180deg,#4CAF50,#1B5E20);border-radius:6px 6px 0 0;transition:.4s"></div>'+
+        '</div>';
+    }).join('');
+  }
+  if (lblEl) {
+    lblEl.innerHTML = weekData.map(function(d){
+      return '<div style="flex:1;text-align:center">'+d.day+'</div>';
+    }).join('');
+  }
+}
+initLang();
+</script>
+</body>
+</html>
